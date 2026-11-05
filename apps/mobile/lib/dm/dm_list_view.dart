@@ -89,6 +89,7 @@ class ConversationTile extends StatelessWidget {
     return Semantics(
       button: true,
       label: '${c.other.nickname}, ${c.lastMessage}, ${timeAgo(c.lastMessageAt)}$unreadLabel',
+      onTap: onTap,
       excludeSemantics: true,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),

@@ -51,6 +51,7 @@ class AppHeader extends StatelessWidget {
               right: 4,
               child: Semantics(
                 label: '다크 모드',
+                onTap: onToggleTheme,
                 toggled: dark,
                 excludeSemantics: true,
                 child: Switch(

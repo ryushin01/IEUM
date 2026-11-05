@@ -78,6 +78,7 @@ class _ChatViewState extends State<ChatView> {
               button: true,
               header: true,
               label: '${other.nickname} 님의 프로필 보기. 신고와 차단은 프로필에서 할 수 있습니다.',
+              onTap: () => widget.onOpenProfile(other.id),
               excludeSemantics: true,
               child: InkWell(
                 onTap: () => widget.onOpenProfile(other.id),

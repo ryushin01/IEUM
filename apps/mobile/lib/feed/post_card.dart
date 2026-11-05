@@ -174,6 +174,11 @@ class _PostCardState extends State<PostCard> {
     super.dispose();
   }
 
+  void _like() {
+    HapticFeedback.lightImpact();
+    widget.onLike();
+  }
+
   Future<void> _submit() async {
     final body = _comment.text.trim();
     if (body.isEmpty || _sending) return;
@@ -218,6 +223,7 @@ class _PostCardState extends State<PostCard> {
                       child: Semantics(
                         button: true,
                         label: '${post.author.nickname}${post.author.isOfficial ? ', 공식 계정' : ''}${post.isHot ? ', 인기 게시글' : ''}, ${timeAgo(post.createdAt)}, 프로필 보기',
+                        onTap: widget.onOpenAuthor,
                         excludeSemantics: true,
                         child: InkWell(
                           onTap: widget.onOpenAuthor,
@@ -277,12 +283,10 @@ class _PostCardState extends State<PostCard> {
                   button: true,
                   toggled: post.liked,
                   label: '좋아요 ${post.likeCount}개',
+                  onTap: _like,
                   excludeSemantics: true,
                   child: TextButton.icon(
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      widget.onLike();
-                    },
+                    onPressed: _like,
                     style: TextButton.styleFrom(
                       backgroundColor: post.liked ? colors.likeSoft : colors.bg,
                       foregroundColor: post.liked ? colors.like : colors.text,

@@ -79,6 +79,7 @@ class _WriteButton extends StatelessWidget {
         button: true,
         selected: selected,
         label: '새 게시글',
+        onTap: onTap,
         excludeSemantics: true,
         child: Center(
           child: Transform.translate(
@@ -123,6 +124,7 @@ class _Item extends StatelessWidget {
         button: true,
         selected: selected,
         label: semanticLabel ?? label,
+        onTap: onTap,
         excludeSemantics: true,
         child: InkWell(
           onTap: onTap,

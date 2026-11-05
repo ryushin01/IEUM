@@ -112,21 +112,25 @@ class _FeedViewState extends State<FeedView> {
 class _Hero extends StatelessWidget {
   const _Hero({required this.child});
 
-  static const _height = 128.0;
   static const _overlap = 48.0;
+  static const _fontSize = 25.0;
+  static const _lineHeight = 1.3;
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final colors = IeumColors.of(context);
+    // 글자 크기 설정을 키워도 제목 두 줄이 카드에 가리지 않도록 높이를 계산합니다.
+    final heading = MediaQuery.textScalerOf(context).scale(_fontSize) * _lineHeight * 2;
+    final height = 4 + heading + 16 + _overlap;
     return Stack(
       children: [
         Positioned(
           left: 0,
           right: 0,
           top: 0,
-          height: _height,
+          height: height,
           child: ColoredBox(
             color: colors.header,
             child: Padding(
@@ -135,13 +139,13 @@ class _Hero extends StatelessWidget {
                 header: true,
                 child: Text(
                   '오늘은 누구와\n이어져 볼까요?',
-                  style: TextStyle(fontSize: 25, height: 1.3, fontWeight: FontWeight.w800, letterSpacing: -.5, color: colors.onHeader),
+                  style: TextStyle(fontSize: _fontSize, height: _lineHeight, fontWeight: FontWeight.w800, letterSpacing: -.5, color: colors.onHeader),
                 ),
               ),
             ),
           ),
         ),
-        Padding(padding: const EdgeInsets.only(top: _height - _overlap), child: child),
+        Padding(padding: EdgeInsets.only(top: height - _overlap), child: child),
       ],
     );
   }
