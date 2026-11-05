@@ -69,7 +69,11 @@ class _ChatViewState extends State<ChatView> {
           final other = controller.info.value?.other;
           if (other == null) return const SizedBox.shrink();
           return DecoratedBox(
-            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: colors.border))),
+            decoration: BoxDecoration(
+              color: colors.surface,
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
+              boxShadow: [BoxShadow(color: colors.shadow, blurRadius: 8, offset: const Offset(0, 2))],
+            ),
             child: Semantics(
               button: true,
               header: true,
@@ -95,7 +99,7 @@ class _ChatViewState extends State<ChatView> {
         Expanded(
           child: Obx(() {
             if (controller.loading.value && controller.messages.isEmpty) {
-              return Center(child: Semantics(label: '대화를 불러오는 중', child: const CircularProgressIndicator(color: IeumColors.lime)));
+              return Center(child: Semantics(label: '대화를 불러오는 중', child: CircularProgressIndicator(color: colors.primary)));
             }
             final error = controller.error.value;
             if (error != null && controller.messages.isEmpty) {
@@ -107,7 +111,7 @@ class _ChatViewState extends State<ChatView> {
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: controller.load,
-                      style: FilledButton.styleFrom(backgroundColor: IeumColors.lime, foregroundColor: IeumColors.ink, minimumSize: const Size(44, 44)),
+                      style: FilledButton.styleFrom(minimumSize: const Size(44, 44)),
                       child: const Text('다시 시도'),
                     ),
                   ],
@@ -140,9 +144,13 @@ class _ChatViewState extends State<ChatView> {
           }
           final sendError = controller.sendError.value;
           return DecoratedBox(
-            decoration: BoxDecoration(color: colors.bg, border: Border(top: BorderSide(color: colors.border))),
+            decoration: BoxDecoration(
+              color: colors.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              boxShadow: [BoxShadow(color: colors.shadow, blurRadius: 16, offset: const Offset(0, -4))],
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -170,11 +178,11 @@ class _ChatViewState extends State<ChatView> {
                         onPressed: _input.text.trim().isEmpty || controller.sending.value ? null : _send,
                         constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                         style: IconButton.styleFrom(
-                          backgroundColor: IeumColors.lime,
-                          foregroundColor: IeumColors.ink,
-                          disabledBackgroundColor: colors.surface,
+                          backgroundColor: colors.primary,
+                          foregroundColor: colors.onPrimary,
+                          disabledBackgroundColor: colors.bg,
                           disabledForegroundColor: colors.muted,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         ),
                         icon: const Icon(Icons.send),
                       ),
@@ -201,7 +209,7 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = IeumColors.of(context);
     final read = mine && message.readAt != null;
-    const radius = Radius.circular(14);
+    const radius = Radius.circular(20);
     return Semantics(
       liveRegion: announce && !mine,
       label: '${mine ? '내가 보낸 메시지' : '받은 메시지'}: ${message.body}, ${timeAgo(message.createdAt)}${read ? ', 읽음' : ''}',
@@ -213,17 +221,17 @@ class MessageBubble extends StatelessWidget {
             constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * .78),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: mine ? IeumColors.lime : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF3A3A3A) : const Color(0xFFF0F0F0)),
+                color: mine ? colors.primary : colors.bubbleOther,
                 borderRadius: BorderRadius.only(
                   topLeft: radius,
                   topRight: radius,
-                  bottomLeft: mine ? radius : const Radius.circular(2),
-                  bottomRight: mine ? const Radius.circular(2) : radius,
+                  bottomLeft: mine ? radius : const Radius.circular(6),
+                  bottomRight: mine ? const Radius.circular(6) : radius,
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Text(message.body, style: TextStyle(color: mine ? IeumColors.ink : colors.text, fontSize: 16)),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                child: Text(message.body, style: TextStyle(color: mine ? colors.onPrimary : colors.text, fontSize: 16, fontWeight: FontWeight.w500)),
               ),
             ),
           ),

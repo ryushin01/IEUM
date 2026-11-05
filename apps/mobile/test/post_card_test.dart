@@ -122,7 +122,7 @@ void main() {
       ),
     );
     expect(find.bySemanticsLabel('메시지, 읽지 않은 메시지 3개'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.add_box_outlined));
+    await tester.tap(find.byIcon(Icons.add));
     expect(selected, [MenuTab.write]);
     await expectLater(tester, meetsGuideline(const MinimumTapTargetGuideline(size: Size(44, 44), link: 'KWCAG 6.1.3')));
     handle.dispose();

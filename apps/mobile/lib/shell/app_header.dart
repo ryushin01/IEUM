@@ -17,7 +17,7 @@ class AppHeader extends StatelessWidget {
       width: double.infinity,
       height: 52,
       child: DecoratedBox(
-        decoration: BoxDecoration(color: colors.bg, border: Border(bottom: BorderSide(color: colors.border))),
+        decoration: BoxDecoration(color: colors.header),
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -28,7 +28,7 @@ class AppHeader extends StatelessWidget {
                   tooltip: '뒤로 가기',
                   onPressed: onBack,
                   constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-                  icon: Icon(Icons.arrow_back, color: colors.text),
+                  icon: Icon(Icons.arrow_back, color: colors.onHeader),
                 ),
               ),
             Semantics(
@@ -37,12 +37,12 @@ class AppHeader extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('IEUM', style: TextStyle(fontSize: 26, letterSpacing: 1.5, color: colors.text, height: 1)),
+                  Text('IEUM', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, letterSpacing: .5, color: colors.onHeader, height: 1)),
                   const SizedBox(width: 6),
                   Container(
                     width: 11,
                     height: 11,
-                    decoration: BoxDecoration(color: IeumColors.lime, shape: BoxShape.circle, border: Border.all(color: colors.text)),
+                    decoration: const BoxDecoration(color: IeumColors.accent, shape: BoxShape.circle),
                   ),
                 ],
               ),
@@ -57,7 +57,10 @@ class AppHeader extends StatelessWidget {
                   value: dark,
                   onChanged: (_) => onToggleTheme(),
                   activeThumbColor: IeumColors.ink,
-                  activeTrackColor: IeumColors.lime,
+                  activeTrackColor: IeumColors.accent,
+                  inactiveThumbColor: Colors.white,
+                  inactiveTrackColor: IeumColors.ink,
+                  trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
                 ),
               ),
             ),

@@ -5,7 +5,7 @@ import { ReportCard, useLiftSuspension, useOpenReports, useSuspendedUsers } from
 import { timeAgo, usePageTitle } from '@/shared/lib';
 import { EmptyView, ErrorView, LoadingView } from '@/shared/ui';
 
-const titleStyle = { padding: '16px 16px 8px', fontSize: 22, fontWeight: 400 };
+const titleStyle = { padding: '16px 16px 8px', fontSize: 22, fontWeight: 800 };
 
 export function AdminReportsPage() {
   usePageTitle('신고 처리');

@@ -1,16 +1,17 @@
 import { style } from '@vanilla-extract/css';
 
-const INK = '#222222';
+const INK = '#1f1b1c';
+const LIME = '#c4e538';
 
 export const hitArea = style({ display: 'inline-flex' });
 
 /** 56×28 트랙입니다. 눌리는 영역은 ::after로 44px까지 넓힙니다. */
 export const track = style({
   position: 'relative', display: 'block', width: 56, height: 28, padding: 0, border: 0, borderRadius: 14,
-  backgroundColor: '#666666', color: '#ffffff', cursor: 'pointer', transition: 'background-color 0.1s',
+  backgroundColor: INK, color: '#ffffff', cursor: 'pointer', transition: 'background-color 0.1s',
   selectors: {
     '&::after': { content: '""', position: 'absolute', inset: '-10px -4px' },
-    '&[aria-checked="true"]': { backgroundColor: '#c4e538', color: INK },
+    '&[aria-checked="true"]': { backgroundColor: LIME, color: INK },
   },
   '@media': { '(prefers-reduced-motion: reduce)': { transition: 'none' } },
 });

@@ -1,4 +1,7 @@
-import '@fontsource/stylish/400.css';
+import '@fontsource/gothic-a1/400.css';
+import '@fontsource/gothic-a1/700.css';
+import '@fontsource/gothic-a1/800.css';
+import '@fontsource/gothic-a1/900.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';

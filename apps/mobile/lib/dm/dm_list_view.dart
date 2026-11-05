@@ -25,14 +25,14 @@ class DmListView extends StatelessWidget {
         AppHeader(dark: dark, onToggleTheme: onToggleTheme),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: Semantics(header: true, child: Text('메시지', style: TextStyle(fontSize: 22, color: colors.text))),
+          child: Semantics(header: true, child: Text('메시지', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: -.5, color: colors.text))),
         ),
         Expanded(
           child: Obx(() {
             final list = controller.conversations;
             if (list.isEmpty) {
               if (controller.loading.value) {
-                return Center(child: Semantics(label: '대화를 불러오는 중', child: const CircularProgressIndicator(color: IeumColors.lime)));
+                return Center(child: Semantics(label: '대화를 불러오는 중', child: CircularProgressIndicator(color: colors.primary)));
               }
               final error = controller.error.value;
               return Center(
@@ -49,7 +49,7 @@ class DmListView extends StatelessWidget {
                         const SizedBox(height: 16),
                         FilledButton(
                           onPressed: controller.reload,
-                          style: FilledButton.styleFrom(backgroundColor: IeumColors.lime, foregroundColor: IeumColors.ink, minimumSize: const Size(44, 44)),
+                          style: FilledButton.styleFrom(minimumSize: const Size(44, 44)),
                           child: const Text('다시 시도'),
                         ),
                       ],
@@ -60,8 +60,8 @@ class DmListView extends StatelessWidget {
             }
             return RefreshIndicator(
               onRefresh: controller.reload,
-              color: IeumColors.ink,
-              backgroundColor: IeumColors.lime,
+              color: colors.onPrimary,
+              backgroundColor: colors.primary,
               child: ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: list.length,
@@ -90,12 +90,18 @@ class ConversationTile extends StatelessWidget {
       button: true,
       label: '${c.other.nickname}, ${c.lastMessage}, ${timeAgo(c.lastMessageAt)}$unreadLabel',
       excludeSemantics: true,
-      child: InkWell(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+        child: Material(
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(20),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
         onTap: onTap,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 68),
+          constraints: const BoxConstraints(minHeight: 72),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             child: Row(
               children: [
                 UserAvatar(nickname: c.other.nickname, url: c.other.avatarUrl, size: 48),
@@ -122,14 +128,16 @@ class ConversationTile extends StatelessWidget {
                   Container(
                     constraints: const BoxConstraints(minWidth: 24),
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(color: IeumColors.lime, borderRadius: BorderRadius.circular(12)),
-                    child: Text('${c.unreadCount}', textAlign: TextAlign.center, style: const TextStyle(color: IeumColors.ink, fontSize: 14)),
+                    decoration: BoxDecoration(color: colors.primary, borderRadius: BorderRadius.circular(12)),
+                    child: Text('${c.unreadCount}', textAlign: TextAlign.center, style: TextStyle(color: colors.onPrimary, fontWeight: FontWeight.w700, fontSize: 14)),
                   ),
                 ],
               ],
             ),
           ),
         ),
+      ),
+      ),
       ),
     );
   }

@@ -4,8 +4,8 @@ import { App, Button } from 'antd';
 import { patchPost, type Post } from '@/entities/post';
 import { request } from '@/shared/api';
 import { callNative, isNativeApp } from '@/shared/bridge';
-import { vars } from '@/shared/theme';
 import { srOnly } from '@/shared/ui';
+import * as s from './LikeButton.css';
 
 export function LikeButton({ post }: { post: Post }) {
   const client = useQueryClient();
@@ -26,11 +26,12 @@ export function LikeButton({ post }: { post: Post }) {
   return (
     <Button
       type="text"
+      className={s.like}
       aria-pressed={post.liked}
-      icon={post.liked ? <HeartFilled aria-hidden="true" style={{ color: vars.color.like }} /> : <HeartOutlined aria-hidden="true" />}
+      icon={post.liked ? <HeartFilled aria-hidden="true" /> : <HeartOutlined aria-hidden="true" />}
       onClick={() => { if (!toggle.isPending) toggle.mutate(!post.liked); }}
     >
-      <span className={srOnly}>좋아요 </span>{post.likeCount}<span className={srOnly}>개</span>
+      좋아요 {post.likeCount}<span className={srOnly}>개</span>
     </Button>
   );
 }

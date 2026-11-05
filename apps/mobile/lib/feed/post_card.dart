@@ -23,28 +23,25 @@ class UserAvatar extends StatelessWidget {
         child: image != null
             ? PostImageView(url: image, label: '')
             : ColoredBox(
-                color: IeumColors.lime,
+                color: IeumColors.of(context).likeSoft,
                 child: Center(
                   child: Text(
                     nickname.characters.first,
-                    style: TextStyle(color: IeumColors.ink, fontSize: size * .45),
+                    style: TextStyle(color: IeumColors.of(context).like, fontSize: size * .45, fontWeight: FontWeight.w800),
                   ),
                 ),
               ),
       ),
     );
     if (!hot) return ExcludeSemantics(child: avatar);
-    // sprout의 인기 게시글 링입니다.
+    // 인기 게시글 작성자의 프로필 링입니다.
     return ExcludeSemantics(
       child: DecoratedBox(
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(colors: [Color(0xFF2E86DE), Color(0xFF38ADA9)]),
-        ),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: IeumColors.of(context).primary),
         child: Padding(
           padding: const EdgeInsets.all(2),
           child: DecoratedBox(
-            decoration: BoxDecoration(shape: BoxShape.circle, color: IeumColors.of(context).bg),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: IeumColors.of(context).surface),
             child: Padding(padding: const EdgeInsets.all(1), child: avatar),
           ),
         ),
@@ -84,7 +81,9 @@ class _ImageCarouselState extends State<ImageCarousel> {
   @override
   Widget build(BuildContext context) {
     final count = widget.images.length;
-    return AspectRatio(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(18),
+      child: AspectRatio(
       aspectRatio: 1,
       child: Stack(
         fit: StackFit.expand,
@@ -113,6 +112,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
               Positioned(right: 8, top: 0, bottom: 0, child: _ArrowButton(icon: Icons.chevron_right, label: '다음 사진', onPressed: () => _go(_index + 1))),
           ],
         ],
+      ),
       ),
     );
   }
@@ -198,15 +198,20 @@ class _PostCardState extends State<PostCard> {
     return Semantics(
       container: true,
       label: '${post.author.nickname} 님의 게시글',
-      child: DecoratedBox(
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: colors.border))),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [BoxShadow(color: colors.shadow, blurRadius: 18, offset: const Offset(0, 6))],
+        ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 16),
+          padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16, right: 4, bottom: 8),
+                padding: const EdgeInsets.only(bottom: 10),
                 child: Row(
                   children: [
                     Expanded(
@@ -233,12 +238,12 @@ class _PostCardState extends State<PostCard> {
                                             child: Text(
                                               post.author.nickname,
                                               overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
                                             ),
                                           ),
                                           if (post.author.isOfficial) ...[
                                             const SizedBox(width: 4),
-                                            const Icon(Icons.check_circle, size: 14, color: IeumColors.official),
+                                            Icon(Icons.check_circle, size: 15, color: colors.official),
                                           ],
                                         ],
                                       ),
@@ -267,7 +272,7 @@ class _PostCardState extends State<PostCard> {
               ),
               if (post.images.isNotEmpty) ImageCarousel(images: post.images, authorNickname: post.author.nickname),
               Padding(
-                padding: const EdgeInsets.only(left: 4, top: 4),
+                padding: const EdgeInsets.only(top: 10),
                 child: Semantics(
                   button: true,
                   toggled: post.liked,
@@ -278,26 +283,32 @@ class _PostCardState extends State<PostCard> {
                       HapticFeedback.lightImpact();
                       widget.onLike();
                     },
-                    style: TextButton.styleFrom(foregroundColor: colors.text, minimumSize: const Size(44, 44)),
-                    icon: Icon(post.liked ? Icons.favorite : Icons.favorite_border, color: post.liked ? colors.like : colors.text),
-                    label: Text('${post.likeCount}', style: const TextStyle(fontSize: 16)),
+                    style: TextButton.styleFrom(
+                      backgroundColor: post.liked ? colors.likeSoft : colors.bg,
+                      foregroundColor: post.liked ? colors.like : colors.text,
+                      minimumSize: const Size(44, 44),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: const StadiumBorder(),
+                    ),
+                    icon: Icon(post.liked ? Icons.favorite : Icons.favorite_border, color: post.liked ? colors.like : colors.text, size: 20),
+                    label: Text('좋아요 ${post.likeCount}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(post.caption, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, height: 1.5)),
+                padding: const EdgeInsets.fromLTRB(2, 10, 2, 0),
+                child: Text(post.caption, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, height: 1.55)),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: EdgeInsets.zero,
                 child: TextButton(
                   onPressed: widget.onOpenPost,
-                  style: TextButton.styleFrom(foregroundColor: colors.muted, minimumSize: const Size(44, 44), padding: const EdgeInsets.symmetric(horizontal: 12)),
+                  style: TextButton.styleFrom(foregroundColor: colors.muted, minimumSize: const Size(44, 44), padding: const EdgeInsets.symmetric(horizontal: 2)),
                   child: Text('댓글 ${post.commentCount}개 모두 보기', style: const TextStyle(fontSize: 14)),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.zero,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -318,13 +329,7 @@ class _PostCardState extends State<PostCard> {
                     const SizedBox(width: 8),
                     FilledButton(
                       onPressed: _comment.text.trim().isEmpty || _sending ? null : _submit,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: IeumColors.lime,
-                        foregroundColor: IeumColors.ink,
-                        minimumSize: const Size(56, 44),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                      ),
+                      style: FilledButton.styleFrom(minimumSize: const Size(56, 44), padding: const EdgeInsets.symmetric(horizontal: 12)),
                       child: const Text('게시'),
                     ),
                   ],
@@ -332,7 +337,7 @@ class _PostCardState extends State<PostCard> {
               ),
               if (_error != null)
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Semantics(liveRegion: true, child: Text(_error!, style: TextStyle(color: colors.error))),
                 ),
             ],

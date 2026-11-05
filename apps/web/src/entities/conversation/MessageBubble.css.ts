@@ -6,7 +6,7 @@ export const row = styleVariants({
   other: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start' },
 });
 export const bubble = styleVariants({
-  mine: { maxWidth: '78%', padding: '8px 12px', borderRadius: '14px 14px 2px 14px', backgroundColor: vars.color.primary, color: vars.color.onPrimary, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' },
-  other: { maxWidth: '78%', padding: '8px 12px', borderRadius: '14px 14px 14px 2px', backgroundColor: vars.color.bubbleOther, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' },
+  mine: { maxWidth: '78%', padding: '12px 15px', borderRadius: '20px 20px 6px 20px', fontWeight: 500, backgroundColor: vars.color.primary, color: vars.color.onPrimary, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' },
+  other: { maxWidth: '78%', padding: '12px 15px', borderRadius: '20px 20px 20px 6px', fontWeight: 500, boxShadow: `0 2px 8px ${vars.color.shadow}`, backgroundColor: vars.color.bubbleOther, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' },
 });
 export const meta = style({ marginTop: 2, fontSize: 12, color: vars.color.muted });

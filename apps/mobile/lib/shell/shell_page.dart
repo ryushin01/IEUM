@@ -19,12 +19,14 @@ class ShellPage extends GetView<ShellController> {
   Widget build(BuildContext context) {
     return Obx(() {
       final dark = controller.brightness.value == Brightness.dark;
+      final colors = dark ? IeumColors.dark : IeumColors.light;
       // 앱 화면도 웹에서 고른 테마를 따릅니다.
       return Theme(data: ieumTheme(controller.brightness.value), child: AnnotatedRegion<SystemUiOverlayStyle>(
-        // 투명하게 두어 앱 배경색이 상태 표시줄까지 이어지게 합니다.
-        value: (dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark).copyWith(
+        // 헤더가 빨강 또는 어두운 색이라 상태 표시줄 글자는 항상 밝게 둡니다.
+        value: SystemUiOverlayStyle.light.copyWith(
           statusBarColor: Colors.transparent,
-          systemNavigationBarColor: dark ? const Color(0xFF222222) : Colors.white,
+          systemNavigationBarColor: colors.surface,
+          systemNavigationBarIconBrightness: dark ? Brightness.light : Brightness.dark,
         ),
         child: PopScope(
           canPop: false,
@@ -32,10 +34,20 @@ class ShellPage extends GetView<ShellController> {
             if (!didPop) controller.onBackPressed();
           },
           child: Scaffold(
-            backgroundColor: dark ? IeumColors.ink : IeumColors.paper,
+            backgroundColor: colors.surface,
             resizeToAvoidBottomInset: true,
-            body: SafeArea(
-              child: switch (controller.status.value) {
+            // 상태 표시줄 영역까지 헤더 색으로 이어지게 합니다.
+            body: Column(
+              children: [
+                ColoredBox(color: colors.header, child: SizedBox(width: double.infinity, height: MediaQuery.paddingOf(context).top)),
+                Expanded(
+                  // 상태 표시줄 영역은 위에서 이미 그렸으니 아래 목록이 다시 비워 두지 않게 합니다.
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: SafeArea(
+                    top: false,
+                    child: switch (controller.status.value) {
                 ShellStatus.offline when !controller.showFlutterScreen => OfflineView(onRetry: controller.load),
                 _ => Column(
                   children: [
@@ -49,7 +61,7 @@ class ShellPage extends GetView<ShellController> {
                             const Center(child: CircularProgressIndicator()),
                           if (controller.showFlutterScreen)
                             ColoredBox(
-                              color: dark ? IeumColors.ink : IeumColors.paper,
+                              color: colors.bg,
                               child: _flutterScreen(dark),
                             ),
                         ],
@@ -67,6 +79,10 @@ class ShellPage extends GetView<ShellController> {
                   ],
                 ),
               },
+                  ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

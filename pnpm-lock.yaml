@@ -233,9 +233,9 @@ importers:
       '@ant-design/icons':
         specifier: ^6.3.4
         version: 6.3.4(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@fontsource/stylish':
-        specifier: ^5.3.1
-        version: 5.3.1
+      '@fontsource/gothic-a1':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@tanstack/react-query':
         specifier: ^5.105.3
         version: 5.105.3(@types/react@19.3.0)(react@19.3.1)
@@ -854,8 +854,8 @@ packages:
   '@fastify/static@10.1.10':
     resolution: {integrity: sha512-CGwOoZiKg5m4SAqeiS8bzCSKDa71DMFQ7QeVsuWBOrfFu32DpVZWFFb0cpEg7e54YK6HZZsl4g/wfoKMnRQMUw==}
 
-  '@fontsource/stylish@5.3.1':
-    resolution: {integrity: sha512-pBOwKe5jwbbQ4VfG1orOHtOflD0OYxSZ5O7nQJWRXCrc6fRt0yhS9b6oCrRGA979nynLpjIFAlqKZpRjkjafLA==}
+  '@fontsource/gothic-a1@5.3.0':
+    resolution: {integrity: sha512-0HmmE3YQgdcXkVZd/pRTw7MOc9PffY7tNrR/dovEGO00cno/4ImiHxEXdJoq80Bs2jC52wuvuFRcepJ38mksEw==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -4480,7 +4480,7 @@ snapshots:
       fastq: 1.20.3
       glob: 14.0.3
 
-  '@fontsource/stylish@5.3.1': {}
+  '@fontsource/gothic-a1@5.3.0': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

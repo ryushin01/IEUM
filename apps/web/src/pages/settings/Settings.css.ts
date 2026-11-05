@@ -1,8 +1,14 @@
 import { style } from '@vanilla-extract/css';
 import { vars } from '@/shared/theme/theme.css';
 
-export const title = style({ padding: '16px 16px 8px', fontSize: 22, fontWeight: 400 });
-export const row = style({ borderBottom: `1px solid ${vars.color.border}` });
+export const title = style({ padding: '16px 16px 8px', fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' });
+export const row = style({
+  margin: '0 12px', borderBottom: `1px solid ${vars.color.border}`, backgroundColor: vars.color.surface,
+  selectors: {
+    '&:first-child': { borderRadius: '20px 20px 0 0' },
+    '&:last-child': { borderBottom: 0, borderRadius: '0 0 20px 20px' },
+  },
+});
 const rowBase = {
   display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', minHeight: 52,
   padding: '0 16px', border: 0, background: 'none', color: vars.color.text, font: 'inherit',

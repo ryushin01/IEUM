@@ -1,14 +1,14 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 import { vars } from '@/shared/theme/theme.css';
 
-export const section = style({ marginTop: 20 });
+export const section = style({});
 export const divider = style({ marginBottom: 12, textAlign: 'center', color: vars.color.muted });
 export const list = style({ display: 'grid', gap: 8 });
 export const error = style({ marginTop: 12 });
 
 const base = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', minHeight: 48,
-  borderRadius: 6, fontFamily: `-apple-system, 'Apple SD Gothic Neo', Roboto, 'Noto Sans KR', sans-serif`,
+  borderRadius: 14, fontFamily: `-apple-system, 'Apple SD Gothic Neo', Roboto, 'Noto Sans KR', sans-serif`,
   fontSize: 15, fontWeight: 500, cursor: 'pointer',
   selectors: { '&:disabled': { opacity: 0.6, cursor: 'wait' } },
 } as const;
