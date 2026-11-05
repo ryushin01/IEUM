@@ -68,6 +68,12 @@ describe('데모 API', () => {
     expect((await call('POST', '/auth/login', { email: 'sora@ieum.app', password: 'ieum-demo-1234' })).status).toBe(200);
   });
 
+  it('수정하지 않은 시드 글은 수정됨으로 표시하지 않는다', async () => {
+    const token = await login('demo@ieum.app');
+    const { body } = await call('GET', '/posts', undefined, token);
+    expect(body.items.every((p: { edited: boolean }) => !p.edited)).toBe(true);
+  });
+
   it('없는 경로는 404로 응답한다', async () => {
     expect((await call('GET', '/없는경로')).status).toBe(404);
   });

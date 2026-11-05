@@ -50,12 +50,16 @@ const user = (id: string, nickname: string, bio: string, interests: string[], ex
   isOfficial: false, isAdmin: false, suspendedAt: null, ...extra,
 });
 
-const post = (id: string, authorId: string, minutes: number, caption: string, images: [string, string][], likes: string[]): DemoPost => ({
-  id, authorId, caption, likes,
-  images: images.map(([name, alt]) => ({ url: art(name), alt })),
-  createdAt: minutesAgo(minutes),
-  updatedAt: minutesAgo(minutes),
-});
+const post = (id: string, authorId: string, minutes: number, caption: string, images: [string, string][], likes: string[]): DemoPost => {
+  // 두 값이 같아야 수정되지 않은 글로 표시됩니다.
+  const createdAt = minutesAgo(minutes);
+  return {
+    id, authorId, caption, likes,
+    images: images.map(([name, alt]) => ({ url: art(name), alt })),
+    createdAt,
+    updatedAt: createdAt,
+  };
+};
 
 export function createSeed(passwordHash: string): DemoState {
   const everyone = ['demo', 'haneul', 'sora', 'mint'];

@@ -31,3 +31,4 @@ apps/mobile/android/key.properties
 *.p8
 *.mobileprovision
 dist-demo/
+apps/mobile/android/.kotlin/

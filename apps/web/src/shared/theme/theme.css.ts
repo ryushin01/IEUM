@@ -49,3 +49,6 @@ globalStyle('a', { color: 'inherit' });
 globalStyle('a:not([class])', { color: vars.color.text, textDecoration: 'underline' });
 globalStyle(':focus-visible', { outline: `2px solid ${vars.color.focus}`, outlineOffset: 2 });
 globalStyle('input.ant-input:focus-visible, textarea.ant-input:focus-visible', { outlineOffset: -1 });
+// 비밀번호 칸은 바깥 틀이 초점을 표시하므로 안쪽 입력에 테두리를 겹치지 않습니다.
+globalStyle('.ant-input-affix-wrapper input.ant-input:focus-visible', { outline: 'none' });
+globalStyle('.ant-input-affix-wrapper:focus-within', { outline: `2px solid ${vars.color.focus}`, outlineOffset: -1 });

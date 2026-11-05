@@ -7,31 +7,27 @@
 
 **[웹 데모 바로 보기](https://ryushin01.github.io/IEUM/)** · 가입 없이 버튼 하나로 둘러볼 수 있습니다.
 
-> **프로젝트 상태:** 스토어에 출시하지 않는 **포트폴리오용 데모**입니다. 다만 출시를 전제로 심사 요건까지 설계했습니다. 웹 데모는 서버 없이 브라우저 안의 목업으로 동작합니다. 실제 카카오·네이버·Google·Apple 로그인, 메일, S3는 가짜 서버로만 검증했고 실제 서비스와 연결하지 않았습니다.
+> **프로젝트 상태:** 스토어에 출시하지 않는 **포트폴리오용 데모**입니다. 다만 출시를 전제로 심사 요건까지 설계했습니다. 웹 데모는 서버 없이 브라우저 안의 목업으로 동작합니다. 앱은 Android 에뮬레이터에서 실행해 확인했고, iOS는 아직 실행하지 못했습니다. 실제 카카오·네이버·Google·Apple 로그인, 메일, S3는 가짜 서버로만 검증했고 실제 서비스와 연결하지 않았습니다.
 
 ## 화면
 
-화면의 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다.
+Android 에뮬레이터에서 실행한 Flutter 앱입니다. 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다. iOS는 아직 실행해 보지 못했습니다.
 
-| 피드 | 다크 모드 |
+| 로그인 | 피드 |
 |---|---|
-| <img src="docs/images/feed.jpg" alt="공식 계정 마크가 붙은 게시글 사진, 좋아요, 내용과 하단 메뉴" width="280"> | <img src="docs/images/feed-dark.jpg" alt="어두운 배경의 피드 화면과 켜진 다크 모드 토글" width="280"> |
-
-| 로그인 | 회원가입 |
-|---|---|
-| <img src="docs/images/login.jpg" alt="IEUM 로고, 나와 너를 잇는 공간 문구, 로그인 양식" width="280"> | <img src="docs/images/signup.jpg" alt="비밀번호 입력, 관심사 선택 칩, 약관 동의, 회원 가입 버튼" width="280"> |
+| <img src="docs/images/login.jpg" alt="IEUM 로고, 데모 둘러보기 버튼, 로그인 양식, 소셜 로그인 버튼" width="280"> | <img src="docs/images/feed.jpg" alt="공식 계정 마크와 인기 글 링이 있는 게시글, 좋아요, 댓글 입력창, 하단 메뉴" width="280"> |
 
 | 게시글 상세 | 게시글 작성 |
 |---|---|
-| <img src="docs/images/post-detail.jpg" alt="게시글 아래의 댓글 목록과 댓글 입력창" width="280"> | <img src="docs/images/post-write.jpg" alt="사진 선택 버튼과 내용 입력란" width="280"> |
+| <img src="docs/images/post-detail.jpg" alt="게시글 아래의 댓글 목록과 댓글 입력창" width="280"> | <img src="docs/images/post-write.jpg" alt="앨범 선택과 촬영 버튼, 내용 입력란" width="280"> |
 
 | DM | 프로필 |
 |---|---|
-| <img src="docs/images/dm-room.jpg" alt="주고받은 메시지 말풍선과 입력창이 있는 대화방" width="280"> | <img src="docs/images/profile.jpg" alt="프로필 사진, 소개, 관심사, 메시지 보내기 버튼, 게시글 격자" width="280"> |
+| <img src="docs/images/dm-room.jpg" alt="주고받은 메시지 말풍선, 읽음 표시, 입력창이 있는 대화방" width="280"> | <img src="docs/images/profile.jpg" alt="프로필 사진, 소개, 관심사, 메시지 보내기 버튼, 게시글 격자" width="280"> |
 
-| 신고 처리 (운영자) | 설정 |
+| 신고 처리 (운영자) | 다크 모드 |
 |---|---|
-| <img src="docs/images/admin-reports.jpg" alt="신고 사유와 대상 내용, 콘텐츠 삭제, 사용자 정지, 문제 없음 버튼" width="280"> | <img src="docs/images/settings.jpg" alt="차단한 사용자, 약관, 로그아웃, 계정 삭제 메뉴" width="280"> |
+| <img src="docs/images/admin-reports.jpg" alt="24시간 초과 표시가 있는 신고 목록과 콘텐츠 삭제, 사용자 정지, 문제 없음 버튼" width="280"> | <img src="docs/images/feed-dark.jpg" alt="어두운 배경의 피드 화면과 켜진 다크 모드 토글" width="280"> |
 
 ## 주요 기능
 
@@ -76,7 +72,7 @@ flutter run                # 개발 서버를 웹뷰로 엽니다. Android는 ad
 | `pnpm test` | API·웹 단위 테스트 |
 | `pnpm --filter @ieum/web test:storybook` | 모든 스토리 렌더링과 접근성 검사 |
 | `pnpm test:e2e` | 프로덕션 빌드와 실제 API의 화면 검사 |
-| `pnpm --filter @ieum/web test:e2e:demo` | 데모 빌드 검사, `SCREENSHOTS=1`이면 README 화면 촬영 |
+| `pnpm --filter @ieum/web test:e2e:demo` | 데모 빌드 검사 |
 | `flutter analyze` / `flutter test` | 앱 정적 분석 / 테스트 (`apps/mobile`) |
 
 ## 프로젝트 구조
@@ -101,5 +97,5 @@ docs/        문서와 화면 이미지
 
 ## 향후 과제
 
-- iOS·Android 시뮬레이터 실행 화면과 시연 영상
+- iOS 시뮬레이터 실행, 시연 영상, 설치용 APK
 - 스크린 리더(VoiceOver, TalkBack) 실사용 점검과 KWCAG 33개 항목 수동 점검

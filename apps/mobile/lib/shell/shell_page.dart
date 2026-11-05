@@ -14,7 +14,11 @@ class ShellPage extends GetView<ShellController> {
     return Obx(() {
       final dark = controller.brightness.value == Brightness.dark;
       return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        // 투명하게 두어 앱 배경색이 상태 표시줄까지 이어지게 합니다.
+        value: (dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark).copyWith(
+          statusBarColor: Colors.transparent,
+          systemNavigationBarColor: dark ? const Color(0xFF222222) : Colors.white,
+        ),
         child: PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, _) {
