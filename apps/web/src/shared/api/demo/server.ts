@@ -3,7 +3,7 @@ import { createSeed, DEMO_PASSWORD, type DemoMessage, type DemoPost, type DemoSt
 
 /**
  * 실제 API(apps/api)와 같은 응답을 주는 브라우저 안 목업입니다.
- * client.ts가 fetch 대신 이 함수를 호출하므로 화면 코드는 실제 모드와 같습니다.
+ * 웹은 MSW(handlers.ts)를 거쳐, 앱은 브리지(demoRequest)로 이 함수를 호출합니다. 화면 코드는 실제 모드와 같습니다.
  */
 const STORAGE_KEY = 'ieum.demo.state';
 const PAGE_SIZE = 10;

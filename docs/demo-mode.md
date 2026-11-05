@@ -2,7 +2,16 @@
 
 `VITE_DEMO_MODE=true`로 빌드하면 **서버 없이** 동작합니다. [웹 데모](https://ryushin01.github.io/IEUM/)가 이 방식입니다.
 
-공통 요청 함수(`shared/api/client.ts`)가 `fetch` 대신 브라우저 안의 목업(`shared/api/demo/server.ts`)을 호출합니다. 화면 코드는 실제 모드와 같습니다. 앱의 Flutter 피드와 DM도 브릿지를 거쳐 같은 목업을 씁니다. 목업 코드는 데모 빌드에서만 불러옵니다.
+공통 요청 함수(`shared/api/client.ts`)는 실제 모드와 똑같이 `fetch`를 호출하고, [MSW](https://mswjs.io)(Mock Service Worker)가 이 요청을 받아 브라우저 안의 목업(`shared/api/demo/server.ts`)으로 처리합니다. 화면 코드는 실제 모드와 같고, 개발자 도구의 Network 탭에도 요청이 보입니다. 앱의 Flutter 피드와 DM도 브릿지를 거쳐 같은 목업을 씁니다. 목업 코드는 데모 빌드에서만 불러옵니다.
+
+| 파일 | 역할 |
+|---|---|
+| `shared/api/demo/server.ts` | 목업 API와 데이터 |
+| `shared/api/demo/handlers.ts` | MSW 핸들러. 요청을 목업 API로 넘깁니다 |
+| `shared/api/demo/browser.ts` | Service Worker 등록. 첫 요청이 준비를 기다립니다 |
+| `public/mockServiceWorker.js` | MSW가 만든 파일입니다. 직접 고치지 않고, MSW를 올리면 `pnpm exec msw init public`으로 다시 만듭니다 |
+
+Service Worker를 쓸 수 없는 환경에서는 목업을 직접 호출하므로 데모는 그대로 동작합니다. 앱의 Flutter 화면은 네트워크를 거치지 않고 브리지로 같은 목업을 호출합니다. `public/mockServiceWorker.js`는 실제 모드 빌드에도 복사되지만 등록하지 않으므로 동작하지 않습니다.
 
 ## 둘러보기
 
