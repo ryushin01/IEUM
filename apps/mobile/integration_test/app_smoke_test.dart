@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ieum/app/config.dart';
 import 'package:ieum/main.dart';
+import 'package:ieum/dm/chat_view.dart';
+import 'package:ieum/dm/dm_list_view.dart';
 import 'package:ieum/feed/post_card.dart';
 import 'package:ieum/services/media_service.dart';
 import 'package:ieum/shell/bottom_menu.dart';
@@ -177,20 +179,41 @@ void main() {
       expect(find.byType(PostCard), findsNothing);
       await shot(tester, 'post-write');
 
-      // DM (웹뷰). 대화방에서는 메뉴를 숨깁니다.
+      // DM (Flutter). 안 읽은 메시지를 표시하고, 대화방에서는 메뉴를 숨깁니다.
       await tapMenu(tester, Icons.chat_bubble_outline);
-      await page.waitUntil('[...document.querySelectorAll("a")].some(a => a.textContent.includes("하늘빛") && a.getAttribute("href").includes("/dm/"))', '대화 목록');
-      await page.js('[...document.querySelectorAll("a")].find(a => a.textContent.includes("하늘빛")).click(); "ok"');
-      await page.fill('#message-body', '실제 앱에서 보냅니다');
-      await page.click('보내기');
-      await page.waitUntil('document.querySelector("[role=log]").innerText.includes("좋아요")', '자동 답장');
-      await pumpFor(tester, const Duration(milliseconds: 500));
+      await waitFor(tester, find.byType(ConversationTile), '대화 목록');
+      expect(page.shell.conversations.unread, 1);
+      await shot(tester, 'dm-list');
+      await tester.tap(find.widgetWithText(ConversationTile, '하늘빛'));
+      await waitFor(tester, find.byType(ChatView), '대화방');
+      await waitFor(tester, find.text('안녕하세요! 사진 잘 보고 있어요 :)'), '기존 메시지');
+      await pumpFor(tester, const Duration(seconds: 1));
       expect(find.byType(BottomMenu), findsNothing);
+      await tester.enterText(find.descendant(of: find.byType(ChatView), matching: find.byType(TextField)), '실제 앱에서 보냅니다');
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.byTooltip('보내기'));
+      await waitFor(tester, find.text('실제 앱에서 보냅니다'), '보낸 메시지');
+      // 목업의 자동 답장이 이벤트로 도착하고 읽음이 표시됩니다.
+      await waitFor(tester, find.textContaining('좋아요! 다음에'), '자동 답장', seconds: 10);
+      await waitFor(tester, find.textContaining('읽음'), '읽음 표시', seconds: 5);
+      FocusManager.instance.primaryFocus?.unfocus();
+      await pumpFor(tester, const Duration(milliseconds: 800));
       await shot(tester, 'dm-room');
-      await page.js('[...document.querySelectorAll("a")].find(a => a.getAttribute("href").includes("/users/")).click(); "ok"');
+
+      // 프로필(웹뷰)로 갔다가 돌아옵니다. 읽었으므로 안 읽은 수가 사라집니다.
+      await tester.tap(find.bySemanticsLabel(RegExp('프로필 보기')));
       await page.waitUntil('document.body.innerText.includes("메시지 보내기")', '프로필');
       await waitFor(tester, find.byType(BottomMenu), '프로필의 메뉴');
       await shot(tester, 'profile');
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(page.shell.conversations.unread, 0);
+
+      // 웹뷰 프로필의 메시지 보내기로 Flutter 대화방을 엽니다.
+      await page.click('메시지 보내기');
+      await waitFor(tester, find.byType(ChatView), '프로필에서 연 대화방');
+      await tester.tap(find.byTooltip('뒤로 가기'));
+      await waitFor(tester, find.byType(BottomMenu), '돌아온 프로필');
+      expect(find.byType(ChatView), findsNothing);
 
       // 다크 모드 (Flutter 스위치 → 웹 → 앱 전체)
       await tapMenu(tester, Icons.home_outlined);
@@ -286,18 +309,25 @@ void main() {
       expect(urls!.single, endsWith('.webp'));
       debugPrint('INFO:uploaded ${urls.single}');
 
-      // 웹뷰는 앱이 재발급한 사실을 모르지만, 오래된 토큰으로도 계속 동작합니다.
+      // DM: 앱의 소켓으로 다른 사용자의 메시지를 바로 받습니다.
       await tapMenu(tester, Icons.chat_bubble_outline);
-      await page.waitUntil('[...document.querySelectorAll("a")].some(a => a.textContent.includes("하늘빛"))', '대화 목록');
-      await page.js('[...document.querySelectorAll("a")].find(a => a.textContent.includes("하늘빛")).click(); "ok"');
-      await page.waitUntil('document.querySelector("[role=log]")', '대화방');
+      await waitFor(tester, find.byType(ConversationTile), '대화 목록');
+      await tester.tap(find.widgetWithText(ConversationTile, '하늘빛'));
+      await waitFor(tester, find.byType(ChatView), '대화방');
+      await waitFor(tester, find.textContaining('사진 잘 보고'), '기존 메시지');
       debugPrint('READY_FOR_SOCKET');
-      await page.waitUntil('document.querySelector("[role=log]").innerText.includes("실시간 소켓 도착 확인")', '소켓 메시지', seconds: 40);
+      await waitFor(tester, find.text('실시간 소켓 도착 확인'), '소켓 메시지', seconds: 40);
+      await tester.enterText(find.descendant(of: find.byType(ChatView), matching: find.byType(TextField)), '소켓으로 받았습니다');
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.byTooltip('보내기'));
+      await waitFor(tester, find.text('소켓으로 받았습니다'), '보낸 메시지');
       await shot(tester, 'real-socket');
+      debugPrint('INFO:chat-messages=${page.shell.conversations.conversations.length}');
 
+      // 웹뷰는 앱이 재발급한 사실을 모르지만, 오래된 토큰으로도 계속 동작합니다.
       // 로그아웃하면 최신 재발급 토큰까지 폐기합니다.
       final latest = await tokens.read();
-      await page.js('window.__ieumNative.navigate("/settings"); "ok"');
+      page.shell.openPath('/settings');
       await page.click('로그아웃');
       await page.waitUntil('document.querySelector("input[type=email]")', '로그아웃');
       debugPrint('LATEST_REFRESH:${latest!['refreshToken']}');

@@ -3,7 +3,7 @@
 [![CI](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml/badge.svg)](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml)
 ![version](https://img.shields.io/badge/version-1.0.0-c4e538)
 
-**나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. 피드와 하단 메뉴는 Flutter 위젯으로, 나머지 화면은 웹뷰(React)로 만들고 브릿지로 연결한 하이브리드 앱입니다.
+**나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. 피드, DM, 하단 메뉴는 Flutter 위젯으로, 나머지 화면은 웹뷰(React)로 만들고 브릿지로 연결한 하이브리드 앱입니다.
 
 **[웹 데모 바로 보기](https://ryushin01.github.io/IEUM/)** · 가입 없이 버튼 하나로 둘러볼 수 있습니다.
 
@@ -11,7 +11,7 @@
 
 ## 화면
 
-Android 에뮬레이터에서 실행한 앱입니다. 피드와 하단 메뉴가 Flutter 위젯, 나머지가 웹뷰입니다. 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다. iOS 시뮬레이터에서도 같은 흐름을 통합 테스트로 확인했습니다.
+Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴가 Flutter 위젯이고 나머지가 웹뷰입니다. 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다. iOS 시뮬레이터에서도 같은 흐름을 통합 테스트로 확인했습니다.
 
 <img src="docs/images/demo.gif" alt="앱 시연: 로그인, 피드 사진 넘기기, 좋아요, 댓글 보기, 메시지 보내기와 자동 답장, 다크 모드 전환" width="280">
 
@@ -47,7 +47,7 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드와 하단 메뉴가
 
 | 구분 | 사용 기술 |
 |---|---|
-| 앱 | Flutter(피드·하단 메뉴 위젯), webview_flutter, GetX(`get`), dio, flutter_secure_storage, image_picker, url_launcher, flutter_web_auth_2 |
+| 앱 | Flutter(피드·DM·하단 메뉴 위젯), webview_flutter, GetX(`get`), dio, flutter_secure_storage, image_picker, url_launcher, flutter_web_auth_2 |
 | 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router |
 | API | Node.js, Fastify 5, ws, PostgreSQL(`pg`), PGlite(로컬·테스트), jose, sharp, nodemailer, S3 호환 저장소 |
 | 품질 | ESLint(FSD 계층 규칙), Vitest, Storybook 10(axe), Playwright(E2E, axe), flutter test |
@@ -83,7 +83,7 @@ flutter run                # 개발 서버를 웹뷰로 엽니다. Android는 ad
 ```
 apps/
 ├─ api/      Fastify API, WebSocket, SQL 마이그레이션
-├─ mobile/   Flutter 앱 (lib/feed 피드 위젯, lib/data API·저장소, lib/shell 탭·웹뷰, lib/bridge 브릿지)
+├─ mobile/   Flutter 앱 (lib/feed·lib/dm 위젯, lib/data API·저장소·소켓, lib/shell 탭·웹뷰, lib/bridge 브릿지)
 └─ web/      웹뷰 화면, Feature-Sliced Design (src/app·pages·widgets·features·entities·shared)
 docs/        문서와 화면 이미지
 ```
@@ -101,6 +101,5 @@ docs/        문서와 화면 이미지
 
 ## 향후 과제
 
-- DM의 Flutter 위젯 전환
 - 실제 기기 실행, iOS 사진 선택기·촬영 수동 확인
 - 스크린 리더(VoiceOver, TalkBack) 실사용 점검과 KWCAG 33개 항목 수동 점검

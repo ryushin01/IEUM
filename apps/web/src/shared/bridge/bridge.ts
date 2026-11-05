@@ -24,9 +24,10 @@ export interface BridgeMethods {
   'ui.haptic': { params: undefined; result: null };
   'ui.ready': { params: undefined; result: null };
   'ui.routeChanged': { params: { path: string }; result: null };
-  'ui.setUnread': { params: { count: number }; result: null };
   /** 데모 전용: 앱 화면의 요청을 웹의 목업 API가 처리한 결과입니다. */
   'demo.reply': { params: { requestId: number; status: number; body: unknown }; result: null };
+  /** 데모 전용: 목업이 만든 실시간 이벤트를 앱에 전달합니다. */
+  'demo.event': { params: { event: unknown }; result: null };
 }
 
 export class BridgeError extends Error {

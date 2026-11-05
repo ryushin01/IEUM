@@ -174,11 +174,10 @@ void main() {
     expect(reply!['result'], {'accessToken': 'new', 'refreshToken': 'r2'});
   });
 
-  test('화면 이동과 안 읽은 수를 앱 화면에 전달한다', () async {
+  test('화면 이동을 앱 화면에 전달한다', () async {
     await call('ui.ready');
     await call('ui.routeChanged', {'path': '/dm'});
-    await call('ui.setUnread', {'count': 3});
-    expect(uiEvents, ['ui.ready', 'ui.routeChanged /dm', 'ui.setUnread 3']);
+    expect(uiEvents, ['ui.ready', 'ui.routeChanged /dm']);
   });
 
   test('테마와 진동을 앱에 전달한다', () async {

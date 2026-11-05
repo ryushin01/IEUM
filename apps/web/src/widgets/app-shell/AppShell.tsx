@@ -5,7 +5,7 @@ import { Link, NavLink, Outlet, useLocation, useMatch, useNavigate } from 'react
 import { useConversations } from '@/entities/conversation';
 import { useMe } from '@/entities/session';
 import { ThemeSwitch } from '@/features/theme-switch';
-import { callNative, isNativeApp } from '@/shared/bridge';
+import { isNativeApp } from '@/shared/bridge';
 import { Logo, srOnly, UserAvatar } from '@/shared/ui';
 import * as s from './AppShell.css';
 
@@ -19,12 +19,9 @@ export function AppShell() {
   const main = useRef<HTMLElement>(null);
   const first = useRef(true);
   const { data: me } = useMe();
-  const unread = useConversations().data?.reduce((sum, c) => sum + c.unreadCount, 0) ?? 0;
-
   const embedded = isNativeApp();
-  useEffect(() => {
-    if (embedded) void callNative('ui.setUnread', { count: unread }).catch(() => {});
-  }, [embedded, unread]);
+  // 앱에서는 Flutter가 대화 목록과 안 읽은 수를 관리합니다.
+  const unread = useConversations({ enabled: !embedded }).data?.reduce((sum, c) => sum + c.unreadCount, 0) ?? 0;
 
   // 화면이 바뀌면 맨 위에서 시작하고, 낭독 사용자를 위해 초점을 본문으로 옮깁니다.
   useEffect(() => {

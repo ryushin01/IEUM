@@ -56,6 +56,11 @@ export function installNativeBridge(): void {
       });
     },
   };
+  if (import.meta.env.VITE_DEMO_MODE === 'true') {
+    void import('@/shared/api/demo/server').then(({ subscribeDemoEvents }) => {
+      subscribeDemoEvents((event) => notify(() => callNative('demo.event', { event })));
+    });
+  }
   const report = (path: string) => notify(() => callNative('ui.routeChanged', { path }));
   router.subscribe((state) => report(state.location.pathname));
   report(router.state.location.pathname);

@@ -81,7 +81,6 @@ class BridgeRouter {
         return tokenRefresher(params['staleAccessToken'] as String?);
       case 'ui.ready':
       case 'ui.routeChanged':
-      case 'ui.setUnread':
         onUiEvent(method as String, params);
         return null;
       case 'auth.socialLogin':

@@ -1,11 +1,17 @@
 import { Link } from 'react-router';
 import { useConversations } from '@/entities/conversation';
+import { isNativeApp } from '@/shared/bridge';
 import { timeAgo, usePageTitle } from '@/shared/lib';
 import { EmptyView, ErrorView, LoadingView, srOnly, UserAvatar } from '@/shared/ui';
 import * as s from './DmList.css';
 
+/** 앱에서는 Flutter 위젯이 그립니다. */
 export function DmListPage() {
   usePageTitle('메시지');
+  return isNativeApp() ? null : <DmList />;
+}
+
+function DmList() {
   const conversations = useConversations();
   return (
     <>

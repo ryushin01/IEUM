@@ -23,8 +23,8 @@
 | `ui.haptic` | | `null` |
 | `ui.ready` | | `null` (웹 준비 완료) |
 | `ui.routeChanged` | `{ path }` | `null` (앱이 위에 올릴 화면과 메뉴를 정함) |
-| `ui.setUnread` | `{ count }` | `null` (하단 메뉴 배지) |
 | `demo.reply` | `{ requestId, status, body }` | 응답 없음 (데모 전용) |
+| `demo.event` | `{ event }` | 응답 없음 (데모 전용, 목업의 실시간 이벤트) |
 
 | 오류 코드 | 뜻 |
 |---|---|

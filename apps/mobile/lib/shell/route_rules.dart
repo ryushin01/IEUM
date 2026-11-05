@@ -10,6 +10,14 @@ bool isChatRoom(String path) => RegExp(r'^/dm/[^/]+').hasMatch(path);
 
 bool isHomePath(String path) => path == '/' || path.isEmpty;
 
+bool isChatList(String path) => path == '/dm';
+
+/// 대화방 경로의 대화 번호입니다.
+String? chatIdOf(String path) => RegExp(r'^/dm/([^/]+)').firstMatch(path)?.group(1);
+
+/// Flutter 위젯이 그리는 화면입니다. 나머지는 웹뷰입니다.
+bool isFlutterPath(String path) => isHomePath(path) || isChatList(path) || chatIdOf(path) != null;
+
 MenuTab tabForPath(String path) {
   if (isHomePath(path)) return MenuTab.home;
   if (path == '/posts/new') return MenuTab.write;

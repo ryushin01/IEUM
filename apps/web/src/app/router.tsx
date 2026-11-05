@@ -16,12 +16,14 @@ import { MyProfilePage, UserProfilePage } from '@/pages/profile';
 import { ProfileEditPage } from '@/pages/profile-edit';
 import { SettingsPage } from '@/pages/settings';
 import { connectRealtime, hasSession } from '@/shared/api';
+import { isNativeApp } from '@/shared/bridge';
 import { AppShell } from '@/widgets/app-shell';
 import { queryClient } from './providers/AppProviders';
 
 function RequireAuth() {
   useEffect(() => {
-    if (!hasSession()) return;
+    // 앱에서는 Flutter가 소켓을 맡습니다.
+    if (!hasSession() || isNativeApp()) return;
     return connectRealtime({
       onEvent: (event) => applyRealtimeEvent(queryClient, event as RealtimeEvent),
       onReconnect: () => void refreshConversations(queryClient),

@@ -8,11 +8,17 @@ import { useMe } from '@/entities/session';
 import { ReportDialog, type ReportTarget } from '@/features/moderation';
 import { MessageForm } from '@/features/send-message';
 import { request } from '@/shared/api';
+import { isNativeApp } from '@/shared/bridge';
 import { usePageTitle } from '@/shared/lib';
 import { ErrorView, LoadingView, UserAvatar } from '@/shared/ui';
 import * as s from './DmRoom.css';
 
+/** 앱에서는 Flutter 위젯이 그립니다. */
 export function DmRoomPage() {
+  return isNativeApp() ? null : <DmRoom />;
+}
+
+function DmRoom() {
   const { id = '' } = useParams();
   const client = useQueryClient();
   const me = useMe();

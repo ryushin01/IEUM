@@ -85,8 +85,71 @@ class FeedPage {
 
 /// 하단 메뉴에 필요한 내 정보입니다.
 class Me {
-  const Me({required this.nickname, this.avatarUrl});
+  const Me({required this.nickname, this.id = '', this.avatarUrl});
 
+  final String id;
   final String nickname;
   final String? avatarUrl;
+}
+
+class ConversationSummary {
+  const ConversationSummary({required this.id, required this.other, required this.lastMessage, required this.lastMessageAt, required this.unreadCount});
+
+  factory ConversationSummary.fromJson(Map<String, dynamic> json) => ConversationSummary(
+    id: json['id'] as String,
+    other: PostAuthor.fromJson(Map<String, dynamic>.from(json['other'] as Map)),
+    lastMessage: json['lastMessage'] as String? ?? '',
+    lastMessageAt: DateTime.parse(json['lastMessageAt'] as String),
+    unreadCount: json['unreadCount'] as int,
+  );
+
+  final String id;
+  final PostAuthor other;
+  final String lastMessage;
+  final DateTime lastMessageAt;
+  final int unreadCount;
+}
+
+class ConversationInfo {
+  const ConversationInfo({required this.id, required this.other, required this.canSend});
+
+  factory ConversationInfo.fromJson(Map<String, dynamic> json) => ConversationInfo(
+    id: json['id'] as String,
+    other: PostAuthor.fromJson(Map<String, dynamic>.from(json['other'] as Map)),
+    canSend: json['canSend'] as bool,
+  );
+
+  final String id;
+  final PostAuthor other;
+  final bool canSend;
+}
+
+class Message {
+  const Message({required this.id, required this.conversationId, required this.senderId, required this.body, required this.createdAt, this.readAt});
+
+  factory Message.fromJson(Map<String, dynamic> json) => Message(
+    id: json['id'] as String,
+    conversationId: json['conversationId'] as String,
+    senderId: json['senderId'] as String,
+    body: json['body'] as String,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    readAt: json['readAt'] == null ? null : DateTime.parse(json['readAt'] as String),
+  );
+
+  final String id;
+  final String conversationId;
+  final String senderId;
+  final String body;
+  final DateTime createdAt;
+  final DateTime? readAt;
+
+  Message markedRead(DateTime at) => Message(id: id, conversationId: conversationId, senderId: senderId, body: body, createdAt: createdAt, readAt: readAt ?? at);
+}
+
+class MessagePage {
+  const MessagePage({required this.items, this.nextCursor});
+
+  /// 서버 응답 그대로 최신순입니다.
+  final List<Message> items;
+  final String? nextCursor;
 }

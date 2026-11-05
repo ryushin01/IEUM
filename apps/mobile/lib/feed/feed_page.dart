@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../app/theme.dart';
 import '../data/models.dart';
+import '../shell/app_header.dart';
 import 'feed_controller.dart';
 import 'post_card.dart';
 
@@ -48,36 +49,9 @@ class _FeedViewState extends State<FeedView> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = IeumColors.of(context);
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: DecoratedBox(
-            decoration: BoxDecoration(color: colors.bg, border: Border(bottom: BorderSide(color: colors.border))),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                const _Logo(),
-                Positioned(
-                  right: 4,
-                  child: Semantics(
-                    label: '다크 모드',
-                    toggled: widget.dark,
-                    excludeSemantics: true,
-                    child: Switch(
-                      value: widget.dark,
-                      onChanged: (_) => widget.onToggleTheme(),
-                      activeThumbColor: IeumColors.ink,
-                      activeTrackColor: IeumColors.lime,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        AppHeader(dark: widget.dark, onToggleTheme: widget.onToggleTheme),
         Expanded(child: Obx(_buildBody)),
       ],
     );
@@ -128,32 +102,6 @@ class _FeedViewState extends State<FeedView> {
             );
           });
         },
-      ),
-    );
-  }
-}
-
-class _Logo extends StatelessWidget {
-  const _Logo();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = IeumColors.of(context);
-    return Semantics(
-      label: 'IEUM',
-      header: true,
-      excludeSemantics: true,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('IEUM', style: TextStyle(fontSize: 26, letterSpacing: 1.5, color: colors.text, height: 1)),
-          const SizedBox(width: 6),
-          Container(
-            width: 11,
-            height: 11,
-            decoration: BoxDecoration(color: IeumColors.lime, shape: BoxShape.circle, border: Border.all(color: colors.text)),
-          ),
-        ],
       ),
     );
   }

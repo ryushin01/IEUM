@@ -37,6 +37,6 @@ class ApiPostRepository implements PostRepository {
   @override
   Future<Me> fetchMe() async {
     final data = await transport.request('GET', '/me') as Map;
-    return Me(nickname: data['nickname'] as String, avatarUrl: data['avatarUrl'] as String?);
+    return Me(id: data['id'] as String, nickname: data['nickname'] as String, avatarUrl: data['avatarUrl'] as String?);
   }
 }

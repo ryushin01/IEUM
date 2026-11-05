@@ -27,8 +27,8 @@ export interface Message {
 export const CONVERSATIONS_KEY = ['conversations'] as const;
 export const messagesKey = (id: string) => ['messages', id] as const;
 
-export const useConversations = () =>
-  useQuery({ queryKey: CONVERSATIONS_KEY, queryFn: () => request<ConversationSummary[]>('/conversations') });
+export const useConversations = (options: { enabled?: boolean } = {}) =>
+  useQuery({ queryKey: CONVERSATIONS_KEY, queryFn: () => request<ConversationSummary[]>('/conversations'), ...options });
 
 export const useConversation = (id: string) =>
   useQuery({

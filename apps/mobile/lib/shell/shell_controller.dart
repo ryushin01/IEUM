@@ -11,10 +11,14 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../app/config.dart';
 import '../bridge/bridge_router.dart';
 import '../data/demo_transport.dart';
+import '../data/dm_repository.dart';
 import '../data/dio_transport.dart';
 import '../data/models.dart';
 import '../data/post_repository.dart';
+import '../data/realtime.dart';
 import '../data/transport.dart';
+import '../dm/chat_controller.dart';
+import '../dm/conversations_controller.dart';
 import '../feed/feed_controller.dart';
 import '../services/observable_token_store.dart';
 import '../services/media_service.dart';
@@ -26,7 +30,7 @@ import 'route_rules.dart';
 
 enum ShellStatus { loading, ready, offline }
 
-class ShellController extends GetxController {
+class ShellController extends GetxController with WidgetsBindingObserver {
   ShellController({required this.config});
 
   final AppConfig config;
@@ -37,7 +41,6 @@ class ShellController extends GetxController {
   final path = '/'.obs;
   final loggedIn = false.obs;
   final sessionChecked = false.obs;
-  final unread = 0.obs;
   final me = Rxn<Me>();
   final feedScroll = ScrollController();
 
@@ -46,8 +49,14 @@ class ShellController extends GetxController {
   late final ObservableTokenStore _tokens;
   late final ApiTransport _transport;
   late final FeedController feed;
+  late final DmRepository dm;
+  late final RealtimeSource realtime;
+  late final ConversationsController conversations;
 
   bool get showFeed => loggedIn.value && isHomePath(path.value);
+  bool get showChatList => loggedIn.value && isChatList(path.value);
+  String? get chatId => loggedIn.value ? chatIdOf(path.value) : null;
+  bool get showFlutterScreen => loggedIn.value && isFlutterPath(path.value);
   bool get showMenu => loggedIn.value && !isGuestPath(path.value) && !isChatRoom(path.value);
   MenuTab get tab => tabForPath(path.value);
   DateTime? _lastBackPress;
@@ -60,6 +69,17 @@ class ShellController extends GetxController {
         ? DemoTransport(tokens: _tokens, runJavaScript: (script) => webView.runJavaScript(script))
         : DioTransport(baseUrl: config.apiUrl, tokens: _tokens, onExpired: () => _callWeb('sessionExpired()'));
     feed = FeedController(ApiPostRepository(_transport));
+    dm = ApiDmRepository(_transport);
+    final transport = _transport;
+    realtime = transport is DioTransport
+        ? WebSocketRealtime(
+            url: config.apiUrl.replace(scheme: config.apiUrl.scheme == 'https' ? 'wss' : 'ws', path: '/ws'),
+            accessToken: () async => (await _tokens.read())?['accessToken'] as String?,
+            refreshToken: () async => await transport.refresh((await _tokens.read())?['accessToken'] as String?) != null,
+          )
+        : DemoRealtime();
+    conversations = ConversationsController(dm, realtime);
+    WidgetsBinding.instance.addObserver(this);
     _router = BridgeRouter(
       config: config,
       tokens: _tokens,
@@ -89,8 +109,9 @@ class ShellController extends GetxController {
     load();
     _restoreSession();
     ever(path, (_) {
-      // 웹뷰에서 글을 쓰거나 지웠을 수 있어 홈으로 돌아오면 새로 받습니다.
+      // 웹뷰에서 글을 쓰거나 지웠을 수 있어 돌아오면 새로 받습니다.
       if (showFeed) feed.reload();
+      if (showChatList) conversations.reload();
     });
   }
 
@@ -108,14 +129,37 @@ class ShellController extends GetxController {
       _onLoggedIn();
     } else if (!value) {
       me.value = null;
-      unread.value = 0;
       feed.posts.clear();
+      realtime.stop();
+      conversations.stopListening();
     }
   }
 
   void _onLoggedIn() {
     feed.reload();
     _loadMe();
+    conversations
+      ..startListening()
+      ..reload();
+    realtime.start();
+  }
+
+  /// 대화방마다 새로 만듭니다.
+  ChatController createChat(String id) =>
+      ChatController(conversationId: id, repository: dm, realtime: realtime, onRead: conversations.reload);
+
+  /// 대화방의 뒤로 가기입니다.
+  Future<void> goBack() async {
+    if (await webView.canGoBack()) {
+      await webView.goBack();
+    } else {
+      openPath('/dm');
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && loggedIn.value) realtime.reconnectNow();
   }
 
   Future<void> _loadMe() async {
@@ -144,8 +188,6 @@ class ShellController extends GetxController {
           // 프로필 사진을 바꾸고 돌아올 수 있습니다.
           if (loggedIn.value && next == '/me') _loadMe();
         }
-      case 'ui.setUnread':
-        unread.value = params['count'] as int;
     }
   }
 
@@ -198,20 +240,27 @@ class ShellController extends GetxController {
 
   Future<void> _onBridgeMessage(String raw) async {
     if (!isTrustedPage(await webView.currentUrl(), config.webUrl)) return;
-    if (_handleDemoReply(raw)) return;
+    if (_handleDemoMessage(raw)) return;
     final reply = await _router.handle(raw);
     if (reply == null) return;
     await webView.runJavaScript('window.__ieumBridgeReceive(${jsonEncode(reply)})');
   }
 
-  /// 데모 목업의 응답은 요청을 기다리는 쪽으로 바로 넘깁니다.
-  bool _handleDemoReply(String raw) {
+  /// 데모 목업의 응답과 실시간 이벤트는 기다리는 쪽으로 바로 넘깁니다.
+  bool _handleDemoMessage(String raw) {
     final transport = _transport;
-    if (transport is! DemoTransport || !raw.contains('"demo.reply"')) return false;
+    final source = realtime;
+    if (transport is! DemoTransport || source is! DemoRealtime) return false;
+    if (!raw.contains('"demo.')) return false;
     final message = jsonDecode(raw) as Map<String, dynamic>;
-    if (message['method'] != 'demo.reply') return false;
+    final method = message['method'];
+    if (method != 'demo.reply' && method != 'demo.event') return false;
     final params = message['params'] as Map<String, dynamic>;
-    transport.complete(params['requestId'] as int, params['status'] as int, params['body']);
+    if (method == 'demo.reply') {
+      transport.complete(params['requestId'] as int, params['status'] as int, params['body']);
+    } else {
+      source.receive(Map<String, dynamic>.from(params['event'] as Map));
+    }
     return true;
   }
 
@@ -243,6 +292,8 @@ class ShellController extends GetxController {
 
   @override
   void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    realtime.stop();
     feedScroll.dispose();
     super.onClose();
   }
