@@ -43,7 +43,7 @@ Android 에뮬레이터에서 실행한 Flutter 앱입니다. 사용자와 게�
 
 ## 기술 스택
 
-![Flutter, Dart, React, Vite, TypeScript, Node.js, PostgreSQL, Vitest](https://skillicons.dev/icons?i=flutter,dart,react,vite,ts,nodejs,postgres,vitest)
+![Flutter, Dart, React, Vite, TypeScript, Node.js, PostgreSQL, Vitest, Storybook](https://skillicons.dev/icons?i=flutter,dart,react,vite,ts,nodejs,postgres,vitest,storybook)
 
 | 구분 | 사용 기술 |
 |---|---|
