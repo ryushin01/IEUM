@@ -5,13 +5,13 @@
 
 **나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. Flutter 앱 안의 웹뷰에 React 화면을 띄우고 브릿지로 연결합니다.
 
-**[웹 데모 바로 보기](https://ryushin01.github.io/IEUM/)** · 가입 없이 버튼 하나로 둘러볼 수 있습니다. **[Android APK 내려받기](https://github.com/ryushin01/IEUM/releases/latest)**
+**[웹 데모 바로 보기](https://ryushin01.github.io/IEUM/)** · 가입 없이 버튼 하나로 둘러볼 수 있습니다.
 
-> **프로젝트 상태:** 스토어에 출시하지 않는 **포트폴리오용 데모**입니다. 다만 출시를 전제로 심사 요건까지 설계했습니다. 웹 데모는 서버 없이 브라우저 안의 목업으로 동작합니다. 앱은 Android 에뮬레이터에서 실행해 확인했고, iOS는 아직 실행하지 못했습니다. 실제 카카오·네이버·Google·Apple 로그인, 메일, S3는 가짜 서버로만 검증했고 실제 서비스와 연결하지 않았습니다.
+> **프로젝트 상태:** 스토어에 출시하지 않는 **포트폴리오용 데모**입니다. 다만 출시를 전제로 심사 요건까지 설계했습니다. 웹 데모는 서버 없이 브라우저 안의 목업으로 동작합니다. 앱은 Android 에뮬레이터와 iOS 시뮬레이터에서 실행해 확인했고, 실제 기기에서는 확인하지 못했습니다. 실제 카카오·네이버·Google·Apple 로그인, 메일, S3는 가짜 서버로만 검증했고 실제 서비스와 연결하지 않았습니다.
 
 ## 화면
 
-Android 에뮬레이터에서 실행한 Flutter 앱입니다. 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다. iOS는 아직 실행해 보지 못했습니다.
+Android 에뮬레이터에서 실행한 Flutter 앱입니다. 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다. iOS 시뮬레이터에서도 같은 흐름을 통합 테스트로 확인했습니다.
 
 <img src="docs/images/demo.gif" alt="앱 시연: 로그인, 피드 사진 넘기기, 좋아요, 댓글 보기, 메시지 보내기와 자동 답장, 다크 모드 전환" width="280">
 
@@ -76,6 +76,7 @@ flutter run                # 개발 서버를 웹뷰로 엽니다. Android는 ad
 | `pnpm test:e2e` | 프로덕션 빌드와 실제 API의 화면 검사 |
 | `pnpm --filter @ieum/web test:e2e:demo` | 데모 빌드 검사 |
 | `flutter analyze` / `flutter test` | 앱 정적 분석 / 테스트 (`apps/mobile`) |
+| `flutter test integration_test -d <기기> --dart-define-from-file=config/demo.json` | 시뮬레이터·기기에서 웹뷰와 브릿지 검사 |
 
 ## 프로젝트 구조
 
@@ -100,5 +101,5 @@ docs/        문서와 화면 이미지
 
 ## 향후 과제
 
-- iOS 시뮬레이터 실행
+- 실제 기기 실행, iOS 사진 선택기·촬영 수동 확인
 - 스크린 리더(VoiceOver, TalkBack) 실사용 점검과 KWCAG 33개 항목 수동 점검

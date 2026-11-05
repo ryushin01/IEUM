@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -50,6 +51,14 @@ class NativeMediaService implements MediaService {
       }
       throw const BridgeException('pick_failed', '사진을 가져오지 못했습니다.');
     }
+  }
+
+  /// 시스템 선택기를 조작할 수 없는 통합 테스트에서 고른 파일을 대신 넣습니다.
+  @visibleForTesting
+  String addPickedForTest(XFile file) {
+    final id = 'f${_nextId++}';
+    _picked[id] = file;
+    return id;
   }
 
   @override

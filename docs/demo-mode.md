@@ -37,9 +37,9 @@ pnpm --filter @ieum/web dev:demo        # 개발 서버
 pnpm --filter @ieum/web test:e2e:demo   # 하위 경로 빌드 검사
 ```
 
-## Android APK
+## Android APK 빌드
 
-[GitHub Releases](https://github.com/ryushin01/IEUM/releases/latest)의 APK는 공개 데모를 불러오는 Flutter 앱입니다. 포트폴리오용 키로 서명했으며 스토어 배포본이 아닙니다.
+공개 데모를 불러오는 앱을 빌드합니다. 출시 서명을 쓰려면 `android/key.properties`가 필요합니다. APK는 아직 공개하지 않았습니다.
 
 ```bash
 cd apps/mobile
