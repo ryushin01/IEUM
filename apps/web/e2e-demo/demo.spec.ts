@@ -15,10 +15,14 @@ async function enter(page: Page, name = '데모 계정으로 둘러보기') {
 const PNG_1PX = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
 
 test('서버 없이 동작하고 외부로 요청을 보내지 않는다', async ({ page }) => {
+  // API 요청은 HTTP로 나가지만 Service Worker가 응답합니다. API 서버를 띄우지 않으므로 네트워크로 나가면 실패합니다.
   const external: string[] = [];
-  page.on('request', (request) => {
-    const { origin } = new URL(request.url());
-    if (request.url().startsWith('http') && origin !== 'http://localhost:4174') external.push(request.url());
+  const isExternal = (url: string) => url.startsWith('http') && new URL(url).origin !== 'http://localhost:4174';
+  page.on('response', (response) => {
+    if (isExternal(response.url()) && !response.fromServiceWorker()) external.push(response.url());
+  });
+  page.on('requestfailed', (request) => {
+    if (isExternal(request.url())) external.push(request.url());
   });
   const failed: string[] = [];
   page.on('response', (response) => { if (response.status() >= 400) failed.push(`${response.status()} ${response.url()}`); });
@@ -233,4 +237,32 @@ test('앱 브릿지: 하위 경로에서도 앱에 경로를 그대로 알리고
   await page.evaluate(() => window.__ieumNative!.navigate('/settings'));
   await expect(page).toHaveURL(/\/IEUM\/settings$/);
   await expect.poll(routes).toContain('/settings');
+});
+
+test('MSW: 화면의 API 요청이 실제 HTTP 요청으로 나가고 Service Worker가 응답한다', async ({ page }) => {
+  const responses: boolean[] = [];
+  page.on('response', (response) => {
+    if (response.url().includes(':4000/')) responses.push(response.fromServiceWorker());
+  });
+  await enter(page);
+  await expect(page.getByRole('navigation', { name: '주 메뉴' })).toBeVisible();
+  await expect.poll(() => responses.length).toBeGreaterThan(0);
+  expect(responses.every(Boolean)).toBe(true);
+  // 하위 경로 안에 등록합니다.
+  const scope = await page.evaluate(async () => (await navigator.serviceWorker.ready).scope);
+  expect(new URL(scope).pathname).toBe('/IEUM/');
+});
+
+test.describe('Service Worker를 쓸 수 없는 환경', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test('목업 API를 직접 호출해 데모가 그대로 동작한다', async ({ page }) => {
+    const apiRequests: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes(':4000/')) apiRequests.push(request.url());
+    });
+    await enter(page);
+    await expect(page.getByRole('navigation', { name: '주 메뉴' })).toBeVisible();
+    expect(apiRequests).toEqual([]);
+  });
 });
