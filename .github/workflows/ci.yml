@@ -28,6 +28,13 @@ jobs:
       - run: pnpm --filter @ieum/web test:storybook
       - run: pnpm test:e2e
       - run: pnpm --filter @ieum/web test:e2e:demo
+      # 실패하면 화면과 기록을 내려받아 확인합니다.
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/test-results/
+          retention-days: 7
 
   postgres:
     name: API (실제 PostgreSQL)
