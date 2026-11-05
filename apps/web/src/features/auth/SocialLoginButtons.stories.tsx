@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MemoryRouter } from 'react-router';
 import { SocialLoginButtons } from './SocialLoginButtons';
 
 const client = new QueryClient();
@@ -11,7 +10,7 @@ const meta: Meta<typeof SocialLoginButtons> = {
   component: SocialLoginButtons,
   decorators: [(Story) => (
     <QueryClientProvider client={client}>
-      <MemoryRouter><main style={{ maxWidth: 360 }}><Story /></main></MemoryRouter>
+      <Story />
     </QueryClientProvider>
   )],
 };

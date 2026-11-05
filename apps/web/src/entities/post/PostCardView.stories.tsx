@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { MemoryRouter } from 'react-router';
 import { PostCardView } from './PostCardView';
 
 const image = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="#c4e538"/></svg>')}`;
@@ -7,7 +6,6 @@ const image = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w
 const meta: Meta<typeof PostCardView> = {
   title: 'entities/PostCardView',
   component: PostCardView,
-  decorators: [(Story) => <MemoryRouter><main style={{ maxWidth: 390 }}><Story /></main></MemoryRouter>],
   args: {
     post: {
       id: '1',

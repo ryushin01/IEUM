@@ -47,6 +47,9 @@ globalStyle('img', { display: 'block', maxWidth: '100%' });
 globalStyle('a', { color: 'inherit' });
 // 본문 속 링크는 색만으로 구분하지 않습니다. (KWCAG 5.4.1)
 globalStyle('a:not([class])', { color: vars.color.text, textDecoration: 'underline' });
+// KWCAG 6.1.3: 아이콘 버튼과 체크 항목의 조작 영역을 44px 이상으로 맞춥니다.
+globalStyle('.ant-btn', { minWidth: 44, flexShrink: 0 });
+globalStyle('.ant-checkbox-wrapper, .ant-radio-wrapper', { minHeight: 44, alignItems: 'center' });
 globalStyle(':focus-visible', { outline: `2px solid ${vars.color.focus}`, outlineOffset: 2 });
 globalStyle('input.ant-input:focus-visible, textarea.ant-input:focus-visible', { outlineOffset: -1 });
 // 비밀번호 칸은 바깥 틀이 초점을 표시하므로 안쪽 입력에 테두리를 겹치지 않습니다.

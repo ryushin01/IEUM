@@ -118,3 +118,85 @@ test('운영자로 신고를 처리하고, 정지한 사용자의 글이 숨겨�
   await expect(page.getByRole('article').first()).toBeVisible();
   await expect(page.getByRole('article').filter({ hasText: '소라_기록' })).toHaveCount(0);
 });
+
+/** KWCAG 6.1.3: 대화형 요소의 조작 영역을 측정합니다. 문장 속 링크는 제외합니다. */
+async function smallTargets(page: Page) {
+  return page.evaluate(() => {
+    const MIN = 44;
+    const out: string[] = [];
+    for (const el of document.querySelectorAll<HTMLElement>('a[href], button, input, textarea, [role="switch"], [tabindex="0"]')) {
+      if (el.closest('p, .ant-form-item-extra')) continue;
+      let box: DOMRect = el.getBoundingClientRect();
+      if (el.matches('input[type="checkbox"], input[type="radio"]')) box = (el.closest('label') ?? el).getBoundingClientRect();
+      if (el.matches('[class*="chipInput"]') || getComputedStyle(el).opacity === '0') box = (el.closest('label') ?? el).getBoundingClientRect();
+      // antd 입력칸은 바깥 틀이 조작 영역입니다.
+      const wrapper = el.closest('.ant-input-affix-wrapper');
+      if (wrapper) box = wrapper.getBoundingClientRect();
+      if (box.width === 0 && box.height === 0) continue;
+      const after = getComputedStyle(el, '::after');
+      const extraH = after.position === 'absolute' && after.top.startsWith('-') ? -parseFloat(after.top) * 2 : 0;
+      if (box.height + extraH < MIN || box.width < MIN) {
+        out.push(`${el.tagName} "${(el.getAttribute('aria-label') ?? el.textContent ?? '').trim().slice(0, 20)}" ${Math.round(box.width)}x${Math.round(box.height)}`);
+      }
+    }
+    return out;
+  });
+}
+
+test('주요 화면의 조작 영역이 44px 이상이다', async ({ page }) => {
+  const found: Record<string, string[]> = {};
+  await page.goto('login');
+  await page.getByRole('button', { name: '데모 계정으로 둘러보기' }).waitFor();
+  found.login = await smallTargets(page);
+  await page.goto('signup');
+  await page.getByRole('button', { name: '회원 가입' }).waitFor();
+  found.signup = await smallTargets(page);
+  await page.goto('login');
+  await page.getByRole('button', { name: '데모 계정으로 둘러보기' }).click();
+  await expect(page.getByRole('article').first()).toBeVisible();
+  found.feed = await smallTargets(page);
+  await page.goto('posts/p1');
+  await page.getByRole('heading', { name: '댓글' }).waitFor();
+  found.detail = await smallTargets(page);
+  await page.goto('posts/new');
+  await page.getByLabel('내용').waitFor();
+  found.write = await smallTargets(page);
+  await page.goto('dm/dm1');
+  await page.getByRole('log').waitFor();
+  found.dm = await smallTargets(page);
+  await page.goto('users/haneul');
+  await page.getByRole('heading', { name: '하늘빛' }).waitFor();
+  found.profile = await smallTargets(page);
+  await page.goto('settings');
+  await page.getByRole('button', { name: '로그아웃' }).waitFor();
+  found.settings = await smallTargets(page);
+  expect(found).toEqual({ login: [], signup: [], feed: [], detail: [], write: [], dm: [], profile: [], settings: [] });
+});
+
+test('키보드만으로 메뉴를 열고 신고 창을 열고 닫으며, 초점이 돌아온다', async ({ page }) => {
+  await enter(page);
+  const menu = page.getByRole('button', { name: '게시글 메뉴' }).first();
+  await menu.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('menu')).toBeVisible();
+  await page.keyboard.press('ArrowDown');
+  await page.getByRole('menuitem', { name: '신고하기' }).press('Enter');
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+});
+
+test('키보드로 넘김 버튼과 하단 메뉴를 쓰고, 화면을 옮기면 본문으로 초점이 간다', async ({ page }) => {
+  await enter(page);
+  const next = page.getByRole('button', { name: '다음 사진' }).first();
+  await next.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByText('2 / 2').first()).toBeVisible();
+  const dm = page.getByRole('link', { name: /메시지/ });
+  await dm.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('heading', { name: '메시지' })).toBeVisible();
+  await expect(page.locator('#main')).toBeFocused();
+  await expect(page).toHaveTitle('메시지 | 이음');
+});

@@ -7,7 +7,6 @@ const pixel = (color: string) =>
 const meta: Meta<typeof ImageCarousel> = {
   title: 'shared/ImageCarousel',
   component: ImageCarousel,
-  decorators: [(Story) => <div style={{ maxWidth: 360 }}><Story /></div>],
 };
 export default meta;
 export const Single: StoryObj<typeof ImageCarousel> = { args: { images: [{ url: pixel('#c4e538'), alt: '연둣빛 이미지' }] } };

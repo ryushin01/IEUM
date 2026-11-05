@@ -61,7 +61,7 @@ export const chipLegend = style({ marginBottom: 8, padding: 0 });
 export const chips = style({ display: 'flex', flexWrap: 'wrap', gap: 8 });
 export const chipInput = style({ position: 'absolute', opacity: 0, width: 1, height: 1 });
 export const chip = style({
-  display: 'flex', alignItems: 'center', minHeight: 44, padding: '0 14px', borderRadius: 4,
+  display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44, padding: '0 14px', borderRadius: 4,
   border: `1px solid ${vars.color.border}`, color: vars.color.muted, cursor: 'pointer',
   selectors: {
     [`${chipInput}:checked + &`]: { borderColor: vars.color.primary, backgroundColor: vars.color.primary, color: vars.color.onPrimary },
