@@ -209,3 +209,28 @@ test('키보드로 넘김 버튼과 하단 메뉴를 쓰고, 화면을 옮기면
   await expect(page.locator('#main')).toBeFocused();
   await expect(page).toHaveTitle('메시지 | 이음');
 });
+
+test('앱 브릿지: 하위 경로에서도 앱에 경로를 그대로 알리고, 앱의 이동 요청을 처리한다', async ({ page }) => {
+  await page.addInitScript(() => {
+    const w = window as unknown as Record<string, unknown>;
+    const routes: string[] = [];
+    w.__routes = routes;
+    w.IeumBridge = {
+      postMessage(raw: string) {
+        const { id, method, params } = JSON.parse(raw);
+        if (method === 'ui.routeChanged') routes.push(params.path);
+        setTimeout(() => (w.__ieumBridgeReceive as (r: unknown) => void)({ id, ok: true, result: null }), 0);
+      },
+    };
+  });
+  const routes = () => page.evaluate(() => (window as unknown as { __routes: string[] }).__routes);
+  await page.goto('login');
+  await expect.poll(routes).toContain('/login');
+  await page.getByRole('button', { name: '데모 계정으로 둘러보기' }).click();
+  await expect.poll(routes).toContain('/');
+  expect((await routes()).filter((r) => r.includes('IEUM'))).toEqual([]);
+  // 앱의 메뉴가 부르는 이동도 하위 경로 안에서 동작합니다.
+  await page.evaluate(() => window.__ieumNative!.navigate('/settings'));
+  await expect(page).toHaveURL(/\/IEUM\/settings$/);
+  await expect.poll(routes).toContain('/settings');
+});

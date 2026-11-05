@@ -1,5 +1,6 @@
 import { clearSession } from '@/shared/api';
 import { callNative, isNativeApp } from '@/shared/bridge';
+import { BASE_URL } from '@/shared/config/env';
 import { setThemeMode } from '@/shared/theme';
 import { queryClient } from './providers/AppProviders';
 import { router } from './router';
@@ -61,7 +62,12 @@ export function installNativeBridge(): void {
       subscribeDemoEvents((event) => notify(() => callNative('demo.event', { event })));
     });
   }
-  const report = (path: string) => notify(() => callNative('ui.routeChanged', { path }));
+  // 앱은 하위 경로(/IEUM/)를 모르므로 빼고 알립니다.
+  const base = BASE_URL.replace(/\/$/, '');
+  const report = (pathname: string) => {
+    const path = base && pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
+    notify(() => callNative('ui.routeChanged', { path: path || '/' }));
+  };
   router.subscribe((state) => report(state.location.pathname));
   report(router.state.location.pathname);
   notify(() => callNative('ui.ready'));
