@@ -203,6 +203,10 @@ test('차단하면 피드에서 사라진다', async ({ browser }) => {
   await card.getByRole('link', { name: /소라_기록/ }).click();
   await page.getByRole('button', { name: '사용자 메뉴' }).click();
   await page.getByRole('menuitem', { name: '차단하기' }).click();
+  await expect(page.getByRole('button', { name: '차단', exact: true })).toBeVisible();
+  await expect(page.getByRole('menu')).toBeHidden();
+  await page.waitForTimeout(500);
+  await checkA11y(page); // 빨간 위험 버튼의 대비도 확인합니다.
   await page.getByRole('button', { name: '차단', exact: true }).click();
   await expect(page.getByRole('button', { name: '차단 해제' })).toBeVisible();
   await page.goto('/');
@@ -229,6 +233,7 @@ test('계정을 삭제하면 다시 로그인할 수 없다', async ({ page }) =
   await page.goto('/settings');
   await page.getByRole('button', { name: '계정 삭제' }).click();
   await page.getByLabel('비밀번호 확인').fill('Passw0rd!123');
+  await page.waitForTimeout(500); // 버튼이 활성화되는 전환이 끝난 색을 잽니다.
   await checkA11y(page);
   await page.getByRole('button', { name: '영구 삭제' }).click();
   await expect(page).toHaveURL(/\/login$/);
