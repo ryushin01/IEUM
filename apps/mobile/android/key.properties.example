@@ -1,0 +1,4 @@
+storeFile=/절대/경로/ieum-release.jks
+storePassword=CHANGE_ME
+keyAlias=ieum
+keyPassword=CHANGE_ME

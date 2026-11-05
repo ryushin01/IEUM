@@ -1,0 +1,32 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.idea/
+
+# API 로컬 데이터
+apps/api/.data/
+
+# 테스트 결과
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/storybook-static/
+
+# Flutter
+apps/mobile/.dart_tool/
+apps/mobile/build/
+apps/mobile/.flutter-plugins*
+apps/mobile/ios/Pods/
+apps/mobile/ios/Flutter/Generated.xcconfig
+apps/mobile/ios/Flutter/flutter_export_environment.sh
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
+apps/mobile/android/key.properties
+*.jks
+*.keystore
+*.p8
+*.mobileprovision

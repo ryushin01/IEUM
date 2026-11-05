@@ -1,0 +1,96 @@
+# IEUM (이음)
+
+[![CI](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml/badge.svg)](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml)
+![version](https://img.shields.io/badge/version-1.0.0-c4e538)
+
+**나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. Flutter 앱 안의 웹뷰에 React 화면을 띄우고 브릿지로 연결합니다.
+
+> **프로젝트 상태:** 스토어 출시를 준비 중입니다. 출시 전에 필요한 일은 [출시 체크리스트](docs/release.md)에 정리했습니다.
+
+## 화면
+
+화면의 사용자와 게시글은 모두 가상 데이터입니다.
+
+| 피드 | 다크 모드 |
+|---|---|
+| <img src="docs/images/feed.jpg" alt="공식 계정 마크가 붙은 게시글 사진, 좋아요, 내용과 하단 메뉴" width="280"> | <img src="docs/images/feed-dark.jpg" alt="어두운 배경의 피드 화면과 켜진 다크 모드 토글" width="280"> |
+
+| 로그인 | 회원가입 |
+|---|---|
+| <img src="docs/images/login.jpg" alt="IEUM 로고, 나와 너를 잇는 공간 문구, 로그인 양식" width="280"> | <img src="docs/images/signup.jpg" alt="비밀번호 입력, 관심사 선택 칩, 약관 동의, 회원 가입 버튼" width="280"> |
+
+| 게시글 상세 | 게시글 작성 |
+|---|---|
+| <img src="docs/images/post-detail.jpg" alt="게시글 아래의 댓글 목록과 댓글 입력창" width="280"> | <img src="docs/images/post-write.jpg" alt="사진 선택 버튼과 내용 입력란" width="280"> |
+
+| DM | 프로필 |
+|---|---|
+| <img src="docs/images/dm-room.jpg" alt="주고받은 메시지 말풍선과 입력창이 있는 대화방" width="280"> | <img src="docs/images/profile.jpg" alt="프로필 사진, 소개, 관심사, 메시지 보내기 버튼, 게시글 격자" width="280"> |
+
+## 주요 기능
+
+| 영역 | 내용 |
+|---|---|
+| 계정 | 이메일 가입(닉네임 중복 확인, 관심사 최대 3개), 카카오·네이버·Google 로그인, 토큰 자동 재발급, 앱 내 계정 삭제 |
+| 게시글 | 작성·수정·삭제, 이미지 최대 5장, 커서 무한 스크롤, 좋아요, 댓글 100자, 공식 마크, 인기 글 표시 |
+| DM | WebSocket 실시간 수신, 읽음 표시, 안 읽은 수, 재연결 후 동기화 |
+| 안전 | 신고, 차단, 금칙어 필터, 약관 동의 |
+| 앱 | Keychain·Keystore 토큰 저장, 네이티브 사진 선택·촬영·업로드, 오프라인 화면, 뒤로 가기, 스플래시 |
+
+## 기술 스택
+
+![My Skills](https://skillicons.dev/icons?i=flutter,dart,react,vite,ts,nodejs,postgres,vitest,storybook)
+
+| 구분 | 사용 기술 |
+|---|---|
+| 앱 | Flutter, webview_flutter, GetX(`get`), dio, flutter_secure_storage, image_picker, url_launcher, flutter_web_auth_2 |
+| 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router, lottie-react |
+| API | Node.js, Fastify 5, ws, PostgreSQL(`pg`), PGlite(로컬·테스트), jose |
+| 품질 | ESLint(FSD 계층 규칙), Vitest, Storybook 10(axe), Playwright(E2E, axe), flutter test |
+
+## 시작하기
+
+Node.js 24(`.node-version`), pnpm, Flutter가 필요합니다.
+
+```bash
+pnpm install
+pnpm dev                   # API http://localhost:4000, 웹 http://localhost:5173
+
+cd apps/mobile
+flutter pub get
+flutter run                # 개발 서버를 웹뷰로 엽니다. Android는 adb reverse 필요
+```
+
+데모 계정은 `demo@ieum.app` / `ieum-demo-1234`입니다. 운영 환경에서는 데모 데이터를 넣을 수 없습니다. 소셜 로그인 버튼은 서버에 키를 설정한 제공자만 표시합니다. ([개발 가이드](docs/development.md#소셜-로그인))
+
+| 명령 | 설명 |
+|---|---|
+| `pnpm lint` / `typecheck` | ESLint / 타입 검사 |
+| `pnpm test` | API·웹 단위 테스트 |
+| `pnpm --filter @ieum/web test:storybook` | 모든 스토리 렌더링과 접근성 검사 |
+| `pnpm test:e2e` | 프로덕션 빌드의 실제 화면 검사 |
+| `flutter analyze` / `flutter test` | 앱 정적 분석 / 테스트 (`apps/mobile`) |
+
+## 프로젝트 구조
+
+```
+apps/
+├─ api/      Fastify API, WebSocket, SQL 마이그레이션
+├─ mobile/   Flutter 앱 (lib/bridge 브릿지, lib/shell 웹뷰, lib/services 네이티브 기능)
+└─ web/      웹뷰 화면, Feature-Sliced Design (src/app·pages·widgets·features·entities·shared)
+docs/        문서와 화면 이미지
+```
+
+## 문서
+
+| 문서 | 내용 |
+|---|---|
+| [개발 가이드](docs/development.md) | 구조, 환경 변수, 웹뷰 빌드 도구 선택, 디자인 기준 |
+| [브릿지 계약](docs/bridge.md) | 웹과 앱 사이의 메서드와 오류 코드 |
+| [출시 체크리스트](docs/release.md) | 스토어 심사 요건, 서명, 운영 배포 |
+| [버전 기록](CHANGELOG.md) | 버전별 변경 내용 |
+
+## 향후 과제
+
+- 비밀번호 재설정, 푸시 알림, 신고 처리용 운영 도구, 객체 저장소, Apple 로그인
+- 스크린 리더(VoiceOver, TalkBack) 실사용 점검과 KWCAG 33개 항목 수동 점검
