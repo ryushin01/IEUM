@@ -34,4 +34,4 @@
 - 앱은 현재 페이지가 `WEB_URL`과 같은 출처일 때만 브릿지 요청을 처리합니다.
 - 웹뷰는 `WEB_URL` 출처만 엽니다. `mailto:`와 외부 `https:`는 시스템 앱으로 넘기고, 나머지 스킴은 막습니다.
 - 토큰은 `API_URL` 출처로만 전송합니다.
-- 시스템 인증 창은 `kauth.kakao.com`, `nid.naver.com`, `accounts.google.com`의 https 주소만 엽니다.
+- 시스템 인증 창은 `kauth.kakao.com`, `nid.naver.com`, `accounts.google.com`, `appleid.apple.com`의 https 주소만 엽니다.

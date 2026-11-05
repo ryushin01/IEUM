@@ -53,6 +53,11 @@ export async function buildApp(config: Config, db: Db) {
     return reply.code(500).send({ code: 'internal', message: '일시적인 오류가 발생했습니다.' });
   });
 
+  // Apple 콜백은 폼으로 옵니다.
+  app.addContentTypeParser('application/x-www-form-urlencoded', { parseAs: 'string' }, (_req, body, done) => {
+    done(null, Object.fromEntries(new URLSearchParams(body as string)));
+  });
+
   // 본문 없는 요청도 라우트에서 같은 검증 오류로 처리합니다.
   app.addHook('preHandler', async (req) => {
     if (req.body === undefined || req.body === null) req.body = {};

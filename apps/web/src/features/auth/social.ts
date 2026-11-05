@@ -5,7 +5,7 @@ import { ME_KEY, type Me } from '@/entities/session';
 import { ApiError, request, setSession } from '@/shared/api';
 import { BridgeError, callNative, isNativeApp } from '@/shared/bridge';
 
-export type SocialProvider = 'kakao' | 'naver' | 'google';
+export type SocialProvider = 'kakao' | 'naver' | 'google' | 'apple';
 
 export interface SocialSignupState {
   signupToken: string;

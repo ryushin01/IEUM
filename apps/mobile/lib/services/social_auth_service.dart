@@ -7,7 +7,7 @@ import '../bridge/bridge_error.dart';
 const socialCallbackScheme = 'com.ryushin01.ieum';
 
 /// 시스템 인증 창으로 열어도 되는 제공자 주소입니다.
-const socialLoginHosts = {'kauth.kakao.com', 'nid.naver.com', 'accounts.google.com'};
+const socialLoginHosts = {'kauth.kakao.com', 'nid.naver.com', 'accounts.google.com', 'appleid.apple.com'};
 
 abstract class SocialAuthService {
   /// 제공자 로그인을 마치고 돌아온 앱 스킴 주소를 돌려줍니다.

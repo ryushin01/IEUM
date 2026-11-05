@@ -131,6 +131,7 @@ void main() {
       'https://kauth.kakao.com/oauth/authorize?x=1',
       'https://nid.naver.com/oauth2.0/authorize',
       'https://accounts.google.com/o/oauth2/v2/auth',
+      'https://appleid.apple.com/auth/authorize',
     ]) {
       final reply = await call('auth.socialLogin', {'url': url});
       expect(reply!['result'], {'callbackUrl': 'com.ryushin01.ieum://auth?code=abc'});

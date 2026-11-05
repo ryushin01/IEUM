@@ -1,4 +1,8 @@
+import { generateKeyPairSync } from 'node:crypto';
 import { defineConfig, devices } from '@playwright/test';
+
+/** 테스트마다 새로 만드는 Apple 키입니다. 가짜 제공자에만 씁니다. */
+const applePrivateKey = generateKeyPairSync('ec', { namedCurve: 'P-256' }).privateKey.export({ type: 'pkcs8', format: 'pem' }) as string;
 
 /** 프로덕션 빌드(vite preview)와 메모리 DB API로 실제 화면을 검사합니다. 먼저 pnpm build가 필요합니다. */
 export default defineConfig({
@@ -31,6 +35,8 @@ export default defineConfig({
         APP_WEB_URL: 'http://localhost:4173', SOCIAL_MOCK_URL: 'http://127.0.0.1:4200',
         KAKAO_CLIENT_ID: 'k', KAKAO_CLIENT_SECRET: 's', NAVER_CLIENT_ID: 'n', NAVER_CLIENT_SECRET: 's',
         GOOGLE_CLIENT_ID: 'g', GOOGLE_CLIENT_SECRET: 's',
+        APPLE_CLIENT_ID: 'com.ryushin01.ieum.web', APPLE_TEAM_ID: 'TEAM123456', APPLE_KEY_ID: 'KEY1234567',
+        APPLE_PRIVATE_KEY: applePrivateKey, SOCIAL_TOKEN_KEY: 'e2e-token-key',
       },
     },
     {

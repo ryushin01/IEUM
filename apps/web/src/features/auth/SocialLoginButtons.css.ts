@@ -18,4 +18,15 @@ export const button = styleVariants({
   kakao: { ...base, border: 0, backgroundColor: '#fee500', color: 'rgba(0, 0, 0, 0.85)' },
   naver: { ...base, border: '1px solid #03c75a', backgroundColor: '#ffffff', color: '#1f1f1f' },
   google: { ...base, border: '1px solid #747775', backgroundColor: '#ffffff', color: '#1f1f1f' },
+  // 어두운 화면에서는 Apple 가이드의 흰 버튼을 씁니다.
+  apple: {
+    ...base,
+    border: '1px solid #000000',
+    backgroundColor: '#000000',
+    color: '#ffffff',
+    selectors: {
+      ...base.selectors,
+      '[data-theme="dark"] &': { borderColor: '#ffffff', backgroundColor: '#ffffff', color: '#000000' },
+    },
+  },
 });

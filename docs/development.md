@@ -38,7 +38,7 @@ antd를 `@layer` 안에 넣어(`StyleProvider layer`), layer 밖의 vanilla-extr
 | 보조 글자 | `#999` | `#666` | 흰 배경 대비 4.5:1 이상 |
 | 상세·작성 | 모달 | 페이지 | 앱의 뒤로 가기와 스크린 리더 흐름 |
 | 이미지 넘김 | Swiper | 기본 스크롤 스냅과 버튼 | 번들 축소, 키보드 조작 |
-| 로그인 | 카카오만 | 카카오, 네이버, Google, 이메일 | 요구사항 |
+| 로그인 | 카카오만 | 카카오, 네이버, Google, Apple, 이메일 | 요구사항, Apple 4.8 |
 
 ## 소셜 로그인
 
@@ -56,6 +56,15 @@ Google이 웹뷰 안 OAuth를 차단하므로, 앱은 시스템 인증 창(ASWeb
 - 소셜 계정은 비밀번호가 없어, 계정 삭제 때 `삭제`를 입력해 확인합니다.
 
 각 개발자 콘솔에 Redirect URI로 `{PUBLIC_BASE_URL}/auth/social/{kakao|naver|google}/callback`을 등록하고, 발급받은 값을 API 환경 변수에 넣습니다. Google은 "웹 애플리케이션" 유형 클라이언트, 카카오는 Client Secret을 켜고 닉네임 동의 항목(이메일을 쓰면 이메일도)을 설정합니다. 테스트는 가짜 제공자(`apps/api/src/testing/mock-oauth.ts`)로 합니다.
+
+### Apple
+
+Apple은 웹 방식의 Sign in with Apple을 씁니다. iOS와 Android가 같은 흐름이라 패키지와 entitlement를 더하지 않았습니다.
+
+- Apple Developer에서 App ID에 Sign in with Apple을 켜고, 웹용 **Services ID**(예: `com.ryushin01.ieum.web`)를 만든 뒤 도메인과 Return URL `{PUBLIC_BASE_URL}/auth/social/apple/callback`을 등록합니다. Return URL은 https만 되고 localhost는 안 되므로, 로컬에서 실제 Apple을 시험하려면 터널이 필요합니다.
+- Sign in with Apple용 **Key(.p8)** 를 만들어 `APPLE_CLIENT_ID`(Services ID), `APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_PRIVATE_KEY`를 설정합니다. `SOCIAL_TOKEN_KEY`에는 32자 이상의 임의 값을 넣습니다. 이 값을 바꾸면 저장된 토큰을 복호화할 수 없습니다.
+- 콜백은 폼 POST입니다. 이름은 처음 동의할 때 한 번만 오며 입력 기본값으로만 씁니다.
+- 탈퇴하면 Apple 토큰을 폐기합니다. (Apple 5.1.1(v)) 폐기에 실패해도 삭제는 진행하고 오류 로그를 남기므로, 해당 로그를 모니터링해 처리합니다.
 
 ## 환경 변수
 

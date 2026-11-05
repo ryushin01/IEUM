@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router';
 import { SocialLoginButtons } from './SocialLoginButtons';
 
 const client = new QueryClient();
-client.setQueryData(['social-providers'], ['kakao', 'naver', 'google']);
+client.setQueryData(['social-providers'], ['kakao', 'naver', 'google', 'apple']);
 
 const meta: Meta<typeof SocialLoginButtons> = {
   title: 'features/SocialLoginButtons',

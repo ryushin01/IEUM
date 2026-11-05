@@ -4,7 +4,8 @@ import type { AppContext } from '../context.ts';
 import { ApiError, badRequest, conflict, notFound, unauthorized } from '../errors.ts';
 import { assertAllowedText } from '../moderation.ts';
 import { parseInterests, toMe, type UserRow } from '../serializers.ts';
-import { buildAuthorizeUrl, fetchProfile, PROVIDERS, type Provider } from '../social-providers.ts';
+import { buildAuthorizeUrl, fetchProfile, PROVIDERS, revokeAppleToken, type Provider } from '../social-providers.ts';
+import { openToken, sealToken } from '../token-box.ts';
 
 const APP_CALLBACK = 'com.ryushin01.ieum://auth';
 const NICKNAME = /^[\p{L}\p{N}_.]{2,20}$/u;
@@ -27,6 +28,24 @@ interface TicketRow {
   email: string | null;
   nickname: string | null;
   code_challenge: string | null;
+  provider_token: string | null;
+}
+
+/** 계정 삭제 전에 호출합니다. 폐기에 실패해도 사용자의 삭제 요청은 막지 않고 기록을 남깁니다. */
+export async function revokeProviderTokens(ctx: AppContext, userId: string, log: { error(data: object, message: string): void }): Promise<void> {
+  const credentials = ctx.config.social.apple;
+  if (!credentials) return;
+  const rows = await ctx.db.query<{ provider_token: string }>(
+    `SELECT provider_token FROM social_accounts WHERE user_id = $1 AND provider = 'apple' AND provider_token IS NOT NULL`,
+    [userId],
+  );
+  for (const { provider_token: sealed } of rows) {
+    try {
+      await revokeAppleToken(credentials, openToken(sealed, ctx.config.socialTokenKey), ctx.config.socialMockUrl);
+    } catch (failure) {
+      log.error({ userId, message: (failure as Error).message }, 'apple token revoke failed');
+    }
+  }
 }
 
 export function socialRoutes(app: FastifyInstance, ctx: AppContext) {
@@ -62,31 +81,39 @@ export function socialRoutes(app: FastifyInstance, ctx: AppContext) {
     return { url: buildAuthorizeUrl(provider, config.social[provider]!, redirectUri(provider), state, config.socialMockUrl) };
   });
 
-  app.get('/auth/social/:provider/callback', async (req, reply) => {
-    const provider = parseProvider((req.params as { provider: string }).provider);
-    const { code, state, error } = req.query as Record<string, string | undefined>;
-    const [row] = state
-      ? await db.query<{ client: string; code_challenge: string }>(
-          `DELETE FROM oauth_states WHERE state_hash = $1 AND provider = $2 AND expires_at > now()
-           RETURNING client, code_challenge`,
-          [sha256(state), provider],
-        )
-      : [];
-    if (!row) throw badRequest('로그인 요청이 만료되었습니다. 앱에서 다시 시도해 주세요.');
-    if (error || !code) return reply.redirect(clientRedirect(row.client, { error: 'denied' }));
-    try {
-      const profile = await fetchProfile(provider, config.social[provider]!, redirectUri(provider), code, state!, config.socialMockUrl);
-      const ticket = newToken();
-      await db.query(
-        `INSERT INTO social_tickets (ticket_hash, kind, provider, provider_user_id, email, nickname, code_challenge, expires_at)
-         VALUES ($1, 'login', $2, $3, $4, $5, $6, now() + interval '2 minutes')`,
-        [sha256(ticket), provider, profile.id, profile.email?.toLowerCase() ?? null, profile.nickname, row.code_challenge],
-      );
-      return reply.redirect(clientRedirect(row.client, { code: ticket }));
-    } catch (failure) {
-      req.log.error({ provider, message: (failure as Error).message }, 'social login failed');
-      return reply.redirect(clientRedirect(row.client, { error: 'failed' }));
-    }
+  // Apple은 POST, 나머지는 GET으로 돌아옵니다. POST 뒤에도 GET으로 이동하도록 303을 씁니다.
+  app.route({
+    method: ['GET', 'POST'],
+    url: '/auth/social/:provider/callback',
+    handler: async (req, reply) => {
+      const provider = parseProvider((req.params as { provider: string }).provider);
+      const { code, state, error, user: appleUser } = (req.method === 'POST' ? req.body : req.query) as Record<string, string | undefined>;
+      const [row] = state
+        ? await db.query<{ client: string; code_challenge: string }>(
+            `DELETE FROM oauth_states WHERE state_hash = $1 AND provider = $2 AND expires_at > now()
+             RETURNING client, code_challenge`,
+            [sha256(state), provider],
+          )
+        : [];
+      if (!row) throw badRequest('로그인 요청이 만료되었습니다. 앱에서 다시 시도해 주세요.');
+      if (error || !code) return reply.redirect(clientRedirect(row.client, { error: 'denied' }), 303);
+      try {
+        const profile = await fetchProfile(provider, config.social[provider]!, redirectUri(provider), code, state!, config.socialMockUrl, appleUser);
+        const ticket = newToken();
+        await db.query(
+          `INSERT INTO social_tickets (ticket_hash, kind, provider, provider_user_id, email, nickname, code_challenge, provider_token, expires_at)
+           VALUES ($1, 'login', $2, $3, $4, $5, $6, $7, now() + interval '2 minutes')`,
+          [
+            sha256(ticket), provider, profile.id, profile.email?.toLowerCase() ?? null, profile.nickname, row.code_challenge,
+            profile.refreshToken ? sealToken(profile.refreshToken, config.socialTokenKey) : null,
+          ],
+        );
+        return reply.redirect(clientRedirect(row.client, { code: ticket }), 303);
+      } catch (failure) {
+        req.log.error({ provider, message: (failure as Error).message }, 'social login failed');
+        return reply.redirect(clientRedirect(row.client, { error: 'failed' }), 303);
+      }
+    },
   });
 
   /** 로그인을 시작한 쪽만 코드를 쓸 수 있도록 PKCE로 확인합니다. */
@@ -105,7 +132,14 @@ export function socialRoutes(app: FastifyInstance, ctx: AppContext) {
        WHERE s.provider = $1 AND s.provider_user_id = $2`,
       [ticket.provider, ticket.provider_user_id],
     );
-    if (user) return { status: 'login', user: toMe(user), ...(await tokens.issuePair(user.id)) };
+    if (user) {
+      if (ticket.provider_token) {
+        await db.query('UPDATE social_accounts SET provider_token = $3 WHERE provider = $1 AND provider_user_id = $2', [
+          ticket.provider, ticket.provider_user_id, ticket.provider_token,
+        ]);
+      }
+      return { status: 'login', user: toMe(user), ...(await tokens.issuePair(user.id)) };
+    }
 
     // 이메일이 같다고 자동으로 합치지 않습니다. (계정 탈취 방지)
     if (ticket.email) {
@@ -114,9 +148,9 @@ export function socialRoutes(app: FastifyInstance, ctx: AppContext) {
     }
     const signupToken = newToken();
     await db.query(
-      `INSERT INTO social_tickets (ticket_hash, kind, provider, provider_user_id, email, nickname, expires_at)
-       VALUES ($1, 'signup', $2, $3, $4, $5, now() + interval '30 minutes')`,
-      [sha256(signupToken), ticket.provider, ticket.provider_user_id, ticket.email, ticket.nickname],
+      `INSERT INTO social_tickets (ticket_hash, kind, provider, provider_user_id, email, nickname, provider_token, expires_at)
+       VALUES ($1, 'signup', $2, $3, $4, $5, $6, now() + interval '30 minutes')`,
+      [sha256(signupToken), ticket.provider, ticket.provider_user_id, ticket.email, ticket.nickname, ticket.provider_token],
     );
     return { status: 'signup', signupToken, provider: ticket.provider, nickname: suggestNickname(ticket.nickname) };
   });
@@ -142,9 +176,9 @@ export function socialRoutes(app: FastifyInstance, ctx: AppContext) {
       `WITH u AS (
          INSERT INTO users (email, nickname, interests, terms_agreed_at) VALUES ($1, $2, $3, now()) RETURNING *
        ), s AS (
-         INSERT INTO social_accounts (provider, provider_user_id, user_id) SELECT $4, $5, id FROM u
+         INSERT INTO social_accounts (provider, provider_user_id, user_id, provider_token) SELECT $4, $5, id, $6 FROM u
        ) SELECT * FROM u`,
-      [ticket.email, nickname, parsedInterests, ticket.provider, ticket.provider_user_id],
+      [ticket.email, nickname, parsedInterests, ticket.provider, ticket.provider_user_id, ticket.provider_token],
     );
     await db.query('DELETE FROM social_tickets WHERE ticket_hash = $1', [sha256(signupToken)]);
     reply.code(201);

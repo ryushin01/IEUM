@@ -4,7 +4,7 @@ import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { WebSocket } from 'ws';
-import { createHash } from 'node:crypto';
+import { createHash, generateKeyPairSync } from 'node:crypto';
 import { buildApp } from './app.ts';
 import { startMockOAuth } from './testing/mock-oauth.ts';
 import { createDb, migrate, type Db } from './db.ts';
@@ -48,7 +48,15 @@ before(async () => {
       kakao: { clientId: 'k', clientSecret: 's' },
       naver: { clientId: 'n', clientSecret: 's' },
       google: { clientId: 'g', clientSecret: 's' },
+      apple: {
+        clientId: 'com.ryushin01.ieum.web',
+        apple: {
+          teamId: 'TEAM123456', keyId: 'KEY1234567',
+          privateKey: generateKeyPairSync('ec', { namedCurve: 'P-256' }).privateKey.export({ type: 'pkcs8', format: 'pem' }) as string,
+        },
+      },
     },
+    socialTokenKey: 'test-token-key',
   };
   db = await createDb({});
   await migrate(db);
@@ -227,7 +235,7 @@ async function socialRedirect(provider: string, client: 'app' | 'web' = 'web') {
   const authorize = await fetch(start.body.url, { redirect: 'manual' });
   const callback = new URL(authorize.headers.get('location')!);
   const res = await app.inject({ method: 'GET', url: callback.pathname + callback.search });
-  assert.equal(res.statusCode, 302);
+  assert.equal(res.statusCode, 303);
   return new URL(res.headers.location as string);
 }
 
@@ -288,4 +296,63 @@ test('소셜: 이미 가입된 이메일과 자동으로 합치지 않는다', a
 test('소셜: 위조하거나 재사용한 state는 거부한다', async () => {
   const res = await app.inject({ method: 'GET', url: '/auth/social/kakao/callback?code=x&state=forged' });
   assert.equal(res.statusCode, 400);
+});
+
+/** Apple은 콜백을 폼 POST로 보내므로 실제 흐름처럼 POST합니다. */
+async function appleRedirect(user?: string, client: 'app' | 'web' = 'app') {
+  const start = await call('POST', '/auth/social/apple/start', undefined, { client, codeChallenge: CHALLENGE });
+  const authorize = new URL(start.body.url);
+  assert.equal(authorize.searchParams.get('response_mode'), 'form_post');
+  assert.equal(authorize.searchParams.get('scope'), 'name email');
+  const form = new URLSearchParams({ code: 'code-apple', state: authorize.searchParams.get('state')! });
+  if (user) form.set('user', user);
+  const res = await app.inject({
+    method: 'POST',
+    url: '/auth/social/apple/callback',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    payload: form.toString(),
+  });
+  assert.equal(res.statusCode, 303);
+  return new URL(res.headers.location as string);
+}
+
+test('Apple: 폼 콜백으로 가입하고, 탈퇴하면 Apple 토큰을 폐기한다', async () => {
+  const exchange = async (user?: string) => {
+    const redirect = await appleRedirect(user);
+    assert.equal(redirect.protocol, 'com.ryushin01.ieum:');
+    return call('POST', '/auth/social/exchange', undefined, { code: redirect.searchParams.get('code'), codeVerifier: VERIFIER });
+  };
+  const first = await exchange(JSON.stringify({ name: { firstName: '사과', lastName: '김' } }));
+  assert.equal(first.body.status, 'signup');
+  assert.equal(first.body.nickname, '김사과');
+  const created = await call('POST', '/auth/social/signup', undefined, {
+    signupToken: first.body.signupToken, nickname: '김사과', agreeTerms: true, confirmAge: true,
+  });
+  assert.equal(created.status, 201);
+  // 가리기를 선택한 릴레이 이메일도 Apple이 확인한 값이므로 저장합니다.
+  assert.equal(created.body.user.email, 'relay123@privaterelay.appleid.com');
+
+  // Apple 토큰은 DB에 평문으로 저장하지 않습니다.
+  const [row] = await db.query<{ provider_token: string }>(`SELECT provider_token FROM social_accounts WHERE provider = 'apple'`);
+  assert.ok(row!.provider_token);
+  assert.ok(!row!.provider_token.includes('apple-refresh-token'));
+
+  // 이름은 처음에만 오므로 두 번째부터는 없어도 로그인됩니다.
+  const second = await exchange();
+  assert.equal(second.body.status, 'login');
+  assert.equal(mock.revoked.length, 0);
+  assert.equal((await call('DELETE', '/me', second.body.accessToken, { confirmText: '삭제' })).status, 204);
+  assert.deepEqual(mock.revoked, ['apple-refresh-token']);
+});
+
+test('Apple: 취소하면 denied로 돌아오고, 앱 스킴에 오류만 전달한다', async () => {
+  const start = await call('POST', '/auth/social/apple/start', undefined, { client: 'app', codeChallenge: CHALLENGE });
+  const state = new URL(start.body.url).searchParams.get('state')!;
+  const res = await app.inject({
+    method: 'POST',
+    url: '/auth/social/apple/callback',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    payload: new URLSearchParams({ error: 'user_cancelled_authorize', state }).toString(),
+  });
+  assert.equal(res.headers.location, 'com.ryushin01.ieum://auth?error=denied');
 });

@@ -312,6 +312,28 @@ test.describe('소셜 로그인 (가짜 제공자)', () => {
     await expect(page).toHaveURL(/\/login$/);
   });
 
+  test('Apple: 폼 콜백으로 돌아와 이름을 기본값으로 넣고, 다크 모드 버튼도 대비를 지킨다', async ({ page }) => {
+    // 저장된 설정으로 시작해 antd와 화면 스타일이 함께 다크 모드가 되게 합니다.
+    await page.addInitScript(() => localStorage.setItem('ieum.theme', 'dark'));
+    await page.goto('/login');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await page.waitForTimeout(400);
+    await checkA11y(page);
+    await page.getByRole('button', { name: 'Apple로 로그인' }).click();
+    await expect(page).toHaveURL(/\/signup\/social$/);
+    await expect(page.getByLabel('닉네임')).toHaveValue('김사과');
+    await page.getByLabel('만 14세 이상입니다.').check();
+    await page.getByRole('checkbox', { name: /이용약관과/ }).check();
+    await page.getByRole('button', { name: '가입 완료' }).click();
+    await page.getByRole('button', { name: '시작하기' }).click();
+    await expect(page.getByRole('navigation', { name: '주 메뉴' })).toBeVisible();
+    await page.goto('/settings');
+    await page.getByRole('button', { name: '계정 삭제' }).click();
+    await page.getByLabel(/삭제.*입력/).fill('삭제');
+    await page.getByRole('button', { name: '영구 삭제' }).click();
+    await expect(page).toHaveURL(/\/login$/);
+  });
+
   test('이미 가입된 이메일은 합치지 않고 안내한다', async ({ page }) => {
     await page.goto('/login');
     await page.getByRole('button', { name: 'Google 계정으로 로그인' }).click();

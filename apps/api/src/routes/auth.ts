@@ -3,6 +3,7 @@ import { hashPassword, verifyPassword } from '../auth.ts';
 import { ApiError, badRequest, conflict, unauthorized } from '../errors.ts';
 import { assertAllowedText } from '../moderation.ts';
 import type { AppContext } from '../context.ts';
+import { revokeProviderTokens } from './social.ts';
 import { parseInterests, toMe, type UserRow } from '../serializers.ts';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -81,6 +82,7 @@ export function authRoutes(app: FastifyInstance, ctx: AppContext) {
     } else if (typeof password !== 'string' || !(await verifyPassword(password, user.password_hash))) {
       throw new ApiError(403, 'invalid_credentials', '비밀번호가 올바르지 않습니다.');
     }
+    await revokeProviderTokens(ctx, userId, req.log);
     await db.query('DELETE FROM users WHERE id = $1', [userId]);
     hub.disconnect(userId);
     reply.code(204);

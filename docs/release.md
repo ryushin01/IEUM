@@ -4,9 +4,8 @@
 
 ## 출시 전 필수: 아직 없는 기능
 
-- [ ] **Apple 로그인 또는 그에 준하는 수단.** 카카오·네이버·Google 로그인이 있으면 Apple 4.8에 따라, 이름과 이메일만 수집하고 이메일을 숨길 수 있는 로그인 수단을 함께 제공해야 합니다. 없으면 iOS 심사에서 반려될 가능성이 높습니다.
-- [ ] **소셜 로그인 실제 연동 확인.** 가짜 제공자로만 테스트했습니다. 실제 키로 세 제공자를 기기에서 확인해야 합니다.
-- [ ] **소셜 계정 탈퇴 시 연결 끊기.** 지금은 앱 데이터만 삭제합니다. 제공자별 정책을 확인해 연결 해제를 넣습니다. (카카오 연결 끊기 등)
+- [ ] **소셜 로그인 실제 연동 확인.** 가짜 제공자로만 테스트했습니다. 실제 키로 네 제공자를 iOS와 Android 기기에서 확인해야 합니다. 특히 Android Custom Tabs에서 Apple 폼 POST 뒤 앱 스킴으로 돌아오는지 확인합니다.
+- [ ] **카카오·네이버·Google 탈퇴 시 연결 끊기.** Apple 토큰은 폐기하지만 나머지는 앱 데이터만 삭제합니다. 제공자별 정책을 확인해 연결 해제를 넣습니다.
 - [ ] **신고 처리 운영 도구.** 신고는 `reports` 테이블에 쌓이지만 처리 화면이 없습니다. 앱과 약관은 "24시간 이내 검토"를 약속하므로, 담당자와 도구가 있어야 합니다. (Apple 1.2)
 - [ ] **비밀번호 재설정.** 메일 발송 서비스가 필요합니다. 없으면 비밀번호를 잊은 사용자는 계정을 복구할 수 없습니다.
 - [ ] **업로드 이미지의 위치 정보 제거.** 서버가 EXIF를 지우지 않습니다. 앱의 리사이즈로 지워지는지 기기별로 확인되지 않았으므로 서버에서 다시 인코딩해야 합니다.
@@ -20,7 +19,7 @@
 
 - [x] 앱 ID `com.ryushin01.ieum` 확정 (출시 후 변경 불가). 스토어 콘솔에 등록할 때 사용 가능한지 확인
 - [ ] 도메인 확정: `WEB_URL`, `API_URL`, `CORS_ORIGINS`, `PUBLIC_BASE_URL`, `APP_WEB_URL`
-- [ ] 카카오, 네이버, Google 콘솔에 앱 등록, Redirect URI 등록, 검수 신청 ([개발 가이드](development.md#소셜-로그인)). 로그인 버튼 디자인을 제공자별 가이드와 대조
+- [ ] Apple Developer에 Services ID와 Key 등록, 카카오, 네이버, Google 콘솔에 앱 등록, Redirect URI 등록, 검수 신청 ([개발 가이드](development.md#소셜-로그인)). 로그인 버튼 디자인을 제공자별 가이드와 대조
 - [ ] `VITE_SUPPORT_EMAIL`을 실제 문의 메일로 변경
 - [ ] [약관과 개인정보 처리방침](../apps/web/src/pages/legal/LegalPages.tsx) 초안에 운영 주체를 넣고 법률 검토
 - [ ] sprout에서 가져온 Lottie 3종(`apps/web/src/shared/assets/lottie`)의 상업적 이용 라이선스 확인
@@ -56,7 +55,8 @@ flutter build ipa --release --dart-define-from-file=config/production.json
 | 권한 사용 목적 문구 | [x] `Info.plist`. Android는 시스템 사진 선택기를 써서 권한 요청 없음 |
 | 암호화 신고 | [x] `ITSAppUsesNonExemptEncryption=false` (https만 사용) |
 | 웹뷰 앱 최소 기능 (Apple 4.2) | [x] 네이티브 사진·촬영, 보안 저장, 오프라인 화면, 진동 / [ ] 심사 반려 가능성 있음, 푸시 알림 추가 권장 |
-| 소셜 로그인 동등 옵션 (Apple 4.8) | [ ] 미충족. Apple 로그인 추가 필요 |
+| 소셜 로그인 동등 옵션 (Apple 4.8) | [x] Apple 로그인(이메일 가리기 지원) / [ ] 실제 Apple 연동 확인 |
+| Apple 로그인 사용자 탈퇴 시 토큰 폐기 (Apple 5.1.1(v)) | [x] 구현, 가짜 제공자로 검증 / [ ] 실제 Apple 확인 |
 | 공개 개인정보 처리방침 URL | [ ] `WEB_URL/privacy` 배포 후 등록 |
 | 공개 계정 삭제 안내 URL (Google Play) | [ ] 배포 후 등록 |
 | App Store 개인정보 항목, Google 데이터 보안 양식 | [ ] 콘솔에서 작성 |
