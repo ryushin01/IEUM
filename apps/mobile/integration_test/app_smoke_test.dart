@@ -5,14 +5,15 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ieum/app/config.dart';
 import 'package:ieum/main.dart';
+import 'package:ieum/feed/post_card.dart';
 import 'package:ieum/services/media_service.dart';
+import 'package:ieum/shell/bottom_menu.dart';
 import 'package:ieum/services/token_store.dart';
 import 'package:ieum/shell/shell_controller.dart';
 import 'package:integration_test/integration_test.dart';
@@ -78,6 +79,21 @@ class Page {
   }
 }
 
+/// Flutter 위젯이 나타날 때까지 기다립니다.
+Future<void> waitFor(WidgetTester tester, Finder finder, String what, {int seconds = 30}) async {
+  final end = DateTime.now().add(Duration(seconds: seconds));
+  while (DateTime.now().isBefore(end)) {
+    await tester.pump(const Duration(milliseconds: 200));
+    if (finder.evaluate().isNotEmpty) return;
+  }
+  fail('$what 대기 시간 초과');
+}
+
+Future<void> tapMenu(WidgetTester tester, IconData icon) async {
+  await tester.tap(find.descendant(of: find.byType(BottomMenu), matching: find.byIcon(icon)));
+  await tester.pump(const Duration(milliseconds: 300));
+}
+
 Future<Page> start(WidgetTester tester, AppConfig config) async {
   Get.reset();
   await tester.pumpWidget(IeumApp(config: config));
@@ -95,77 +111,126 @@ void main() {
   });
 
   if (mode == 'demo') {
-    testWidgets('데모: 로그인, 보안 저장소, 재실행, DM, 테마, 버전 표시', (tester) async {
+    testWidgets('데모: 웹뷰 로그인, Flutter 피드, 화면 간 동기화, 메뉴, 테마', (tester) async {
       final page = await start(tester, config);
       await page.waitUntil('document.querySelector("button")', '첫 화면');
       await page.js('localStorage.clear(); "ok"');
       await page.reload();
       await page.waitUntil('document.body.innerText.includes("데모 계정으로 둘러보기")', '로그인 화면');
+      expect(find.byType(BottomMenu), findsNothing);
       await shot(tester, 'login');
 
       await page.click('데모 계정으로 둘러보기');
-      await page.waitUntil('document.querySelectorAll("article").length > 0', '피드');
+      await waitFor(tester, find.byType(PostCard), 'Flutter 피드');
+      expect(find.byType(BottomMenu), findsOneWidget);
+      await pumpFor(tester, const Duration(seconds: 1));
       await shot(tester, 'feed');
 
-      // 토큰이 웹 저장소가 아니라 Keychain·Keystore에 들어갑니다.
+      // 토큰은 웹 저장소가 아니라 Keychain·Keystore에 들어갑니다.
       final saved = await tokens.read();
       expect(saved?['accessToken'], 'demo.demo');
       expect(await page.js('String(localStorage.getItem("ieum.tokens"))'), 'null');
 
-      await page.reload();
-      await page.waitUntil('document.querySelectorAll("article").length > 0', '새로고침 후 피드');
+      // 사진 넘기기 (Flutter)
+      await tester.tap(find.byTooltip('다음 사진').first);
+      await pumpFor(tester, const Duration(milliseconds: 500));
+      expect(find.text('2 / 2'), findsWidgets);
 
-      await page.click('댓글 2개 모두 보기');
-      await page.waitUntil('document.body.innerText.includes("색이 정말 곱네요")', '댓글');
+      // 좋아요 (Flutter → 목업 API). 시드에서 이미 누른 글입니다.
+      final first = page.shell.feed.posts.first;
+      expect(first.liked, isTrue);
+      await tester.tap(find.byIcon(Icons.favorite).first);
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(page.shell.feed.posts.first.liked, isFalse);
+      expect(page.shell.feed.posts.first.likeCount, first.likeCount - 1);
+
+      // 댓글 (Flutter → 웹뷰 상세 화면에 반영)
+      await tester.enterText(find.byType(TextField).first, 'Flutter에서 쓴 댓글');
+      await tester.pump(const Duration(milliseconds: 200));
+      final postButton = find.widgetWithText(FilledButton, '게시').first;
+      await tester.ensureVisible(postButton);
+      await tester.pump(const Duration(milliseconds: 500));
+      await shot(tester, 'feed-comment');
+      await tester.tap(postButton);
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(page.shell.feed.posts.first.commentCount, first.commentCount + 1);
+      final allComments = find.text('댓글 ${first.commentCount + 1}개 모두 보기').first;
+      await tester.ensureVisible(allComments);
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(allComments);
+      await pumpFor(tester, const Duration(milliseconds: 500));
+      expect(find.byType(PostCard), findsNothing);
+      await page.waitUntil('document.body.innerText.includes("Flutter에서 쓴 댓글")', '웹뷰 상세의 댓글');
+      await page.waitUntil('document.querySelector("article button[aria-pressed]").getAttribute("aria-pressed") === "false"', '웹뷰 상세의 좋아요 상태');
       await page.js('window.scrollTo(0, 500); "ok"');
       await shot(tester, 'post-detail');
 
-      await page.click('새 게시글');
+      // 뒤로 가기(웹뷰 헤더)로 Flutter 피드에 돌아옵니다.
+      await page.click('뒤로 가기');
+      await waitFor(tester, find.byType(PostCard), '돌아온 피드');
+      expect(page.shell.path.value, '/');
+
+      // 새 글 (웹뷰)
+      await tapMenu(tester, Icons.add_box_outlined);
       await page.waitUntil('document.body.innerText.includes("앨범에서 선택")', '작성 화면');
-      await page.waitUntil('document.body.innerText.includes("촬영")', '앱 전용 촬영 버튼');
       await page.fill('#post-caption', '오늘의 기록을 남겨 보세요.');
+      expect(find.byType(PostCard), findsNothing);
       await shot(tester, 'post-write');
 
-      await page.click('메시지');
+      // DM (웹뷰). 대화방에서는 메뉴를 숨깁니다.
+      await tapMenu(tester, Icons.chat_bubble_outline);
       await page.waitUntil('[...document.querySelectorAll("a")].some(a => a.textContent.includes("하늘빛") && a.getAttribute("href").includes("/dm/"))', '대화 목록');
       await page.js('[...document.querySelectorAll("a")].find(a => a.textContent.includes("하늘빛")).click(); "ok"');
       await page.fill('#message-body', '실제 앱에서 보냅니다');
       await page.click('보내기');
       await page.waitUntil('document.querySelector("[role=log]").innerText.includes("좋아요")', '자동 답장');
+      await pumpFor(tester, const Duration(milliseconds: 500));
+      expect(find.byType(BottomMenu), findsNothing);
       await shot(tester, 'dm-room');
-
       await page.js('[...document.querySelectorAll("a")].find(a => a.getAttribute("href").includes("/users/")).click(); "ok"');
       await page.waitUntil('document.body.innerText.includes("메시지 보내기")', '프로필');
+      await waitFor(tester, find.byType(BottomMenu), '프로필의 메뉴');
       await shot(tester, 'profile');
 
-      // 웹 → 앱 브릿지: 테마가 앱의 상태 표시줄과 배경에 전달됩니다.
+      // 다크 모드 (Flutter 스위치 → 웹 → 앱 전체)
+      await tapMenu(tester, Icons.home_outlined);
+      await waitFor(tester, find.byType(PostCard), '홈');
       expect(page.shell.brightness.value, isNot(Brightness.dark));
-      await page.js('document.querySelector("[role=switch]").click(); "ok"');
-      await page.waitUntil('document.documentElement.dataset.theme === "dark"', '다크 모드');
+      await tester.tap(find.byType(Switch));
+      await page.waitUntil('document.documentElement.dataset.theme === "dark"', '웹 다크 모드');
       await pumpFor(tester, const Duration(seconds: 1));
       expect(page.shell.brightness.value, Brightness.dark);
-      await page.click('홈');
-      await page.waitUntil('document.querySelectorAll("article").length > 0', '다크 피드');
       await shot(tester, 'feed-dark');
-      await page.js('document.querySelector("[role=switch]").click(); "ok"');
+      await tester.tap(find.byType(Switch));
+      await pumpFor(tester, const Duration(seconds: 1));
 
-      // 앱 → 웹 브릿지: 버전 정보
-      await page.click('내 정보');
+      // 앱 → 웹 브릿지: 버전 정보, 로그아웃하면 Flutter 화면도 사라집니다.
+      page.shell.selectTab(MenuTab.me);
       await page.click('설정');
       await page.waitUntil('document.body.innerText.includes("버전 ")', '앱 버전');
       debugPrint('INFO:${await page.js('document.body.innerText.match(/버전 [^\\n]+/)[0]')}');
-
       await page.click('로그아웃');
       await page.waitUntil('document.body.innerText.includes("데모 계정으로 둘러보기")', '로그아웃');
+      await pumpFor(tester, const Duration(seconds: 1));
       expect(await tokens.read(), isNull);
+      expect(find.byType(BottomMenu), findsNothing);
+      expect(find.byType(PostCard), findsNothing);
+
       await page.click('운영자로 둘러보기');
-      await page.waitUntil('document.querySelectorAll("article").length > 0', '운영자 피드');
-      await page.click('내 정보');
+      await waitFor(tester, find.byType(PostCard), '운영자 피드');
+      page.shell.selectTab(MenuTab.me);
       await page.click('설정');
       await page.click('신고 처리');
       await page.waitUntil('document.body.innerText.includes("24시간 초과")', '신고 목록');
       await shot(tester, 'admin-reports');
       debugPrint('INFO:platform=${Platform.operatingSystem}');
+    });
+
+    testWidgets('재실행하면 로그인을 유지하고 바로 피드를 보여 준다', (tester) async {
+      await tokens.write({'accessToken': 'demo.demo', 'refreshToken': 'demo.demo'});
+      await start(tester, config);
+      await waitFor(tester, find.byType(PostCard), '재실행 후 피드');
+      expect(find.byType(BottomMenu), findsOneWidget);
     });
 
     testWidgets('허용하지 않은 주소로는 이동하지 않는다', (tester) async {
@@ -179,25 +244,34 @@ void main() {
 
     testWidgets('연결할 수 없으면 오프라인 화면을 보여 준다', (tester) async {
       await start(tester, AppConfig(webUrl: Uri.parse('https://ieum-does-not-exist.invalid/'), apiUrl: config.apiUrl));
-      final end = DateTime.now().add(const Duration(seconds: 30));
-      while (DateTime.now().isBefore(end) && find.text('연결할 수 없습니다').evaluate().isEmpty) {
-        await tester.pump(const Duration(milliseconds: 200));
-      }
-      expect(find.text('연결할 수 없습니다'), findsOneWidget);
+      await waitFor(tester, find.text('연결할 수 없습니다'), '오프라인 화면');
       await shot(tester, 'offline');
     });
   }
 
   if (mode == 'real') {
-    testWidgets('실제 API: 로그인, 재발급 토큰 저장, 소켓 수신', (tester) async {
+    testWidgets('실제 API: Flutter 피드, Dio 재발급, 업로드, 소켓', (tester) async {
       final page = await start(tester, config);
       await page.waitUntil('document.querySelector("input[type=email]")', '로그인 화면');
       await page.fill('input[type=email]', 'demo@ieum.app');
       await page.fill('input[type=password]', 'ieum-demo-1234');
       await page.click('로그인');
-      await page.waitUntil('document.querySelectorAll("article").length > 0', '피드');
+      await waitFor(tester, find.byType(PostCard), '실제 API 피드');
       final saved = await tokens.read();
       expect(saved?['refreshToken'], isNotEmpty);
+
+      // Dio 재발급: 만료된 토큰이어도 한 번 재발급하고 이어 갑니다.
+      await tokens.write({'accessToken': 'expired', 'refreshToken': saved!['refreshToken']});
+      await tester.runAsync(() => page.shell.feed.reload());
+      expect(page.shell.feed.error.value, isNull);
+      final refreshed = await tokens.read();
+      expect(refreshed!['accessToken'], isNot('expired'));
+      expect(refreshed['refreshToken'], isNot(saved['refreshToken']));
+
+      // 좋아요와 댓글을 실제 API에 반영합니다.
+      final first = page.shell.feed.posts.first;
+      await tester.runAsync(() => page.shell.feed.toggleLike(first));
+      expect(page.shell.feed.posts.first.liked, !first.liked);
 
       // Dio 업로드: 서버가 다시 인코딩해 WebP로 저장합니다.
       final png = File('${Directory.systemTemp.path}/ieum-test.png');
@@ -206,19 +280,28 @@ void main() {
       final id = media.addPickedForTest(XFile(png.path));
       final urls = await tester.runAsync(() => media.upload(
         fileIds: [id],
-        accessToken: saved!['accessToken'] as String,
+        accessToken: refreshed['accessToken'] as String,
         uploadUrl: config.apiUrl.resolve('/uploads'),
       ));
       expect(urls!.single, endsWith('.webp'));
       debugPrint('INFO:uploaded ${urls.single}');
 
-      await page.click('메시지');
+      // 웹뷰는 앱이 재발급한 사실을 모르지만, 오래된 토큰으로도 계속 동작합니다.
+      await tapMenu(tester, Icons.chat_bubble_outline);
       await page.waitUntil('[...document.querySelectorAll("a")].some(a => a.textContent.includes("하늘빛"))', '대화 목록');
       await page.js('[...document.querySelectorAll("a")].find(a => a.textContent.includes("하늘빛")).click(); "ok"');
       await page.waitUntil('document.querySelector("[role=log]")', '대화방');
       debugPrint('READY_FOR_SOCKET');
       await page.waitUntil('document.querySelector("[role=log]").innerText.includes("실시간 소켓 도착 확인")', '소켓 메시지', seconds: 40);
       await shot(tester, 'real-socket');
+
+      // 로그아웃하면 최신 재발급 토큰까지 폐기합니다.
+      final latest = await tokens.read();
+      await page.js('window.__ieumNative.navigate("/settings"); "ok"');
+      await page.click('로그아웃');
+      await page.waitUntil('document.querySelector("input[type=email]")', '로그아웃');
+      debugPrint('LATEST_REFRESH:${latest!['refreshToken']}');
+      await pumpFor(tester, const Duration(seconds: 2));
     });
   }
 }

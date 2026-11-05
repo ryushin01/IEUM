@@ -54,6 +54,8 @@ void main() {
   late FakeMedia media;
   late BridgeRouter router;
   String? theme;
+  String? staleSeen;
+  late List<String> uiEvents;
   var haptics = 0;
 
   Future<Map<String, dynamic>?> call(String method, [Map<String, dynamic>? params]) =>
@@ -63,6 +65,7 @@ void main() {
     tokens = FakeTokens();
     media = FakeMedia();
     social = FakeSocialAuth();
+    uiEvents = [];
     theme = null;
     haptics = 0;
     router = BridgeRouter(
@@ -70,6 +73,11 @@ void main() {
       tokens: tokens,
       media: media,
       socialAuth: social,
+      tokenRefresher: (stale) async {
+        staleSeen = stale;
+        return {'accessToken': 'new', 'refreshToken': 'r2'};
+      },
+      onUiEvent: (method, params) => uiEvents.add('$method ${params['path'] ?? params['count'] ?? ''}'.trim()),
       platform: 'ios',
       onThemeChanged: (mode) => theme = mode,
       onHaptic: () => haptics++,
@@ -158,6 +166,19 @@ void main() {
       'fileIds': ['f0'],
     });
     expect(reply!['result']['dataUrls'], ['data:image/png;base64,AA==']);
+  });
+
+  test('웹의 토큰 재발급을 앱이 맡는다', () async {
+    final reply = await call('auth.refresh', {'staleAccessToken': 'old'});
+    expect(staleSeen, 'old');
+    expect(reply!['result'], {'accessToken': 'new', 'refreshToken': 'r2'});
+  });
+
+  test('화면 이동과 안 읽은 수를 앱 화면에 전달한다', () async {
+    await call('ui.ready');
+    await call('ui.routeChanged', {'path': '/dm'});
+    await call('ui.setUnread', {'count': 3});
+    expect(uiEvents, ['ui.ready', 'ui.routeChanged /dm', 'ui.setUnread 3']);
   });
 
   test('테마와 진동을 앱에 전달한다', () async {

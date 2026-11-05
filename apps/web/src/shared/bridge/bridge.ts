@@ -15,11 +15,18 @@ export interface BridgeMethods {
   'auth.setTokens': { params: Tokens; result: null };
   'auth.clearTokens': { params: undefined; result: null };
   'auth.socialLogin': { params: { url: string }; result: { callbackUrl: string } };
+  /** 재발급은 앱이 맡습니다. 웹과 앱이 동시에 하면 일회용 토큰이 충돌합니다. */
+  'auth.refresh': { params: { staleAccessToken: string | null }; result: Tokens | null };
   'media.pick': { params: { source: 'gallery' | 'camera'; maxCount: number }; result: { fileIds: string[] } };
   'media.upload': { params: { fileIds: string[]; accessToken: string; uploadUrl: string }; result: { urls: string[] } };
   'media.read': { params: { fileIds: string[] }; result: { dataUrls: string[] } };
   'ui.setTheme': { params: { mode: 'light' | 'dark' }; result: null };
   'ui.haptic': { params: undefined; result: null };
+  'ui.ready': { params: undefined; result: null };
+  'ui.routeChanged': { params: { path: string }; result: null };
+  'ui.setUnread': { params: { count: number }; result: null };
+  /** 데모 전용: 앱 화면의 요청을 웹의 목업 API가 처리한 결과입니다. */
+  'demo.reply': { params: { requestId: number; status: number; body: unknown }; result: null };
 }
 
 export class BridgeError extends Error {

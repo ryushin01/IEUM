@@ -265,16 +265,27 @@ test('앱 브릿지: 토큰은 앱 저장소에, 이미지는 앱 업로드로 �
       },
     };
   });
-  await login(page);
+  await page.goto('/login');
+  await page.getByLabel('이메일').fill('demo@ieum.app');
+  await page.getByLabel('비밀번호').fill('ieum-demo-1234');
+  await page.getByRole('button', { name: '로그인', exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
   const stored = await page.evaluate(() => localStorage.getItem('ieum.tokens'));
   expect(stored).toBeNull();
-  // 흉내 낸 앱 저장소는 새로고침하면 비워지므로 화면 안에서 이동합니다.
-  await page.getByRole('link', { name: '새 게시글' }).click();
+  // 앱에서는 Flutter가 피드와 하단 메뉴를 그리므로 웹은 그리지 않습니다.
+  await expect(page.getByRole('navigation', { name: '주 메뉴' })).toHaveCount(0);
+  await expect(page.getByRole('article')).toHaveCount(0);
+  // Flutter 메뉴가 부르는 방식으로 이동합니다.
+  await page.evaluate(() => window.__ieumNative!.navigate('/posts/new'));
   await page.getByRole('button', { name: '촬영' }).click();
   await expect(page.getByLabel('1번째 사진 설명')).toBeVisible();
   const methods = await page.evaluate(() =>
     ((window as unknown as { __nativeCalls: { method: string }[] }).__nativeCalls).map((c) => c.method));
-  expect(methods).toEqual(expect.arrayContaining(['auth.getTokens', 'media.pick', 'media.upload']));
+  expect(methods).toEqual(expect.arrayContaining(['auth.getTokens', 'media.pick', 'media.upload', 'ui.ready', 'ui.routeChanged']));
+  const routes = await page.evaluate(() =>
+    ((window as unknown as { __nativeCalls: { method: string; params: { path: string } }[] }).__nativeCalls)
+      .filter((c) => c.method === 'ui.routeChanged').map((c) => c.params.path));
+  expect(routes).toEqual(expect.arrayContaining(['/login', '/', '/posts/new']));
 });
 
 test.describe('소셜 로그인 (가짜 제공자)', () => {

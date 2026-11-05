@@ -14,12 +14,17 @@
 | `auth.getTokens` | | `{ accessToken, refreshToken }` 또는 `null` |
 | `auth.setTokens` | `{ accessToken, refreshToken }` | `null` |
 | `auth.clearTokens` | | `null` |
+| `auth.refresh` | `{ staleAccessToken }` | 새 토큰 또는 저장된 최신 토큰, 만료되면 `null` |
 | `auth.socialLogin` | `{ url }` (허용한 제공자 주소) | `{ callbackUrl }` (`com.ryushin01.ieum://auth?...`) |
 | `media.pick` | `{ source: 'gallery' \| 'camera', maxCount }` | `{ fileIds }` (취소하면 빈 배열) |
 | `media.upload` | `{ fileIds, accessToken, uploadUrl }` | `{ urls }` |
 | `media.read` | `{ fileIds }` | `{ dataUrls }` (서버 없는 데모 전용) |
 | `ui.setTheme` | `{ mode: 'light' \| 'dark' }` | `null` |
 | `ui.haptic` | | `null` |
+| `ui.ready` | | `null` (웹 준비 완료) |
+| `ui.routeChanged` | `{ path }` | `null` (앱이 위에 올릴 화면과 메뉴를 정함) |
+| `ui.setUnread` | `{ count }` | `null` (하단 메뉴 배지) |
+| `demo.reply` | `{ requestId, status, body }` | 응답 없음 (데모 전용) |
 
 | 오류 코드 | 뜻 |
 |---|---|
@@ -29,6 +34,17 @@
 | `cancelled`, `social_failed` | 소셜 로그인 취소, 인증 창 실패 |
 | `forbidden_host` | `uploadUrl`이 설정된 API가 아니거나 `url`이 허용한 제공자가 아님 |
 | `invalid_params`, `unknown_method`, `internal` | 요청 오류, 미지원 기능, 내부 오류 |
+
+앱이 웹을 부를 때는 `window.__ieumNative`를 씁니다.
+
+| 함수 | 쓰임 |
+|---|---|
+| `navigate(path)` | 앱 메뉴나 피드에서 웹뷰 화면으로 이동. 캐시를 새로 받음 |
+| `scrollTop()`, `toggleTheme()` | 맨 위로, 테마 전환 |
+| `sessionExpired()` | 앱이 재발급에 실패했을 때 로그인 화면으로 이동 |
+| `demoRequest(request)` | 데모 전용. 앱 화면의 요청을 웹의 목업 API로 처리하고 `demo.reply`로 응답 |
+
+재발급 토큰은 일회용이므로 **재발급은 앱에서만** 합니다. 웹은 401을 받으면 `auth.refresh`를 부르고, 앱이 이미 재발급했다면 저장된 최신 토큰을 돌려받습니다.
 
 ## 보안
 

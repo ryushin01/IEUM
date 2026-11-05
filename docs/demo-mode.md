@@ -2,7 +2,7 @@
 
 `VITE_DEMO_MODE=true`로 빌드하면 **서버 없이** 동작합니다. [웹 데모](https://ryushin01.github.io/IEUM/)가 이 방식입니다.
 
-공통 요청 함수(`shared/api/client.ts`)가 `fetch` 대신 브라우저 안의 목업(`shared/api/demo/server.ts`)을 호출합니다. 화면 코드는 실제 모드와 같습니다. 목업 코드는 데모 빌드에서만 불러옵니다.
+공통 요청 함수(`shared/api/client.ts`)가 `fetch` 대신 브라우저 안의 목업(`shared/api/demo/server.ts`)을 호출합니다. 화면 코드는 실제 모드와 같습니다. 앱의 Flutter 피드도 브릿지를 거쳐 같은 목업을 씁니다. 목업 코드는 데모 빌드에서만 불러옵니다.
 
 ## 둘러보기
 

@@ -76,3 +76,5 @@ export const mainFull = style({
   height: `calc(100dvh - ${vars.layout.header})`, maxWidth: vars.layout.content, margin: '0 auto', outline: 'none',
   '@media': { [WIDE]: { ...wideMain, height: '100dvh' } },
 });
+/** 앱에서는 아래에 Flutter 메뉴가 따로 있어 여백을 두지 않습니다. */
+export const mainEmbedded = style({ maxWidth: vars.layout.content, margin: '0 auto', paddingBottom: 8, outline: 'none' });

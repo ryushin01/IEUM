@@ -1,4 +1,4 @@
-import type { Tokens } from '@/shared/bridge';
+import { callNative, isNativeApp, type Tokens } from '@/shared/bridge';
 import { API_URL } from '@/shared/config/env';
 import { tokenStore } from './token-store';
 
@@ -52,11 +52,26 @@ async function send(path: string, init: RequestInit): Promise<Response> {
   }
 }
 
+/** 앱이 재발급하거나, 이미 재발급한 토큰을 돌려줍니다. 서버 장애로는 로그아웃시키지 않습니다. */
+async function refreshThroughApp(): Promise<boolean> {
+  const next = await callNative('auth.refresh', { staleAccessToken: tokens?.accessToken ?? null }).catch(() => {
+    throw new ApiError(0, 'network', NETWORK_MESSAGE);
+  });
+  if (!next) {
+    tokens = null;
+    onExpired();
+    return false;
+  }
+  tokens = next;
+  return true;
+}
+
 /** 동시에 만료돼도 재발급은 한 번만 합니다. (재발급 토큰은 일회용) */
 export function refreshSession(): Promise<boolean> {
   refreshing ??= (async () => {
     const refreshToken = tokens?.refreshToken;
     if (!refreshToken) return false;
+    if (isNativeApp() && import.meta.env.VITE_DEMO_MODE !== 'true') return refreshThroughApp();
     const res = await send('/auth/refresh', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },

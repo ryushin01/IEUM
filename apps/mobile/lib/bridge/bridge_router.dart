@@ -14,6 +14,8 @@ class BridgeRouter {
     required this.media,
     required this.socialAuth,
     required this.platform,
+    required this.tokenRefresher,
+    required this.onUiEvent,
     required this.onThemeChanged,
     required this.onHaptic,
   });
@@ -23,6 +25,10 @@ class BridgeRouter {
   final MediaService media;
   final SocialAuthService socialAuth;
   final String platform;
+  final Future<Map<String, dynamic>?> Function(String? staleAccessToken) tokenRefresher;
+
+  /// 화면 이동, 안 읽은 수처럼 앱 화면에 알리는 이벤트입니다.
+  final void Function(String method, Map<String, dynamic> params) onUiEvent;
   final void Function(String mode) onThemeChanged;
   final void Function() onHaptic;
 
@@ -70,6 +76,13 @@ class BridgeRouter {
         return null;
       case 'auth.clearTokens':
         await tokens.clear();
+        return null;
+      case 'auth.refresh':
+        return tokenRefresher(params['staleAccessToken'] as String?);
+      case 'ui.ready':
+      case 'ui.routeChanged':
+      case 'ui.setUnread':
+        onUiEvent(method as String, params);
         return null;
       case 'auth.socialLogin':
         final url = Uri.parse(params['url'] as String);
