@@ -30,3 +30,4 @@ apps/mobile/android/key.properties
 *.keystore
 *.p8
 *.mobileprovision
+dist-demo/

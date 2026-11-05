@@ -5,11 +5,13 @@
 
 **나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. Flutter 앱 안의 웹뷰에 React 화면을 띄우고 브릿지로 연결합니다.
 
-> **프로젝트 상태:** 스토어 출시를 준비 중입니다. 출시 전에 필요한 일은 [출시 체크리스트](docs/release.md)에 정리했습니다.
+**[웹 데모 바로 보기](https://ryushin01.github.io/IEUM/)** · 가입 없이 버튼 하나로 둘러볼 수 있습니다.
+
+> **프로젝트 상태:** 스토어에 출시하지 않는 **포트폴리오용 데모**입니다. 다만 출시를 전제로 심사 요건까지 설계했습니다. 웹 데모는 서버 없이 브라우저 안의 목업으로 동작합니다. 실제 카카오·네이버·Google·Apple 로그인, 메일, S3는 가짜 서버로만 검증했고 실제 서비스와 연결하지 않았습니다.
 
 ## 화면
 
-화면의 사용자와 게시글은 모두 가상 데이터입니다.
+화면의 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다.
 
 | 피드 | 다크 모드 |
 |---|---|
@@ -48,7 +50,7 @@
 | 구분 | 사용 기술 |
 |---|---|
 | 앱 | Flutter, webview_flutter, GetX(`get`), dio, flutter_secure_storage, image_picker, url_launcher, flutter_web_auth_2 |
-| 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router, lottie-react |
+| 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router |
 | API | Node.js, Fastify 5, ws, PostgreSQL(`pg`), PGlite(로컬·테스트), jose, sharp, nodemailer, S3 호환 저장소 |
 | 품질 | ESLint(FSD 계층 규칙), Vitest, Storybook 10(axe), Playwright(E2E, axe), flutter test |
 
@@ -69,10 +71,12 @@ flutter run                # 개발 서버를 웹뷰로 엽니다. Android는 ad
 
 | 명령 | 설명 |
 |---|---|
+| `pnpm --filter @ieum/web dev:demo` | 서버 없이 데모 실행 |
 | `pnpm lint` / `typecheck` | ESLint / 타입 검사 |
 | `pnpm test` | API·웹 단위 테스트 |
 | `pnpm --filter @ieum/web test:storybook` | 모든 스토리 렌더링과 접근성 검사 |
-| `pnpm test:e2e` | 프로덕션 빌드의 실제 화면 검사 |
+| `pnpm test:e2e` | 프로덕션 빌드와 실제 API의 화면 검사 |
+| `pnpm --filter @ieum/web test:e2e:demo` | 데모 빌드 검사, `SCREENSHOTS=1`이면 README 화면 촬영 |
 | `flutter analyze` / `flutter test` | 앱 정적 분석 / 테스트 (`apps/mobile`) |
 
 ## 프로젝트 구조
@@ -89,12 +93,13 @@ docs/        문서와 화면 이미지
 
 | 문서 | 내용 |
 |---|---|
+| [데모 모드](docs/demo-mode.md) | 둘러보는 방법과 실제 서비스와 다른 점 |
 | [개발 가이드](docs/development.md) | 구조, 환경 변수, 웹뷰 빌드 도구 선택, 디자인 기준 |
 | [브릿지 계약](docs/bridge.md) | 웹과 앱 사이의 메서드와 오류 코드 |
-| [출시 체크리스트](docs/release.md) | 스토어 심사 요건, 서명, 운영 배포 |
+| [출시 체크리스트](docs/release.md) | 실제로 출시한다면 필요한 일 (심사 요건, 서명, 운영 배포) |
 | [버전 기록](CHANGELOG.md) | 버전별 변경 내용 |
 
 ## 향후 과제
 
-- 푸시 알림, 카카오·네이버·Google 탈퇴 시 연결 끊기
+- iOS·Android 시뮬레이터 실행 화면과 시연 영상
 - 스크린 리더(VoiceOver, TalkBack) 실사용 점검과 KWCAG 33개 항목 수동 점검

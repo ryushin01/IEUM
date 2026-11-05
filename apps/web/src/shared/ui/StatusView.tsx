@@ -1,22 +1,11 @@
 import { Button, Spin } from 'antd';
-import { lazy, Suspense, type ReactNode } from 'react';
-import loadingData from '@/shared/assets/lottie/loading.json';
-import { centered, lottie } from './ui.css';
-
-const LottieView = lazy(() => import('./LottieView'));
-
-export function LottieImage({ data, loop, className = lottie }: { data: unknown; loop?: boolean; className?: string }) {
-  return (
-    <Suspense fallback={<Spin />}>
-      <LottieView data={data} loop={loop} className={className} />
-    </Suspense>
-  );
-}
+import type { ReactNode } from 'react';
+import { centered } from './ui.css';
 
 export function LoadingView({ label = '불러오는 중' }: { label?: string }) {
   return (
     <div className={centered} role="status" aria-label={label}>
-      <LottieImage data={loadingData} />
+      <Spin size="large" />
     </div>
   );
 }

@@ -17,6 +17,7 @@ export interface BridgeMethods {
   'auth.socialLogin': { params: { url: string }; result: { callbackUrl: string } };
   'media.pick': { params: { source: 'gallery' | 'camera'; maxCount: number }; result: { fileIds: string[] } };
   'media.upload': { params: { fileIds: string[]; accessToken: string; uploadUrl: string }; result: { urls: string[] } };
+  'media.read': { params: { fileIds: string[] }; result: { dataUrls: string[] } };
   'ui.setTheme': { params: { mode: 'light' | 'dark' }; result: null };
   'ui.haptic': { params: undefined; result: null };
 }

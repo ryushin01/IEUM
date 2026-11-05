@@ -13,12 +13,13 @@ function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** 초안입니다. 출시 전 운영 주체 정보를 채우고 법률 검토를 받아야 합니다. docs/release.md 참고 */
+/** 예시 문서입니다. 실제로 출시한다면 운영 주체 정보를 채우고 법률 검토를 받아야 합니다. docs/release.md 참고 */
 export function TermsPage() {
   usePageTitle('이용약관');
   return (
     <Layout>
       <h1>이용약관</h1>
+      <p><strong>포트폴리오 프로젝트의 예시 문서이며 실제 서비스 약관이 아닙니다.</strong></p>
       <h2>1. 서비스</h2>
       <p>이음은 사진과 글을 공유하고 메시지를 주고받는 소셜 서비스입니다. 만 14세 이상만 이용할 수 있습니다.</p>
       <h2>2. 금지 행위</h2>
@@ -29,13 +30,17 @@ export function TermsPage() {
         <li>스팸, 광고, 불법 정보 유포, 타인의 권리 침해</li>
       </ul>
       <h2>3. 신고와 조치</h2>
-      <p>이용자는 게시글, 댓글, 사용자를 신고하거나 차단할 수 있습니다. 운영자는 신고를 24시간 이내에 검토하며, 위반 콘텐츠를 삭제하고 해당 이용자의 이용을 제한할 수 있습니다.</p>
+      <p>이용자는 게시글, 댓글, 사용자를 신고하거나 차단할 수 있습니다. 운영자는 신고를 검토하며, 위반 콘텐츠를 삭제하고 해당 이용자의 이용을 제한할 수 있습니다.</p>
       <h2>4. 콘텐츠의 권리</h2>
       <p>게시물의 권리는 작성자에게 있습니다. 작성자는 서비스 제공에 필요한 범위에서 게시물을 표시하도록 허락합니다.</p>
       <h2>5. 탈퇴</h2>
       <p>이용자는 설정 화면에서 언제든 계정을 삭제할 수 있습니다.</p>
-      <h2>6. 문의</h2>
-      <p><a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+      {SUPPORT_EMAIL && (
+        <>
+          <h2>6. 문의</h2>
+          <p><a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+        </>
+      )}
     </Layout>
   );
 }
@@ -45,6 +50,7 @@ export function PrivacyPage() {
   return (
     <Layout>
       <h1>개인정보 처리방침</h1>
+      <p><strong>포트폴리오 프로젝트의 예시 문서이며 실제 서비스 방침이 아닙니다.</strong></p>
       <h2>1. 수집 항목과 목적</h2>
       <ul>
         <li>회원 관리: 이메일, 비밀번호(암호화 저장), 닉네임</li>
@@ -65,8 +71,12 @@ export function PrivacyPage() {
       </ul>
       <h2>5. 이용자의 권리</h2>
       <p>프로필과 게시글은 앱에서 직접 열람·수정·삭제할 수 있고, 계정은 설정 &gt; 계정 삭제에서 삭제할 수 있습니다.</p>
-      <h2>6. 개인정보 보호 책임자</h2>
-      <p><a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+      {SUPPORT_EMAIL && (
+        <>
+          <h2>6. 개인정보 보호 책임자</h2>
+          <p><a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+        </>
+      )}
     </Layout>
   );
 }

@@ -27,6 +27,7 @@ jobs:
       - run: pnpm --filter @ieum/web exec playwright install --with-deps chromium
       - run: pnpm --filter @ieum/web test:storybook
       - run: pnpm test:e2e
+      - run: pnpm --filter @ieum/web test:e2e:demo
 
   postgres:
     name: API (실제 PostgreSQL)

@@ -30,3 +30,4 @@ export const button = styleVariants({
     },
   },
 });
+export const demoNote = style({ marginBottom: 12, textAlign: 'center', fontSize: 14, color: vars.color.muted });

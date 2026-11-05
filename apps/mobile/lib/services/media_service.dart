@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import '../bridge/bridge_error.dart';
 
 abstract class MediaService {
+  /// 서버 없는 데모에서 쓰는 data URL 읽기입니다.
+  Future<List<String>> read(List<String> fileIds);
   Future<List<String>> pick({required String source, required int maxCount});
   Future<List<String>> upload({
     required List<String> fileIds,
@@ -46,6 +50,19 @@ class NativeMediaService implements MediaService {
       }
       throw const BridgeException('pick_failed', '사진을 가져오지 못했습니다.');
     }
+  }
+
+  @override
+  Future<List<String>> read(List<String> fileIds) async {
+    final urls = <String>[];
+    for (final id in fileIds) {
+      final file = _picked.remove(id);
+      if (file == null) throw const BridgeException('file_not_found', '사진을 다시 선택해 주세요.');
+      final bytes = await file.readAsBytes();
+      final mime = file.mimeType ?? (file.name.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg');
+      urls.add('data:$mime;base64,${base64Encode(bytes)}');
+    }
+    return urls;
   }
 
   Future<List<XFile>> _select(String source, int maxCount) async {

@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Navigate, useLocation, useSearchParams } from 'react-router';
-import { ForgotPasswordForm, LoginForm, ResetPasswordForm, SignupForm, SocialLoginButtons, SocialSignupForm, useCompleteSocialCallback, type SocialSignupState } from '@/features/auth';
+import { DemoLogin, ForgotPasswordForm, LoginForm, ResetPasswordForm, SignupForm, SocialLoginButtons, SocialSignupForm, useCompleteSocialCallback, type SocialSignupState } from '@/features/auth';
 import { ErrorView, LoadingView } from '@/shared/ui';
 import { usePageTitle } from '@/shared/lib';
 import { Logo, srOnly } from '@/shared/ui';
@@ -14,6 +14,7 @@ export function LoginPage() {
         <h1 className={s.title}><Logo size={64} /><span className={srOnly}> 로그인</span></h1>
         <p className={s.tagline}>나와 너를 잇는 공간</p>
       </div>
+      <DemoLogin />
       <LoginForm />
       <SocialLoginButtons />
       <p className={s.footer}>처음이신가요? <Link to="/signup">회원가입</Link></p>

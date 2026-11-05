@@ -9,13 +9,20 @@ const PASSWORD = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,72}$/;
 
 export function ForgotPasswordForm() {
   const send = useMutation({
-    mutationFn: (data: { email: string }) => request('/auth/password-reset/request', { method: 'POST', body: data }),
+    mutationFn: (data: { email: string }) =>
+      request<{ demoLink?: string | null }>('/auth/password-reset/request', { method: 'POST', body: data }),
   });
   if (send.isSuccess) {
     // 가입 여부를 알려 주지 않도록 항상 같은 문구를 씁니다.
     return (
       <p className={s.notice} role="status">
         가입된 이메일이라면 비밀번호 재설정 메일을 보냈습니다. 30분 안에 메일의 링크를 열어 주세요. 메일이 보이지 않으면 스팸함을 확인해 주세요.
+        {send.data?.demoLink && (
+          <>
+            <br />
+            데모에는 메일이 없으므로 <a href={send.data.demoLink}>여기에서 재설정 화면을 열 수 있습니다.</a>
+          </>
+        )}
       </p>
     );
   }

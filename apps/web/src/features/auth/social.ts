@@ -4,6 +4,7 @@ import { useNavigate, type NavigateFunction } from 'react-router';
 import { ME_KEY, type Me } from '@/entities/session';
 import { ApiError, request, setSession } from '@/shared/api';
 import { BridgeError, callNative, isNativeApp } from '@/shared/bridge';
+import { IS_DEMO } from '@/shared/config/env';
 
 export type SocialProvider = 'kakao' | 'naver' | 'google' | 'apple';
 
@@ -49,7 +50,8 @@ async function finish(code: string, verifier: string, client: QueryClient, navig
 /** 취소하면 조용히 끝냅니다. 그 밖의 실패는 예외로 알립니다. */
 export async function startSocialLogin(provider: SocialProvider, client: QueryClient, navigate: NavigateFunction): Promise<void> {
   const { verifier, challenge } = await createPkce();
-  const native = isNativeApp();
+  // 데모는 실제 제공자 없이 같은 화면 안에서 돌아오므로 앱에서도 인증 창을 열지 않습니다.
+  const native = isNativeApp() && !IS_DEMO;
   const { url } = await request<{ url: string }>(`/auth/social/${provider}/start`, {
     method: 'POST',
     body: { client: native ? 'app' : 'web', codeChallenge: challenge },

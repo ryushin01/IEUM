@@ -69,4 +69,3 @@ export const chip = style({
     [`${chipInput}:disabled:not(:checked) + &`]: { opacity: 0.55, cursor: 'not-allowed' },
   },
 });
-export const lottie = style({ width: 120, height: 120 });

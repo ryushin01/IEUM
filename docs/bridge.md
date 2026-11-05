@@ -17,6 +17,7 @@
 | `auth.socialLogin` | `{ url }` (허용한 제공자 주소) | `{ callbackUrl }` (`com.ryushin01.ieum://auth?...`) |
 | `media.pick` | `{ source: 'gallery' \| 'camera', maxCount }` | `{ fileIds }` (취소하면 빈 배열) |
 | `media.upload` | `{ fileIds, accessToken, uploadUrl }` | `{ urls }` |
+| `media.read` | `{ fileIds }` | `{ dataUrls }` (서버 없는 데모 전용) |
 | `ui.setTheme` | `{ mode: 'light' \| 'dark' }` | `null` |
 | `ui.haptic` | | `null` |
 

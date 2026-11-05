@@ -11,6 +11,18 @@ const MAX_DELAY = 30_000;
 
 /** 받기 전용 소켓입니다. 끊기면 지수 백오프로 다시 연결합니다. */
 export function connectRealtime(handlers: RealtimeHandlers): () => void {
+  // 빌드 때 값이 고정되도록 직접 비교합니다. 실제 빌드에서는 데모 코드가 빠집니다.
+  if (import.meta.env.VITE_DEMO_MODE === 'true') {
+    let stop: (() => void) | undefined;
+    let stopped = false;
+    void import('./demo/server').then(({ subscribeDemoEvents }) => {
+      if (!stopped) stop = subscribeDemoEvents(handlers.onEvent);
+    });
+    return () => {
+      stopped = true;
+      stop?.();
+    };
+  }
   let socket: WebSocket | null = null;
   let attempts = 0;
   let timer: ReturnType<typeof setTimeout> | undefined;

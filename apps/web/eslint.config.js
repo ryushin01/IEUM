@@ -21,7 +21,7 @@ const fsdRules = layers.slice(1).flatMap((layer, index) => {
 });
 
 export default tseslint.config(
-  { ignores: ['dist', 'storybook-static', 'playwright-report', 'test-results'] },
+  { ignores: ['dist-demo', 'dist', 'storybook-static', 'playwright-report', 'test-results'] },
   ...tseslint.configs.recommended,
   jsxA11y.flatConfigs.recommended,
   {

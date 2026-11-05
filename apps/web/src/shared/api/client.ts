@@ -40,6 +40,11 @@ export async function clearSession(): Promise<void> {
 }
 
 async function send(path: string, init: RequestInit): Promise<Response> {
+  // 빌드 때 값이 고정되도록 직접 비교합니다. 실제 빌드에서는 데모 코드가 빠집니다.
+  if (import.meta.env.VITE_DEMO_MODE === 'true') {
+    const { demoFetch } = await import('./demo/server');
+    return demoFetch(path, init);
+  }
   try {
     return await fetch(`${API_URL}${path}`, init);
   } catch {

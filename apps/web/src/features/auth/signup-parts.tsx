@@ -1,11 +1,11 @@
+import { CheckCircleFilled } from '@ant-design/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert, App, Button, Checkbox, Form, Input, type FormInstance } from 'antd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { setMe, type Me } from '@/entities/session';
 import { imageErrorMessage, pickAndUploadImages, request } from '@/shared/api';
-import completeData from '@/shared/assets/lottie/complete.json';
-import { LottieImage, UserAvatar } from '@/shared/ui';
+import { UserAvatar } from '@/shared/ui';
 import * as s from './auth.css';
 
 const NICKNAME = /^[\p{L}\p{N}_.]{2,20}$/u;
@@ -88,7 +88,7 @@ export function SignupComplete({ me }: { me: Me }) {
 
   return (
     <div className={s.complete}>
-      <LottieImage data={completeData} loop={false} />
+      <CheckCircleFilled className={s.completeIcon} aria-hidden="true" />
       <p role="status">회원 가입이 완료되었습니다.</p>
       <UserAvatar nickname={me.nickname} src={avatarUrl} size={72} decorative={false} />
       <Button block loading={uploading} onClick={() => void choose()}>프로필 사진 선택 (선택 사항)</Button>

@@ -3,6 +3,7 @@ import { Alert } from 'antd';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import { request } from '@/shared/api';
+import { IS_DEMO } from '@/shared/config/env';
 import { startSocialLogin, type SocialProvider } from './social';
 import * as s from './SocialLoginButtons.css';
 
@@ -54,6 +55,7 @@ export function SocialLoginButtons() {
   return (
     <section className={s.section} aria-label="소셜 로그인">
       <p className={s.divider}>또는</p>
+      {IS_DEMO && <p className={s.demoNote}>데모에서는 실제 로그인 없이 가입 흐름만 보여 줍니다.</p>}
       <ul className={s.list}>
         {providers.data.map((provider) => (
           <li key={provider}>

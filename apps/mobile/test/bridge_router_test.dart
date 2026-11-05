@@ -19,6 +19,9 @@ class FakeTokens implements TokenStore {
 }
 
 class FakeMedia implements MediaService {
+  @override
+  Future<List<String>> read(List<String> fileIds) async => ['data:image/png;base64,AA=='];
+
   String? usedToken;
   BridgeException? pickError;
   @override
@@ -148,6 +151,13 @@ void main() {
     social.error = const BridgeException('cancelled', '취소');
     final reply = await call('auth.socialLogin', {'url': 'https://nid.naver.com/oauth2.0/authorize'});
     expect(reply!['error']['code'], 'cancelled');
+  });
+
+  test('데모용으로 고른 사진을 읽어 준다', () async {
+    final reply = await call('media.read', {
+      'fileIds': ['f0'],
+    });
+    expect(reply!['result']['dataUrls'], ['data:image/png;base64,AA==']);
   });
 
   test('테마와 진동을 앱에 전달한다', () async {

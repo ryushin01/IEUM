@@ -1,5 +1,5 @@
 import { BridgeError, callNative, isNativeApp } from '@/shared/bridge';
-import { API_URL } from '@/shared/config/env';
+import { API_URL, IS_DEMO } from '@/shared/config/env';
 import { ApiError, getAccessToken, refreshSession, request } from './client';
 
 export type ImageSource = 'gallery' | 'camera';
@@ -36,9 +36,20 @@ async function uploadNative(fileIds: string[]): Promise<string[]> {
 export async function pickAndUploadImages(source: ImageSource, maxCount: number): Promise<string[]> {
   if (isNativeApp()) {
     const { fileIds } = await callNative('media.pick', { source, maxCount });
-    return fileIds.length ? uploadNative(fileIds) : [];
+    if (!fileIds.length) return [];
+    if (!IS_DEMO) return uploadNative(fileIds);
+    // 데모에는 서버가 없으므로 앱에서 읽은 사진을 브라우저 안 목업으로 넘깁니다.
+    const { dataUrls } = await callNative('media.read', { fileIds });
+    const files = await Promise.all(dataUrls.map(async (url, i) => {
+      const blob = await (await fetch(url)).blob();
+      return new File([blob], `photo-${i}`, { type: blob.type });
+    }));
+    return uploadFiles(files);
   }
-  const files = await pickBrowserFiles(maxCount);
+  return uploadFiles(await pickBrowserFiles(maxCount));
+}
+
+async function uploadFiles(files: File[]): Promise<string[]> {
   const urls: string[] = [];
   for (const file of files) {
     const form = new FormData();

@@ -93,6 +93,8 @@ class BridgeRouter {
           uploadUrl: uploadUrl,
         );
         return {'urls': urls};
+      case 'media.read':
+        return {'dataUrls': await media.read((params['fileIds'] as List<dynamic>).cast<String>())};
       case 'ui.setTheme':
         final mode = params['mode'] as String;
         if (mode != 'light' && mode != 'dark') throw TypeError();

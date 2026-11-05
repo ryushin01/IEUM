@@ -19,7 +19,7 @@ export function ReportDialog({ target, onClose }: Props) {
     mutationFn: (data: { targetType: string; targetId: string; reason: string }) =>
       request('/reports', { method: 'POST', body: data }),
     onSuccess: () => {
-      void message.success('신고가 접수되었습니다. 24시간 이내에 검토합니다.');
+      void message.success('신고가 접수되었습니다. 운영자가 검토합니다.');
       setReason(undefined);
       onClose();
     },

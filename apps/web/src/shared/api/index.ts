@@ -5,3 +5,4 @@ export {
 export { connectRealtime } from './realtime';
 export interface Page<T> { items: T[]; nextCursor: string | null }
 export { imageErrorMessage, pickAndUploadImages, type ImageSource } from './media';
+export { IS_DEMO } from '@/shared/config/env';
