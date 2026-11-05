@@ -6,31 +6,31 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const require = createRequire(import.meta.url);
-const fontDir = join(dirname(require.resolve('@fontsource/stylish/package.json')), 'files');
-const font = readFileSync(join(fontDir, 'stylish-latin-400-normal.woff2')).toString('base64');
+const fontDir = join(dirname(require.resolve('@fontsource/gothic-a1/package.json')), 'files');
+const font = readFileSync(join(fontDir, 'gothic-a1-latin-900-normal.woff2')).toString('base64');
 const out = fileURLToPath(new URL('../../mobile/assets/icon/', import.meta.url));
 
-const LIME = '#c4e538';
-const INK = '#222222';
+const RED = '#d9252f';
+const WHITE = '#ffffff';
 
 function html(size: number, background: string, color: string, textSize: number, stroke: number) {
   return `<!doctype html><style>
-    @font-face { font-family: Stylish; src: url(data:font/woff2;base64,${font}); }
+    @font-face { font-family: 'Gothic A1'; src: url(data:font/woff2;base64,${font}); }
     html, body { margin: 0; width: ${size}px; height: ${size}px; background: ${background}; }
     body { display: flex; align-items: center; justify-content: center; }
-    span { font: ${textSize}px/1 Stylish; letter-spacing: 0.02em; color: ${color}; -webkit-text-stroke: ${stroke}px ${color}; }
+    span { font: 900 ${textSize}px/1 'Gothic A1'; letter-spacing: 0.02em; color: ${color}; -webkit-text-stroke: ${stroke}px ${color}; }
   </style><span>IEUM</span>`;
 }
 
 const targets: [string, number, string, string, number, number][] = [
-  // 아이콘: 라임 배경에 글자만 둡니다.
-  ['icon.png', 1024, LIME, INK, 290, 8],
+  // 아이콘: 빨간 배경에 글자만 둡니다.
+  ['icon.png', 1024, RED, WHITE, 280, 0],
   // 적응형 아이콘: 가운데 66%가 안전 영역이라 글자를 줄입니다.
-  ['foreground.png', 1024, 'transparent', INK, 200, 6],
-  ['splash.png', 768, 'transparent', INK, 190, 4],
-  ['splash_dark.png', 768, 'transparent', '#ffffff', 190, 4],
-  ['splash_android12.png', 1152, 'transparent', INK, 190, 4],
-  ['splash_android12_dark.png', 1152, 'transparent', '#ffffff', 190, 4],
+  ['foreground.png', 1024, 'transparent', WHITE, 190, 0],
+  ['splash.png', 768, 'transparent', WHITE, 170, 0],
+  ['splash_dark.png', 768, 'transparent', WHITE, 170, 0],
+  ['splash_android12.png', 1152, 'transparent', WHITE, 170, 0],
+  ['splash_android12_dark.png', 1152, 'transparent', WHITE, 170, 0],
 ];
 
 const browser = await chromium.launch();

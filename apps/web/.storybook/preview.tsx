@@ -1,7 +1,10 @@
 import type { Preview } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { App, ConfigProvider } from 'antd';
-import '@fontsource/stylish/400.css';
+import '@fontsource/gothic-a1/400.css';
+import '@fontsource/gothic-a1/700.css';
+import '@fontsource/gothic-a1/800.css';
+import '@fontsource/gothic-a1/900.css';
 import { MemoryRouter } from 'react-router';
 import '@/shared/theme/theme.css';
 import { antdTheme } from '@/shared/theme';

@@ -173,7 +173,7 @@ void main() {
       expect(page.shell.path.value, '/');
 
       // 새 글 (웹뷰)
-      await tapMenu(tester, Icons.add_box_outlined);
+      await tapMenu(tester, Icons.add);
       await page.waitUntil('document.body.innerText.includes("앨범에서 선택")', '작성 화면');
       await page.fill('#post-caption', '오늘의 기록을 남겨 보세요.');
       expect(find.byType(PostCard), findsNothing);

@@ -42,7 +42,7 @@ function PostGrid({ authorId, nickname }: { authorId: string; nickname: string }
 function Head({ user, count }: { user: PublicUser; count?: number }) {
   return (
     <div className={s.head}>
-      <UserAvatar nickname={user.nickname} src={user.avatarUrl} size={72} decorative={false} />
+      <UserAvatar nickname={user.nickname} src={user.avatarUrl} size={72} decorative={false} ring />
       <div className={s.info}>
         <h1 className={s.name}>{user.nickname} {user.isOfficial && <OfficialMark />}</h1>
         {count !== undefined && <p className={s.count}>게시글 {count}개</p>}

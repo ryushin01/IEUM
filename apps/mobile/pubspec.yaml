@@ -1,7 +1,7 @@
 name: ieum
 description: 나와 너를 잇는 공간, 이음
 publish_to: none
-version: 1.0.0+1
+version: 1.1.0+2
 
 environment:
   sdk: ^3.11.0
@@ -31,25 +31,29 @@ flutter:
   assets:
     - assets/demo/
   fonts:
-    - family: Stylish
+    - family: GothicA1
       fonts:
-        - asset: assets/fonts/Stylish-Regular.ttf
+        - asset: assets/fonts/GothicA1-Regular.ttf
+        - asset: assets/fonts/GothicA1-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/GothicA1-ExtraBold.ttf
+          weight: 800
 
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: assets/icon/icon.png
   remove_alpha_ios: true
-  adaptive_icon_background: "#c4e538"
+  adaptive_icon_background: "#d9252f"
   adaptive_icon_foreground: assets/icon/foreground.png
 
 flutter_native_splash:
-  color: "#ffffff"
+  color: "#d9252f"
   image: assets/icon/splash.png
-  color_dark: "#222222"
+  color_dark: "#2a1416"
   image_dark: assets/icon/splash_dark.png
   android_12:
-    color: "#ffffff"
+    color: "#d9252f"
     image: assets/icon/splash_android12.png
-    color_dark: "#222222"
+    color_dark: "#2a1416"
     image_dark: assets/icon/splash_android12_dark.png

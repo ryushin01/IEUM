@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, HomeOutlined, MessageOutlined, PlusSquareOutlined, VerticalAlignTopOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, HomeOutlined, MessageOutlined, PlusOutlined, VerticalAlignTopOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { Link, NavLink, Outlet, useLocation, useMatch, useNavigate } from 'react-router';
@@ -61,11 +61,14 @@ export function AppShell() {
               end
               icon={me ? <span className={s.navAvatar}><UserAvatar nickname={me.nickname} src={me.avatarUrl} size={26} /></span> : <span className={s.navAvatar} />}
             />
-            <NavItem to="/posts/new" label="새 게시글" icon={<PlusSquareOutlined aria-hidden="true" />} />
+            <li className={s.navWriteItem}>
+              <NavLink to="/posts/new" className={s.navWrite} aria-label="새 게시글"><PlusOutlined aria-hidden="true" /></NavLink>
+            </li>
             <NavItem to="/dm" label="메시지" end unread={unread} icon={<MessageOutlined aria-hidden="true" />} />
             <li className={s.navItem}>
-              <button type="button" className={s.navLink} aria-label="맨 위로" onClick={() => window.scrollTo({ top: 0 })}>
+              <button type="button" className={s.navLink} onClick={() => window.scrollTo({ top: 0 })}>
                 <span className={s.navIcon}><VerticalAlignTopOutlined aria-hidden="true" /></span>
+                맨 위로
               </button>
             </li>
           </ul>
@@ -83,7 +86,8 @@ function NavItem({ to, label, icon, end, unread = 0 }: { to: string; label: stri
           {icon}
           {unread > 0 && <span className={s.badge} aria-hidden="true">{unread > 99 ? '99+' : unread}</span>}
         </span>
-        <span className={srOnly}>{label}{unread > 0 ? `, 읽지 않은 메시지 ${unread}개` : ''}</span>
+        {label}
+        {unread > 0 && <span className={srOnly}>, 읽지 않은 메시지 {unread}개</span>}
       </NavLink>
     </li>
   );

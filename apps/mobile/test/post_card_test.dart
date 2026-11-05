@@ -1,3 +1,5 @@
+import 'dart:ui' show SemanticsAction;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ieum/app/theme.dart';
@@ -122,8 +124,13 @@ void main() {
       ),
     );
     expect(find.bySemanticsLabel('메시지, 읽지 않은 메시지 3개'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.add_box_outlined));
+    await tester.tap(find.byIcon(Icons.add));
     expect(selected, [MenuTab.write]);
+    // 스크린 리더로도 모든 항목을 실행할 수 있어야 합니다.
+    for (final label in ['홈', '내 정보', '새 게시글', '메시지, 읽지 않은 메시지 3개', '맨 위로']) {
+      final data = tester.getSemantics(find.bySemanticsLabel(label)).getSemanticsData();
+      expect(data.hasAction(SemanticsAction.tap), isTrue, reason: label);
+    }
     await expectLater(tester, meetsGuideline(const MinimumTapTargetGuideline(size: Size(44, 44), link: 'KWCAG 6.1.3')));
     handle.dispose();
   });

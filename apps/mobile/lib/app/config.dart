@@ -28,6 +28,6 @@ class AppConfig {
     }
   }
 
-  static const appVersion = String.fromEnvironment('FLUTTER_BUILD_NAME', defaultValue: '1.0.0');
-  static const appBuild = String.fromEnvironment('FLUTTER_BUILD_NUMBER', defaultValue: '1');
+  static const appVersion = String.fromEnvironment('FLUTTER_BUILD_NAME', defaultValue: '1.1.0');
+  static const appBuild = String.fromEnvironment('FLUTTER_BUILD_NUMBER', defaultValue: '2');
 }

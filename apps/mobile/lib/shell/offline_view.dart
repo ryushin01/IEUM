@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../app/theme.dart';
-
 /// 웹을 불러오지 못해도 앱이 빈 화면으로 멈추지 않게 합니다.
 class OfflineView extends StatelessWidget {
   const OfflineView({super.key, required this.onRetry});
@@ -23,11 +21,7 @@ class OfflineView extends StatelessWidget {
             const Text('네트워크 연결을 확인한 뒤 다시 시도해 주세요.', textAlign: TextAlign.center),
             const SizedBox(height: 24),
             FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: IeumColors.lime,
-                foregroundColor: IeumColors.ink,
-                minimumSize: const Size(160, 48),
-              ),
+              style: FilledButton.styleFrom(minimumSize: const Size(160, 48)),
               onPressed: onRetry,
               child: const Text('다시 시도'),
             ),

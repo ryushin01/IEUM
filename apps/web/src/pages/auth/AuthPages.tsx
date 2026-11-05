@@ -29,7 +29,7 @@ export function SignupPage() {
     <main className={s.page}>
       <div className={s.brand}>
         <Logo size={40} />
-        <h1 className={s.tagline} style={{ fontWeight: 400 }}>회원가입</h1>
+        <h1 className={s.tagline} style={{ fontWeight: 800 }}>회원가입</h1>
       </div>
       <SignupForm />
       <p className={s.footer}>이미 계정이 있나요? <Link to="/login">로그인</Link></p>
@@ -46,7 +46,7 @@ export function SocialSignupPage() {
     <main className={s.page}>
       <div className={s.brand}>
         <Logo size={40} />
-        <h1 className={s.tagline} style={{ fontWeight: 400 }}>추가 정보 입력</h1>
+        <h1 className={s.tagline} style={{ fontWeight: 800 }}>추가 정보 입력</h1>
       </div>
       <SocialSignupForm state={state} />
     </main>
@@ -77,7 +77,7 @@ export function ForgotPasswordPage() {
     <main className={s.page}>
       <div className={s.brand}>
         <Logo size={40} />
-        <h1 className={s.tagline} style={{ fontWeight: 400 }}>비밀번호 찾기</h1>
+        <h1 className={s.tagline} style={{ fontWeight: 800 }}>비밀번호 찾기</h1>
       </div>
       <ForgotPasswordForm />
       <p className={s.footer}><Link to="/login">로그인으로 돌아가기</Link></p>
@@ -91,7 +91,7 @@ export function ResetPasswordPage() {
     <main className={s.page}>
       <div className={s.brand}>
         <Logo size={40} />
-        <h1 className={s.tagline} style={{ fontWeight: 400 }}>새 비밀번호 설정</h1>
+        <h1 className={s.tagline} style={{ fontWeight: 800 }}>새 비밀번호 설정</h1>
       </div>
       <ResetPasswordForm />
     </main>
