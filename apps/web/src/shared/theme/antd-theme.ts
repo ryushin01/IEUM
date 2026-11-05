@@ -36,7 +36,6 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
       // 라임 버튼은 어두운 글자, 빨간 위험 버튼은 밝은 글자가 대비를 만족합니다.
       Button: { dangerColor: mode === 'light' ? '#ffffff' : INK, primaryColor: INK, defaultHoverColor: strong, defaultHoverBorderColor: strong, defaultActiveColor: strong, defaultActiveBorderColor: strong },
       Input: { activeBorderColor: strong, hoverBorderColor: strong, activeShadow: 'none' },
-      Switch: { trackHeight: 28, trackMinWidth: 56, handleSize: 20, colorPrimary: LIME, colorPrimaryHover: LIME, colorTextQuaternary: '#666666', colorTextTertiary: '#555555' },
       Checkbox: { colorWhite: INK },
       Radio: { dotSize: 8, colorWhite: INK },
     },
