@@ -1,5 +1,11 @@
 {
   "name": "@ieum/api",
+  "contributors": [
+    {
+      "name": "Claude",
+      "url": "https://claude.com/claude-code"
+    }
+  ],
   "private": true,
   "version": "1.0.0",
   "type": "module",
