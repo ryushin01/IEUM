@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { badRequest, conflict, notFound } from '../errors.ts';
+import { releaseMedia } from '../media.ts';
 import { assertAllowedText } from '../moderation.ts';
 import type { AppContext } from '../context.ts';
 import { assertUploadedUrl } from '../uploads.ts';
@@ -35,6 +36,7 @@ export function userRoutes(app: FastifyInstance, ctx: AppContext) {
       ? await db.query('SELECT 1 FROM users WHERE nickname = $1 AND id <> $2', [nickname, userId])
       : [];
     if (taken.length) throw conflict('이미 사용 중인 닉네임입니다.');
+    const [before] = await db.query<UserRow>('SELECT avatar_url FROM users WHERE id = $1', [userId]);
     const [user] = await db.query<UserRow>(
       `UPDATE users SET nickname = COALESCE($2, nickname), bio = COALESCE($3, bio),
          avatar_url = CASE WHEN $4 THEN $5 ELSE avatar_url END,
@@ -43,6 +45,7 @@ export function userRoutes(app: FastifyInstance, ctx: AppContext) {
       [userId, nickname ?? null, bio ?? null, avatarUrl !== undefined, avatarUrl ?? null,
         interests === undefined ? null : parseInterests(interests)],
     );
+    if (before?.avatar_url !== user!.avatar_url) await releaseMedia(ctx, [before?.avatar_url], req.log);
     return toMe(user!);
   });
 
@@ -56,7 +59,7 @@ export function userRoutes(app: FastifyInstance, ctx: AppContext) {
        FROM users u WHERE u.id = $1`,
       [id, me],
     );
-    if (!user || user.blocked_me) throw notFound('사용자를 찾을 수 없습니다.');
+    if (!user || user.blocked_me || user.suspended_at) throw notFound('사용자를 찾을 수 없습니다.');
     return { ...toPublicUser(user), postCount: user.post_count, isBlocked: user.is_blocked };
   });
 
@@ -96,11 +99,20 @@ export function userRoutes(app: FastifyInstance, ctx: AppContext) {
     if (typeof targetId !== 'string' || typeof reason !== 'string' || !reason.trim() || reason.length > 500) {
       throw badRequest('신고 사유를 500자 이내로 입력해 주세요.');
     }
-    await db.query(
+    const created = await db.query(
       `INSERT INTO reports (reporter_id, target_type, target_id, reason) VALUES ($1, $2, $3, $4)
-       ON CONFLICT (reporter_id, target_type, target_id) DO NOTHING`,
+       ON CONFLICT (reporter_id, target_type, target_id) DO NOTHING RETURNING id`,
       [me, targetType, targetId, reason.trim()],
     );
+    // 24시간 안에 처리할 수 있도록 운영자에게 알립니다. 내용은 메일에 넣지 않습니다.
+    const alertTo = ctx.config.reportAlertEmail;
+    if (created.length && alertTo) {
+      void ctx.mailer.send({
+        to: alertTo,
+        subject: '[이음] 새 신고가 접수되었습니다',
+        text: `24시간 안에 처리해 주세요.\n\n${ctx.config.webUrl}/admin/reports`,
+      }).catch((failure: Error) => req.log.error({ message: failure.message }, 'report alert failed'));
+    }
     reply.code(201);
     return { ok: true };
   });

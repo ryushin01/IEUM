@@ -23,6 +23,7 @@ export function SettingsPage() {
     <>
       <h1 className={s.title}>설정</h1>
       <ul>
+        {me?.isAdmin && <li className={s.row}><Link className={s.action} to="/admin/reports">신고 처리</Link></li>}
         <li className={s.row}><Link className={s.action} to="/settings/blocks">차단한 사용자</Link></li>
         <li className={s.row}><Link className={s.action} to="/terms">이용약관</Link></li>
         <li className={s.row}><Link className={s.action} to="/privacy">개인정보 처리방침</Link></li>

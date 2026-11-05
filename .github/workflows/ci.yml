@@ -28,6 +28,34 @@ jobs:
       - run: pnpm --filter @ieum/web test:storybook
       - run: pnpm test:e2e
 
+  postgres:
+    name: API (실제 PostgreSQL)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: ieum
+          POSTGRES_DB: ieum_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @ieum/api test
+        env:
+          TEST_DATABASE_URL: postgres://postgres:ieum@localhost:5432/ieum_test
+
   mobile:
     name: Flutter (Analyze · Test)
     runs-on: ubuntu-latest

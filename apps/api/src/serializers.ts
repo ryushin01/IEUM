@@ -24,6 +24,8 @@ export interface UserRow {
   avatar_url: string | null;
   interests: string[];
   is_official: boolean;
+  is_admin: boolean;
+  suspended_at: Date | null;
   created_at: Date;
 }
 
@@ -80,7 +82,7 @@ export const toPublicUser = (u: Pick<UserRow, 'id' | 'nickname' | 'bio' | 'avata
   isOfficial: u.is_official,
 });
 
-export const toMe = (u: UserRow) => ({ ...toPublicUser(u), email: u.email, hasPassword: u.password_hash !== null });
+export const toMe = (u: UserRow) => ({ ...toPublicUser(u), email: u.email, hasPassword: u.password_hash !== null, isAdmin: u.is_admin });
 
 export const toPost = (p: PostRow) => ({
   id: p.id,

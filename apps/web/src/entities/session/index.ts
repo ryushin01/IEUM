@@ -5,6 +5,7 @@ export interface Me {
   id: string;
   email: string | null;
   hasPassword: boolean;
+  isAdmin: boolean;
   nickname: string;
   bio: string;
   avatarUrl: string | null;

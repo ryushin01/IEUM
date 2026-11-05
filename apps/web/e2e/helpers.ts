@@ -1,7 +1,11 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Browser, type Page } from '@playwright/test';
 
 export const DEMO = { email: 'demo@ieum.app', password: 'ieum-demo-1234' };
+export const ADMIN = { email: 'admin@ieum.app', password: 'ieum-demo-1234' };
+export const THIRD = { email: 'sora@ieum.app', password: 'ieum-demo-1234' };
 export const PEER = { email: 'haneul@ieum.app', password: 'ieum-demo-1234' };
 
 export async function login(page: Page, user = DEMO) {
@@ -33,3 +37,15 @@ export const PNG_1PX = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
   'base64',
 );
+
+/** API가 파일로 남긴 메일에서 재설정 링크의 주소를 찾습니다. */
+export function readResetLink(to: string): string | null {
+  const dir = '/tmp/ieum-e2e-outbox';
+  let names: string[] = [];
+  try { names = readdirSync(dir); } catch { return null; }
+  for (const name of names) {
+    const mail = JSON.parse(readFileSync(join(dir, name), 'utf8')) as { to: string; text: string };
+    if (mail.to === to) return /https?:\S+#token=[\w-]+/.exec(mail.text)?.[0] ?? null;
+  }
+  return null;
+}

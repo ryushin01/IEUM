@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { checkA11y, checkNoOverflow, login, newLoggedInPage, PEER, PNG_1PX } from './helpers';
+import { ADMIN, checkA11y, checkNoOverflow, login, newLoggedInPage, PEER, PNG_1PX, readResetLink, THIRD } from './helpers';
 
 test.describe('비로그인', () => {
   test('로그인하지 않으면 로그인 화면으로 보낸다', async ({ page }) => {
@@ -371,6 +371,95 @@ test('앱 브릿지: 소셜 로그인은 시스템 인증 창 결과로 처리�
   await expect(page.getByRole('alert')).toHaveCount(0);
 });
 
+test('비밀번호 재설정: 메일 링크로 바꾸고, 토큰을 주소에 남기지 않는다', async ({ page }) => {
+  const email = `reset${Date.now()}@example.com`;
+  await page.goto('/signup');
+  await page.getByLabel('이메일').fill(email);
+  await page.getByLabel('닉네임').fill(`재설정${Date.now() % 100000}`);
+  await page.getByLabel('비밀번호', { exact: true }).fill('Passw0rd!123');
+  await page.getByLabel('비밀번호 확인').fill('Passw0rd!123');
+  await page.getByLabel('만 14세 이상입니다.').check();
+  await page.getByRole('checkbox', { name: /이용약관과/ }).check();
+  await page.getByRole('button', { name: '회원 가입' }).click();
+  await page.getByRole('button', { name: '시작하기' }).click();
+  await page.goto('/settings');
+  await page.getByRole('button', { name: '로그아웃' }).click();
+
+  await page.getByRole('link', { name: '비밀번호를 잊으셨나요?' }).click();
+  // 로그인 화면에도 같은 이름의 칸이 있으므로 화면이 바뀐 뒤 입력합니다.
+  await expect(page.getByRole('heading', { name: '비밀번호 찾기' })).toBeVisible();
+  await page.getByLabel('이메일').fill(email);
+  await checkA11y(page);
+  await page.getByRole('button', { name: '재설정 메일 받기' }).click();
+  await expect(page.getByRole('status')).toContainText('재설정 메일을 보냈습니다');
+
+  await expect.poll(() => readResetLink(email)).not.toBeNull();
+  // E2E는 미리보기 서버 주소에서 엽니다.
+  const link = new URL(readResetLink(email)!);
+  await page.goto(`${link.pathname}${link.hash}`);
+  await expect(page).toHaveURL(/\/reset-password$/);
+  await checkA11y(page);
+  await page.getByLabel('새 비밀번호', { exact: true }).fill('Ch4nged!pass');
+  await page.getByLabel('새 비밀번호 확인').fill('Ch4nged!pass');
+  await page.getByRole('button', { name: '비밀번호 변경' }).click();
+  await expect(page.getByRole('status')).toContainText('비밀번호를 변경했습니다');
+
+  await login(page, { email, password: 'Ch4nged!pass' });
+
+  // 링크 없이 열면 안내합니다.
+  await page.goto('/reset-password');
+  await expect(page.getByRole('alert')).toContainText('링크가 올바르지 않습니다');
+});
+
+test('운영자: 신고를 보고 정지·해제하며, 일반 사용자는 들어올 수 없다', async ({ browser, page }) => {
+  // 일반 사용자는 신고 화면으로 들어갈 수 없습니다.
+  await login(page, PEER);
+  await page.goto('/admin/reports');
+  await expect(page).toHaveURL(/\/$/);
+  await page.goto('/settings');
+  await expect(page.getByRole('link', { name: '신고 처리' })).toHaveCount(0);
+
+  // 신고합니다.
+  await page.goto('/');
+  const card = page.getByRole('article').filter({ hasText: '소라_기록' });
+  await card.getByRole('button', { name: '게시글 메뉴' }).click();
+  await page.getByRole('menuitem', { name: '신고하기' }).click();
+  await page.getByRole('radio', { name: '음란·불쾌한 콘텐츠' }).check();
+  await page.getByRole('dialog').getByRole('button', { name: '신고' }).click();
+  await expect(page.getByText('신고가 접수되었습니다')).toBeVisible();
+
+  const admin = await newLoggedInPage(browser, ADMIN);
+  await admin.goto('/settings');
+  await admin.getByRole('link', { name: '신고 처리' }).click();
+  const report = admin.getByRole('listitem').filter({ hasText: '음란·불쾌한 콘텐츠' });
+  await expect(report).toContainText('소라_기록');
+  await admin.waitForTimeout(400);
+  await checkA11y(admin);
+  await checkNoOverflow(admin);
+  await report.getByRole('button', { name: '사용자 정지' }).click();
+  await admin.getByRole('dialog').getByRole('button', { name: '정지' }).click();
+  await expect(report).toHaveCount(0);
+  await expect(admin.getByRole('button', { name: '소라_기록 님 정지 해제' })).toBeVisible();
+
+  // 정지된 사용자의 글은 숨겨지고 로그인은 거부됩니다.
+  await page.goto('/');
+  await expect(page.getByRole('article').first()).toBeVisible();
+  await expect(page.getByRole('article').filter({ hasText: '소라_기록' })).toHaveCount(0);
+  const context = await browser.newContext({ baseURL: 'http://localhost:4173' });
+  const banned = await context.newPage();
+  await banned.goto('/login');
+  await banned.getByLabel('이메일').fill(THIRD.email);
+  await banned.getByLabel('비밀번호').fill(THIRD.password);
+  await banned.getByRole('button', { name: '로그인', exact: true }).click();
+  await expect(banned.getByRole('alert')).toContainText('이용이 제한된 계정');
+
+  await admin.getByRole('button', { name: '소라_기록 님 정지 해제' }).click();
+  await expect(admin.getByRole('button', { name: '소라_기록 님 정지 해제' })).toHaveCount(0);
+  await login(banned, THIRD);
+  await context.close();
+  await admin.context().close();
+});
+
 test('README용 화면을 촬영한다', async ({ browser }) => {
   test.skip(!process.env.SCREENSHOTS, 'SCREENSHOTS=1일 때만 실행합니다.');
   const out = '../../docs/images';
@@ -410,5 +499,12 @@ test('README용 화면을 촬영한다', async ({ browser }) => {
   await expect(page.getByRole('article').first()).toBeVisible();
   await shot('feed-dark');
   await page.getByRole('switch', { name: '다크 모드' }).click();
+  await context.clearCookies();
+  await page.evaluate(() => localStorage.removeItem('ieum.tokens'));
+  await login(page, ADMIN);
+  await page.goto('/admin/reports');
+  await expect(page.getByRole('heading', { name: '신고 처리' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '문제 없음' }).first()).toBeVisible();
+  await shot('admin-reports');
   await context.close();
 });

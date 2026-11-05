@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Navigate, useLocation, useSearchParams } from 'react-router';
-import { LoginForm, SignupForm, SocialLoginButtons, SocialSignupForm, useCompleteSocialCallback, type SocialSignupState } from '@/features/auth';
+import { ForgotPasswordForm, LoginForm, ResetPasswordForm, SignupForm, SocialLoginButtons, SocialSignupForm, useCompleteSocialCallback, type SocialSignupState } from '@/features/auth';
 import { ErrorView, LoadingView } from '@/shared/ui';
 import { usePageTitle } from '@/shared/lib';
 import { Logo, srOnly } from '@/shared/ui';
@@ -17,6 +17,7 @@ export function LoginPage() {
       <LoginForm />
       <SocialLoginButtons />
       <p className={s.footer}>처음이신가요? <Link to="/signup">회원가입</Link></p>
+      <p className={s.footer}><Link to="/forgot-password">비밀번호를 잊으셨나요?</Link></p>
     </main>
   );
 }
@@ -65,6 +66,33 @@ export function AuthCallbackPage() {
           <p className={s.footer}><Link to="/login">로그인으로 돌아가기</Link></p>
         </>
       ) : <LoadingView label="로그인 처리 중" />}
+    </main>
+  );
+}
+
+export function ForgotPasswordPage() {
+  usePageTitle('비밀번호 찾기');
+  return (
+    <main className={s.page}>
+      <div className={s.brand}>
+        <Logo size={40} />
+        <h1 className={s.tagline} style={{ fontWeight: 400 }}>비밀번호 찾기</h1>
+      </div>
+      <ForgotPasswordForm />
+      <p className={s.footer}><Link to="/login">로그인으로 돌아가기</Link></p>
+    </main>
+  );
+}
+
+export function ResetPasswordPage() {
+  usePageTitle('새 비밀번호 설정');
+  return (
+    <main className={s.page}>
+      <div className={s.brand}>
+        <Logo size={40} />
+        <h1 className={s.tagline} style={{ fontWeight: 400 }}>새 비밀번호 설정</h1>
+      </div>
+      <ResetPasswordForm />
     </main>
   );
 }

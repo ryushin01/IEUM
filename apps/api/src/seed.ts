@@ -54,6 +54,11 @@ export async function seed(db: Db, config: Config): Promise<void> {
       post!.id, ids[(author + 1) % ids.length], '분위기가 정말 좋아요!',
     ]);
   }
+  // 운영자 화면 확인용 계정입니다.
+  await db.query(
+    `INSERT INTO users (email, password_hash, nickname, is_admin, terms_agreed_at) VALUES ($1, $2, $3, true, now())`,
+    ['admin@ieum.app', passwordHash, '이음운영자'],
+  );
   const [a, b] = ids[0]! < ids[1]! ? [ids[0], ids[1]] : [ids[1], ids[0]];
   const [conversation] = await db.query<{ id: string }>(
     'INSERT INTO conversations (user_a, user_b) VALUES ($1, $2) RETURNING id', [a, b],

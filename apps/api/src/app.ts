@@ -11,7 +11,12 @@ import { bearerUser, type AppContext } from './context.ts';
 import type { Db } from './db.ts';
 import { ApiError } from './errors.ts';
 import { Hub } from './hub.ts';
+import { createOutboxMailer, createSmtpMailer, type Mailer } from './mailer.ts';
+import { sweepExpired } from './media.ts';
+import { adminRoutes } from './routes/admin.ts';
 import { authRoutes } from './routes/auth.ts';
+import { passwordRoutes } from './routes/password.ts';
+import { createLocalStorage, createS3Storage, type Storage } from './storage.ts';
 import { conversationRoutes } from './routes/conversations.ts';
 import { postRoutes } from './routes/posts.ts';
 import { socialRoutes } from './routes/social.ts';
@@ -19,7 +24,12 @@ import { userRoutes } from './routes/users.ts';
 import { MAX_UPLOAD_BYTES, uploadRoutes } from './uploads.ts';
 import { attachWebSocket } from './ws.ts';
 
-export async function buildApp(config: Config, db: Db) {
+export interface AppDeps {
+  mailer?: Mailer;
+  storage?: Storage;
+}
+
+export async function buildApp(config: Config, db: Db, deps: AppDeps = {}) {
   const app = Fastify({
     logger: process.env.NODE_ENV === 'test' ? false : { redact: ['req.headers.authorization'] },
     bodyLimit: 256 * 1024,
@@ -27,15 +37,20 @@ export async function buildApp(config: Config, db: Db) {
   });
   const tokens = new Tokens(config.jwtSecret, db);
   const hub = new Hub();
-  const ctx: AppContext = { db, tokens, hub, config, requireUser: bearerUser(tokens) };
+  const storage = deps.storage ?? (config.s3 ? createS3Storage(config.s3) : createLocalStorage(resolve(config.uploadDir)));
+  const mailer = deps.mailer ?? (config.smtp ? createSmtpMailer(config.smtp.url, config.smtp.from) : createOutboxMailer(config.mailOutboxDir));
+  const ctx: AppContext = { db, tokens, hub, config, storage, mailer, requireUser: bearerUser(tokens, db) };
 
   await app.register(cors, { origin: config.corsOrigins, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] });
   await app.register(multipart, { limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 } });
   if (config.rateLimit) await app.register(rateLimit, { global: true, max: 300, timeWindow: '1 minute' });
 
-  const uploadRoot = resolve(config.uploadDir);
-  await mkdir(uploadRoot, { recursive: true });
-  await app.register(fastifyStatic, { root: uploadRoot, prefix: '/uploads/', maxAge: '30d', immutable: true });
+  // 객체 저장소를 쓰면 이미지는 저장소(CDN)에서 바로 제공합니다.
+  if (!config.s3) {
+    const uploadRoot = resolve(config.uploadDir);
+    await mkdir(uploadRoot, { recursive: true });
+    await app.register(fastifyStatic, { root: uploadRoot, prefix: '/uploads/', maxAge: '30d', immutable: true });
+  }
 
   app.setErrorHandler((error: Error & { statusCode?: number; code?: string }, req, reply) => {
     if (error instanceof ApiError) {
@@ -70,13 +85,20 @@ export async function buildApp(config: Config, db: Db) {
 
   authRoutes(app, ctx);
   socialRoutes(app, ctx);
+  passwordRoutes(app, ctx);
+  adminRoutes(app, ctx);
   userRoutes(app, ctx);
   postRoutes(app, ctx);
   conversationRoutes(app, ctx);
   uploadRoutes(app, ctx);
 
   const wss = attachWebSocket(app.server, hub, tokens);
+  const sweep = setInterval(() => void sweepExpired(ctx, app.log).catch((failure: Error) => {
+    app.log.error({ message: failure.message }, 'sweep failed');
+  }), 60 * 60 * 1000);
+  sweep.unref();
   app.addHook('onClose', async () => {
+    clearInterval(sweep);
     for (const client of wss.clients) client.terminate();
     wss.close();
   });

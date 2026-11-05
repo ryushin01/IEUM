@@ -1,3 +1,4 @@
+export { ForgotPasswordForm, ResetPasswordForm } from './PasswordResetForms';
 export { LoginForm } from './LoginForm';
 export { SignupForm } from './SignupForm';
 export { SocialLoginButtons } from './SocialLoginButtons';

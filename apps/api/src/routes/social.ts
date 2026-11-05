@@ -133,6 +133,7 @@ export function socialRoutes(app: FastifyInstance, ctx: AppContext) {
       [ticket.provider, ticket.provider_user_id],
     );
     if (user) {
+      if (user.suspended_at) throw new ApiError(403, 'suspended', '이용이 제한된 계정입니다. 문의해 주세요.');
       if (ticket.provider_token) {
         await db.query('UPDATE social_accounts SET provider_token = $3 WHERE provider = $1 AND provider_user_id = $2', [
           ticket.provider, ticket.provider_user_id, ticket.provider_token,

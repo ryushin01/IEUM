@@ -1,1 +1,1 @@
-export { AuthCallbackPage, LoginPage, SignupPage, SocialSignupPage } from './AuthPages';
+export { AuthCallbackPage, ForgotPasswordPage, LoginPage, ResetPasswordPage, SignupPage, SocialSignupPage } from './AuthPages';

@@ -10,7 +10,8 @@ export function conversationRoutes(app: FastifyInstance, ctx: AppContext) {
 
   const isBlockedBetween = async (a: string, b: string) =>
     (await db.query(
-      `SELECT 1 FROM blocks WHERE (blocker_id = $1 AND blocked_id = $2) OR (blocker_id = $2 AND blocked_id = $1)`,
+      `SELECT 1 FROM blocks WHERE (blocker_id = $1 AND blocked_id = $2) OR (blocker_id = $2 AND blocked_id = $1)
+       UNION ALL SELECT 1 FROM users WHERE id = $2 AND suspended_at IS NOT NULL`,
       [a, b],
     )).length > 0;
 
@@ -37,7 +38,7 @@ export function conversationRoutes(app: FastifyInstance, ctx: AppContext) {
          SELECT body, created_at FROM messages WHERE conversation_id = c.id
          ORDER BY created_at DESC, id DESC LIMIT 1
        ) m ON true
-       WHERE (c.user_a = $1 OR c.user_b = $1) AND m.body IS NOT NULL
+       WHERE (c.user_a = $1 OR c.user_b = $1) AND m.body IS NOT NULL AND u.suspended_at IS NULL
          AND NOT EXISTS (SELECT 1 FROM blocks b
            WHERE (b.blocker_id = $1 AND b.blocked_id = u.id) OR (b.blocker_id = u.id AND b.blocked_id = $1))
        ORDER BY m.created_at DESC`,

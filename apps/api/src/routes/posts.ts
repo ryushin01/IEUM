@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { badRequest, forbidden, notFound } from '../errors.ts';
+import { releaseMedia } from '../media.ts';
 import { assertAllowedText } from '../moderation.ts';
 import type { AppContext } from '../context.ts';
 import { assertUploadedUrl } from '../uploads.ts';
@@ -7,9 +8,11 @@ import { decodeCursor, encodeCursor, POST_SELECT, toComment, toPost, type Commen
 
 const PAGE_SIZE = 10;
 const MAX_IMAGES = 5;
+/** 차단 관계와 정지된 작성자의 글을 숨깁니다. */
 const NOT_BLOCKED = (alias: string, me: string) => `NOT EXISTS (
   SELECT 1 FROM blocks b WHERE (b.blocker_id = ${me} AND b.blocked_id = ${alias})
-    OR (b.blocker_id = ${alias} AND b.blocked_id = ${me}))`;
+    OR (b.blocker_id = ${alias} AND b.blocked_id = ${me}))
+  AND NOT EXISTS (SELECT 1 FROM users s WHERE s.id = ${alias} AND s.suspended_at IS NOT NULL)`;
 
 function parseCaption(value: unknown): string {
   if (typeof value !== 'string' || value.trim().length === 0 || value.length > 2200) {
@@ -105,6 +108,7 @@ export function postRoutes(app: FastifyInstance, ctx: AppContext) {
     const existing = await findPost(id, me);
     if (existing.author_id !== me) throw forbidden();
     await db.query('DELETE FROM posts WHERE id = $1', [id]);
+    await releaseMedia(ctx, existing.images.map((image) => image.url), req.log);
     reply.code(204);
   });
 

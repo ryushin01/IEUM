@@ -4,6 +4,8 @@ import { defineConfig, devices } from '@playwright/test';
 /** 테스트마다 새로 만드는 Apple 키입니다. 가짜 제공자에만 씁니다. */
 const applePrivateKey = generateKeyPairSync('ec', { namedCurve: 'P-256' }).privateKey.export({ type: 'pkcs8', format: 'pem' }) as string;
 
+export const MAIL_OUTBOX = '/tmp/ieum-e2e-outbox';
+
 /** 프로덕션 빌드(vite preview)와 메모리 DB API로 실제 화면을 검사합니다. 먼저 pnpm build가 필요합니다. */
 export default defineConfig({
   testDir: 'e2e',
@@ -31,7 +33,7 @@ export default defineConfig({
       reuseExistingServer: false,
       env: {
         PORT: '4100', SEED: '1', HOT_LIKE_THRESHOLD: '3', RATE_LIMIT: 'off', PGLITE_DIR: 'memory://',
-        UPLOAD_DIR: '/tmp/ieum-e2e-uploads', CORS_ORIGINS: 'http://localhost:4173', PUBLIC_BASE_URL: 'http://localhost:4100',
+        UPLOAD_DIR: '/tmp/ieum-e2e-uploads', MAIL_OUTBOX_DIR: MAIL_OUTBOX, CORS_ORIGINS: 'http://localhost:4173', PUBLIC_BASE_URL: 'http://localhost:4100',
         APP_WEB_URL: 'http://localhost:4173', SOCIAL_MOCK_URL: 'http://127.0.0.1:4200',
         KAKAO_CLIENT_ID: 'k', KAKAO_CLIENT_SECRET: 's', NAVER_CLIENT_ID: 'n', NAVER_CLIENT_SECRET: 's',
         GOOGLE_CLIENT_ID: 'g', GOOGLE_CLIENT_SECRET: 's',

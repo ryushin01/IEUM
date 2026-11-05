@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { createBrowserRouter, Navigate, Outlet } from 'react-router';
 import { applyRealtimeEvent, refreshConversations, type RealtimeEvent } from '@/entities/conversation';
-import { AuthCallbackPage, LoginPage, SignupPage, SocialSignupPage } from '@/pages/auth';
+import { AdminReportsPage } from '@/pages/admin-reports';
+import { AuthCallbackPage, ForgotPasswordPage, LoginPage, ResetPasswordPage, SignupPage, SocialSignupPage } from '@/pages/auth';
 import { BlocksPage } from '@/pages/blocks';
 import { DmListPage } from '@/pages/dm-list';
 import { DmRoomPage } from '@/pages/dm-room';
@@ -41,9 +42,12 @@ export const router = createBrowserRouter([
       { path: '/login', element: <LoginPage /> },
       { path: '/signup', element: <SignupPage /> },
       { path: '/signup/social', element: <SocialSignupPage /> },
+      { path: '/forgot-password', element: <ForgotPasswordPage /> },
       { path: '/auth/callback', element: <AuthCallbackPage /> },
     ],
   },
+  // 로그인한 기기에서 메일 링크를 열어도 재설정할 수 있어야 합니다.
+  { path: '/reset-password', element: <ResetPasswordPage /> },
   { path: '/terms', element: <TermsPage /> },
   { path: '/privacy', element: <PrivacyPage /> },
   {
@@ -58,6 +62,7 @@ export const router = createBrowserRouter([
       { path: '/me/edit', element: <ProfileEditPage /> },
       { path: '/settings', element: <SettingsPage /> },
       { path: '/settings/blocks', element: <BlocksPage /> },
+      { path: '/admin/reports', element: <AdminReportsPage /> },
       { path: '/dm', element: <DmListPage /> },
       { path: '/dm/:id', element: <DmRoomPage /> },
     ],

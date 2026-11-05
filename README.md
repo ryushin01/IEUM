@@ -27,14 +27,18 @@
 |---|---|
 | <img src="docs/images/dm-room.jpg" alt="주고받은 메시지 말풍선과 입력창이 있는 대화방" width="280"> | <img src="docs/images/profile.jpg" alt="프로필 사진, 소개, 관심사, 메시지 보내기 버튼, 게시글 격자" width="280"> |
 
+| 신고 처리 (운영자) | 설정 |
+|---|---|
+| <img src="docs/images/admin-reports.jpg" alt="신고 사유와 대상 내용, 콘텐츠 삭제, 사용자 정지, 문제 없음 버튼" width="280"> | <img src="docs/images/settings.jpg" alt="차단한 사용자, 약관, 로그아웃, 계정 삭제 메뉴" width="280"> |
+
 ## 주요 기능
 
 | 영역 | 내용 |
 |---|---|
-| 계정 | 이메일 가입(닉네임 중복 확인, 관심사 최대 3개), 카카오·네이버·Google·Apple 로그인, 토큰 자동 재발급, 앱 내 계정 삭제 |
+| 계정 | 이메일 가입(닉네임 중복 확인, 관심사 최대 3개), 카카오·네이버·Google·Apple 로그인, 비밀번호 재설정, 토큰 자동 재발급, 앱 내 계정 삭제 |
 | 게시글 | 작성·수정·삭제, 이미지 최대 5장, 커서 무한 스크롤, 좋아요, 댓글 100자, 공식 마크, 인기 글 표시 |
 | DM | WebSocket 실시간 수신, 읽음 표시, 안 읽은 수, 재연결 후 동기화 |
-| 안전 | 신고, 차단, 금칙어 필터, 약관 동의 |
+| 안전 | 신고, 차단, 금칙어 필터, 약관 동의, 운영자 신고 처리(삭제, 정지), 사진 위치 정보 제거 |
 | 앱 | Keychain·Keystore 토큰 저장, 네이티브 사진 선택·촬영·업로드, 오프라인 화면, 뒤로 가기, 스플래시 |
 
 ## 기술 스택
@@ -45,7 +49,7 @@
 |---|---|
 | 앱 | Flutter, webview_flutter, GetX(`get`), dio, flutter_secure_storage, image_picker, url_launcher, flutter_web_auth_2 |
 | 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router, lottie-react |
-| API | Node.js, Fastify 5, ws, PostgreSQL(`pg`), PGlite(로컬·테스트), jose |
+| API | Node.js, Fastify 5, ws, PostgreSQL(`pg`), PGlite(로컬·테스트), jose, sharp, nodemailer, S3 호환 저장소 |
 | 품질 | ESLint(FSD 계층 규칙), Vitest, Storybook 10(axe), Playwright(E2E, axe), flutter test |
 
 ## 시작하기
@@ -92,5 +96,5 @@ docs/        문서와 화면 이미지
 
 ## 향후 과제
 
-- 비밀번호 재설정, 푸시 알림, 신고 처리용 운영 도구, 객체 저장소
+- 푸시 알림, 카카오·네이버·Google 탈퇴 시 연결 끊기
 - 스크린 리더(VoiceOver, TalkBack) 실사용 점검과 KWCAG 33개 항목 수동 점검
