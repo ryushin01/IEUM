@@ -103,3 +103,10 @@ docs/        문서와 화면 이미지
 
 - 실제 기기 실행, iOS 사진 선택기·촬영 수동 확인
 - 스크린 리더(VoiceOver, TalkBack) 실사용 점검과 KWCAG 33개 항목 수동 점검
+
+## 기여자
+
+| 기여자 | 맡은 부분 |
+|---|---|
+| [ryushin01](https://github.com/ryushin01) | 프로젝트 소유자 |
+| [Claude](https://claude.com/claude-code) (Anthropic) | 서버 (`apps/api`) |
