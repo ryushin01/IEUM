@@ -16,15 +16,20 @@ const PNG_1PX = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUl
 
 test('서버 없이 동작하고 외부로 요청을 보내지 않는다', async ({ page }) => {
   // API 요청은 HTTP로 나가지만 Service Worker가 응답합니다. API 서버를 띄우지 않으므로 네트워크로 나가면 실패합니다.
-  // 다른 주소는 Service Worker가 그대로 내보내도 fromServiceWorker가 true이므로 예외로 두지 않습니다.
+  // 다른 주소는 Service Worker가 그대로 내보내도 fromServiceWorker가 true이므로 예외 없이 기록합니다.
   const external: string[] = [];
-  const isExternal = (url: string) => url.startsWith('http') && new URL(url).origin !== 'http://localhost:4174';
+  const origin = (url: string) => (url.startsWith('http') ? new URL(url).origin : null);
+  const isOther = (url: string) => ![null, 'http://localhost:4174', 'http://localhost:4000'].includes(origin(url));
+  const isApi = (url: string) => origin(url) === 'http://localhost:4000';
+  // 응답을 기다리면 검사 시점에 끝나지 않은 요청을 놓치므로, 시작할 때 기록합니다.
+  page.on('request', (request) => {
+    if (isOther(request.url())) external.push(request.url());
+  });
   page.on('response', (response) => {
-    const mockedApi = new URL(response.url()).origin === 'http://localhost:4000' && response.fromServiceWorker();
-    if (isExternal(response.url()) && !mockedApi) external.push(response.url());
+    if (isApi(response.url()) && !response.fromServiceWorker()) external.push(response.url());
   });
   page.on('requestfailed', (request) => {
-    if (isExternal(request.url())) external.push(request.url());
+    if (isApi(request.url())) external.push(request.url());
   });
   const failed: string[] = [];
   page.on('response', (response) => { if (response.status() >= 400) failed.push(`${response.status()} ${response.url()}`); });
