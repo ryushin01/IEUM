@@ -4,8 +4,6 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: 'e2e-demo',
   workers: 1,
-  // CI 장비는 접근성 검사가 느려 시간을 넉넉히 둡니다. 재시도로 실패를 가리지 않습니다.
-  timeout: process.env.CI ? 90_000 : 30_000,
   reporter: 'list',
   use: {
     baseURL: 'http://localhost:4174/IEUM/',

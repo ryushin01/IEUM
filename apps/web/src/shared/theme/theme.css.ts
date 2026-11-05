@@ -48,7 +48,9 @@ globalStyle('a', { color: 'inherit' });
 // 본문 속 링크는 색만으로 구분하지 않습니다. (KWCAG 5.4.1)
 globalStyle('a:not([class])', { color: vars.color.text, textDecoration: 'underline' });
 // KWCAG 6.1.3: 아이콘 버튼과 체크 항목의 조작 영역을 44px 이상으로 맞춥니다.
-globalStyle('.ant-btn', { minWidth: 44, flexShrink: 0 });
+globalStyle('.ant-btn', { minWidth: 44 });
+// 아이콘 버튼만 줄어들지 않게 합니다. 폭 100% 버튼까지 막으면 줄이 넘칩니다.
+globalStyle('.ant-btn-icon-only', { flexShrink: 0 });
 globalStyle('.ant-checkbox-wrapper, .ant-radio-wrapper', { minHeight: 44, alignItems: 'center' });
 globalStyle(':focus-visible', { outline: `2px solid ${vars.color.focus}`, outlineOffset: 2 });
 globalStyle('input.ant-input:focus-visible, textarea.ant-input:focus-visible', { outlineOffset: -1 });

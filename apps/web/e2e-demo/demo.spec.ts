@@ -124,6 +124,9 @@ async function smallTargets(page: Page) {
   return page.evaluate(() => {
     const MIN = 44;
     const out: string[] = [];
+    // 가로로 넘치거나 화면 밖으로 밀려난 조작 요소도 함께 찾습니다.
+    const overflow = document.documentElement.scrollWidth - document.documentElement.clientWidth;
+    if (overflow > 0) out.push(`페이지 가로 넘침 ${overflow}px`);
     for (const el of document.querySelectorAll<HTMLElement>('a[href], button, input, textarea, [role="switch"], [tabindex="0"]')) {
       if (el.closest('p, .ant-form-item-extra')) continue;
       let box: DOMRect = el.getBoundingClientRect();
@@ -135,6 +138,9 @@ async function smallTargets(page: Page) {
       if (box.width === 0 && box.height === 0) continue;
       const after = getComputedStyle(el, '::after');
       const extraH = after.position === 'absolute' && after.top.startsWith('-') ? -parseFloat(after.top) * 2 : 0;
+      if (getComputedStyle(el).position !== 'absolute' && (box.right > window.innerWidth + 1 || box.left < -1)) {
+        out.push(`화면 밖 ${el.tagName} "${(el.getAttribute('aria-label') ?? el.textContent ?? '').trim().slice(0, 20)}" right=${Math.round(box.right)}`);
+      }
       if (box.height + extraH < MIN || box.width < MIN) {
         out.push(`${el.tagName} "${(el.getAttribute('aria-label') ?? el.textContent ?? '').trim().slice(0, 20)}" ${Math.round(box.width)}x${Math.round(box.height)}`);
       }
@@ -170,7 +176,10 @@ test('주요 화면의 조작 영역이 44px 이상이다', async ({ page }) => 
   await page.goto('settings');
   await page.getByRole('button', { name: '로그아웃' }).waitFor();
   found.settings = await smallTargets(page);
-  expect(found).toEqual({ login: [], signup: [], feed: [], detail: [], write: [], dm: [], profile: [], settings: [] });
+  await page.goto('me');
+  await page.getByRole('button', { name: '프로필 편집' }).waitFor();
+  found.me = await smallTargets(page);
+  expect(found).toEqual({ login: [], signup: [], feed: [], detail: [], write: [], dm: [], profile: [], settings: [], me: [] });
 });
 
 test('키보드만으로 메뉴를 열고 신고 창을 열고 닫으며, 초점이 돌아온다', async ({ page }) => {
