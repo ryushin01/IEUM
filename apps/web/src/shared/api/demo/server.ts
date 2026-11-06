@@ -56,8 +56,8 @@ async function read(): Promise<DemoState> {
     return stored;
   }
   const seed = createSeed(await sha256(DEMO_PASSWORD));
-  // 기다리는 동안 초기화되었으면 지금 저장소 기준으로 다시 읽습니다.
-  if (started !== generation) return read();
+  // 기다리는 동안 초기화되었으면 결과를 버리고, 초기화 뒤의 읽기에 합류합니다.
+  if (started !== generation) return load();
   state = stored ? mergeSeed(stored, seed) : seed;
   // 합친 결과를 저장해야 지운 샘플 글이 다음 실행에 되살아나지 않습니다.
   if (stored) save();

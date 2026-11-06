@@ -82,6 +82,27 @@ describe('데모 API', () => {
     expect(saved.posts.map((post) => post.id)).not.toContain('mine');
   });
 
+  it('초기화 직후의 요청은 진행 중인 읽기에 합류해 변경을 잃지 않는다', async () => {
+    await login('demo@ieum.app');
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number };
+    delete stored.seedVersion;
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+
+    vi.resetModules();
+    const fresh = await import('./server');
+    const post = (path: string, body: object) => fresh.demoFetch(path, { method: 'POST', body: JSON.stringify(body) });
+    const before = post('/auth/login', { email: 'demo@ieum.app', password: 'ieum-demo-1234' });
+    fresh.resetDemo();
+    const signup = post('/auth/signup', { email: 'after@example.com', password: 'Passw0rd!', nickname: 'after' });
+    expect((await signup).ok).toBe(true);
+    expect((await before).ok).toBe(true);
+    // 늦게 끝난 읽기가 상태를 바꿔치기했다면 다음 저장에서 가입 정보가 사라집니다.
+    await post('/auth/login', { email: 'demo@ieum.app', password: 'ieum-demo-1234' });
+
+    const saved = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { users: { email: string }[] };
+    expect(saved.users.map((user) => user.email)).toContain('after@example.com');
+  });
+
   it('비밀번호를 평문으로 저장하지 않고 틀리면 거부한다', async () => {
     const created = await call('POST', '/auth/signup', { email: 'a@example.com', password: 'Passw0rd!', nickname: '새싹' });
     expect(created.status).toBe(201);
@@ -119,7 +140,7 @@ describe('데모 API', () => {
     const list = await call('GET', '/conversations/dm1/messages', undefined, token);
     // 가짜 타이머로는 답장과 시각이 같을 수 있어 순서 대신 내용으로 찾습니다.
     const sent = (list.body.items as { body: string; readAt: string | null }[]).find((m) => m.body === '안녕하세요');
-    expect(sent?.readAt).not.toBeNull();
+    expect(sent?.readAt).toEqual(expect.any(String));
   });
 
   it('운영자만 신고를 보고, 정지하면 로그인이 막힌다', async () => {
