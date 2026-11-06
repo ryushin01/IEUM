@@ -38,6 +38,7 @@ export function SignupForm() {
 
   return (
     <Form<Values>
+      noValidate
       form={form}
       layout="vertical"
       requiredMark={false}

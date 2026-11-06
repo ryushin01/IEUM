@@ -19,7 +19,7 @@ export function LoginForm() {
     },
   });
   return (
-    <Form<Values> layout="vertical" requiredMark={false} onFinish={(values) => { if (!login.isPending) login.mutate(values); }}>
+    <Form<Values> noValidate layout="vertical" requiredMark={false} onFinish={(values) => { if (!login.isPending) login.mutate(values); }}>
       <Form.Item label="이메일" name="email" rules={[{ required: true, type: 'email', message: '이메일을 입력해 주세요.' }]}>
         <Input type="email" autoComplete="email" inputMode="email" autoCapitalize="none" />
       </Form.Item>
