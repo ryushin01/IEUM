@@ -105,6 +105,8 @@ adb reverse tcp:5173 tcp:5173 && adb reverse tcp:4000 tcp:4000
 cd apps/mobile && flutter run
 ```
 
+README의 시연 GIF는 Android 에뮬레이터를 켠 뒤 `pnpm demo:gif`로 다시 만듭니다. 통합 테스트가 끝까지 통과해야 파일을 씁니다.
+
 아이콘을 바꾸려면 `pnpm --filter @ieum/web icons` 뒤에 `apps/mobile`에서 `dart run flutter_launcher_icons`, `dart run flutter_native_splash:create`를 실행합니다.
 
 ## 테스트

@@ -1,7 +1,7 @@
 # IEUM (이음)
 
 [![CI](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml/badge.svg)](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml)
-![version](https://img.shields.io/badge/version-1.2.1-0b6be0)
+![version](https://img.shields.io/badge/version-1.3.0-0b6be0)
 
 **나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. 피드, DM, 하단 메뉴는 Flutter 위젯으로, 나머지 화면은 웹뷰(React)로 만들고 브릿지로 연결한 하이브리드 앱입니다.
 
@@ -13,7 +13,7 @@
 
 Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴가 Flutter 위젯이고 나머지가 웹뷰입니다. 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다. iOS 시뮬레이터에서도 같은 흐름을 통합 테스트로 확인했습니다.
 
-<img src="docs/images/demo.gif" alt="앱 화면 순서 보기: 로그인, 피드, 메시지 목록, 대화방, 다크 모드 피드" width="280">
+<img src="docs/images/demo.gif" alt="앱 시연: 로그인, 피드, 댓글 쓰기, 게시글 상세와 작성, 메시지 보내기와 자동 답장, 메시지 목록, 다크 모드 전환" width="280">
 
 | 로그인 | 피드 |
 |---|---|
@@ -75,6 +75,7 @@ flutter run                # 개발 서버를 웹뷰로 엽니다. Android는 ad
 | `pnpm --filter @ieum/web test:storybook` | 모든 스토리 렌더링과 접근성 검사 |
 | `pnpm test:e2e` | 프로덕션 빌드와 실제 API의 화면 검사 |
 | `pnpm --filter @ieum/web test:e2e:demo` | 데모 빌드 검사 |
+| `pnpm demo:gif` | Android 에뮬레이터에서 통합 테스트를 실행하며 README 시연 GIF 생성 |
 | `flutter analyze` / `flutter test` | 앱 정적 분석 / 테스트 (`apps/mobile`) |
 | `flutter test integration_test -d <기기> --dart-define=DEMO_MODE=true` | 시뮬레이터·기기에서 Flutter 화면, 웹뷰, 브릿지 검사 (`dev:demo` 실행 필요) |
 
