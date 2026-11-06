@@ -19,7 +19,7 @@ export function PostCard({ post, list }: { post: Post; list?: boolean }) {
       actions={(
         <>
           <LikeButton post={post} />
-          {list && <Link to={`/posts/${post.id}`} className={s.comments}><MessageOutlined aria-hidden="true" />댓글 보기</Link>}
+          {list && <Link to={`/posts/${post.id}`} className={s.comments} aria-label={`댓글 보기: ${post.author.nickname} 님의 글, ${post.caption.slice(0, 30)}`}><MessageOutlined aria-hidden="true" />댓글 보기</Link>}
         </>
       )}
       footer={list && (

@@ -201,7 +201,7 @@ test('차단하면 피드에서 사라진다', async ({ browser }) => {
   const page = await newLoggedInPage(browser);
   await page.goto('/');
   const card = page.getByRole('article').filter({ hasText: '소라_기록' }).first();
-  await card.getByRole('link', { name: /소라_기록/ }).click();
+  await card.getByRole('link', { name: /^소라_기록/ }).click();
   await page.getByRole('button', { name: '사용자 메뉴' }).click();
   await page.getByRole('menuitem', { name: '차단하기' }).click();
   await expect(page.getByRole('button', { name: '차단', exact: true })).toBeVisible();

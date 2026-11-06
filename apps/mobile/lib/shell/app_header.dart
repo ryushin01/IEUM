@@ -4,7 +4,7 @@ import '../app/theme.dart';
 
 /// Flutter 화면 공통 헤더입니다. 웹뷰 헤더와 같은 모습입니다.
 class AppHeader extends StatelessWidget {
-  const AppHeader({super.key, required this.dark, required this.onToggleTheme, this.onBack, this.onWrite});
+  const AppHeader({super.key, required this.dark, required this.onToggleTheme, this.onBack, this.onWrite, this.screenTitle});
 
   final bool dark;
   final VoidCallback onToggleTheme;
@@ -12,6 +12,9 @@ class AppHeader extends StatelessWidget {
 
   /// 있으면 오른쪽에 글쓰기 버튼을 보여 줍니다.
   final VoidCallback? onWrite;
+
+  /// 화면에 제목을 따로 보여 주지 않을 때 낭독할 화면 이름입니다.
+  final String? screenTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,8 @@ class AppHeader extends StatelessWidget {
                     icon: Icon(Icons.arrow_back, color: colors.onHeader),
                   ),
                 Semantics(
-                  label: 'IEUM',
+                  header: screenTitle != null,
+                  label: screenTitle == null ? 'IEUM' : 'IEUM, $screenTitle',
                   excludeSemantics: true,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

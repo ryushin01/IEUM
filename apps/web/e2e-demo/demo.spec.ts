@@ -56,6 +56,24 @@ test('피드: 스크롤하면 샘플 글의 다음 페이지를 이어서 보여
   await expect(page.getByRole('button', { name: '더 보기' })).toHaveCount(0);
 });
 
+test('이전 샘플 데이터로 방문해도 입력한 내용을 유지하며 새 글을 받는다', async ({ page }) => {
+  await enter(page);
+  await expect(page.getByRole('article')).toHaveCount(10);
+  await page.evaluate(() => {
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number; posts: { id: string; caption: string }[] };
+    delete stored.seedVersion;
+    stored.posts = stored.posts.slice(0, 6);
+    stored.posts[1]!.caption = '방문자가 고친 내용';
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+  });
+  await page.goto('');
+  const articles = page.getByRole('article');
+  await expect(articles).toHaveCount(10);
+  await expect(page.getByText('방문자가 고친 내용')).toBeVisible();
+  await articles.last().scrollIntoViewIfNeeded();
+  await expect(articles).toHaveCount(14);
+});
+
 test('하위 경로에서 새로고침해도 유지되고, 변경 내용이 남으며, 초기화할 수 있다', async ({ page }) => {
   await enter(page);
   await expect(page).toHaveURL(/\/IEUM\/?$/);
@@ -169,6 +187,33 @@ async function smallTargets(page: Page) {
   });
 }
 
+/** Tab으로 옮긴 초점이 고정된 헤더나 메뉴에 가린 요소를 찾습니다. */
+async function obscuredFocus(page: Page, stops: number) {
+  const found: string[] = [];
+  for (let i = 0; i < stops; i++) {
+    await page.keyboard.press('Tab');
+    const label = await page.evaluate(() => {
+      const el = document.activeElement;
+      if (!el || el === document.body) return null;
+      const box = el.getBoundingClientRect();
+      const top = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+      if (top && (el.contains(top) || top.contains(el))) return null;
+      return `${el.tagName} "${(el.getAttribute('aria-label') ?? el.textContent ?? el.id).trim().slice(0, 20)}"`;
+    });
+    if (label) found.push(label);
+  }
+  return found;
+}
+
+test('키보드 초점이 고정된 헤더와 하단 메뉴에 가리지 않는다', async ({ page }) => {
+  await enter(page, '운영자로 둘러보기');
+  await expect(page.getByRole('article').first()).toBeVisible();
+  expect(await obscuredFocus(page, 30)).toEqual([]);
+  await page.goto('admin/reports');
+  await page.getByRole('button', { name: '콘텐츠 삭제' }).first().waitFor();
+  expect(await obscuredFocus(page, 20)).toEqual([]);
+});
+
 test('주요 화면의 조작 영역이 44px 이상이다', async ({ page }) => {
   const found: Record<string, string[]> = {};
   await page.goto('login');
@@ -199,7 +244,10 @@ test('주요 화면의 조작 영역이 44px 이상이다', async ({ page }) => 
   await page.goto('me');
   await page.getByRole('button', { name: '프로필 편집' }).waitFor();
   found.me = await smallTargets(page);
-  expect(found).toEqual({ login: [], signup: [], feed: [], detail: [], write: [], dm: [], profile: [], settings: [], me: [] });
+  await page.goto('nope');
+  await page.getByRole('link', { name: '홈으로' }).waitFor();
+  found.notFound = await smallTargets(page);
+  expect(found).toEqual({ login: [], signup: [], feed: [], detail: [], write: [], dm: [], profile: [], settings: [], me: [], notFound: [] });
 });
 
 test('키보드만으로 메뉴를 열고 신고 창을 열고 닫으며, 초점이 돌아온다', async ({ page }) => {

@@ -18,6 +18,91 @@ beforeEach(() => {
 });
 
 describe('데모 API', () => {
+  it('이전 버전 데이터에는 새 샘플 글만 한 번 합치고, 입력한 내용은 유지한다', async () => {
+    await login('demo@ieum.app');
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number; posts: { id: string; caption: string }[] };
+    delete stored.seedVersion;
+    stored.posts = [{ ...stored.posts[0]!, id: 'mine', caption: '내가 쓴 글' }, ...stored.posts.slice(0, 6)];
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+
+    /** 페이지를 새로 연 것처럼 저장소에서 다시 읽습니다. */
+    const reopen = async () => {
+      vi.resetModules();
+      const { demoFetch: fetchDemo } = await import('./server');
+      const send = async (method: string, path: string, body?: object, token?: string) =>
+        (await fetchDemo(path, { method, headers: token ? { authorization: `Bearer ${token}` } : {}, ...(body ? { body: JSON.stringify(body) } : {}) })).json() as Promise<{ accessToken: string; items: { id: string }[]; nextCursor: string }>;
+      const { accessToken } = await send('POST', '/auth/login', { email: 'demo@ieum.app', password: 'ieum-demo-1234' });
+      const first = await send('GET', '/posts', undefined, accessToken);
+      const second = await send('GET', `/posts?cursor=${first.nextCursor}`, undefined, accessToken);
+      return { ids: [...first.items, ...second.items].map((post) => post.id), remove: (id: string) => fetchDemo(`/posts/${id}`, { method: 'DELETE', headers: { authorization: `Bearer ${accessToken}` } }) };
+    };
+
+    const merged = await reopen();
+    expect(merged.ids).toEqual(expect.arrayContaining(['mine', 'p1', 'p14']));
+    expect(merged.ids).toHaveLength(15);
+
+    // 합친 뒤에 지운 샘플 글은 되살아나지 않습니다.
+    await merged.remove('p5');
+    expect((await reopen()).ids).not.toContain('p5');
+  });
+
+  it('샘플 데이터를 합치는 중에 들어온 요청의 변경도 잃지 않는다', async () => {
+    await login('demo@ieum.app');
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number; posts: unknown[] };
+    delete stored.seedVersion;
+    stored.posts = stored.posts.slice(0, 6);
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+
+    vi.resetModules();
+    const { demoFetch: fetchDemo } = await import('./server');
+    const signup = (name: string) =>
+      fetchDemo('/auth/signup', { method: 'POST', body: JSON.stringify({ email: `${name}@example.com`, password: 'Passw0rd!', nickname: name }) });
+    const results = await Promise.all([signup('first'), signup('second')]);
+    expect(results.map((res) => res.ok)).toEqual([true, true]);
+
+    const saved = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { users: { email: string }[]; posts: { id: string }[] };
+    expect(saved.users.map((user) => user.email)).toEqual(expect.arrayContaining(['first@example.com', 'second@example.com']));
+    expect(saved.posts.map((post) => post.id)).toContain('p14');
+  });
+
+  it('샘플 데이터를 합치는 중에 초기화하면 이전 데이터를 되살리지 않는다', async () => {
+    await login('demo@ieum.app');
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number; posts: { id: string }[] };
+    delete stored.seedVersion;
+    stored.posts = [{ ...stored.posts[0]!, id: 'mine' }];
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+
+    vi.resetModules();
+    const fresh = await import('./server');
+    const pending = fresh.demoFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email: 'demo@ieum.app', password: 'ieum-demo-1234' }) });
+    fresh.resetDemo();
+    expect((await pending).ok).toBe(true);
+
+    const saved = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { posts: { id: string }[] };
+    expect(saved.posts.map((post) => post.id)).not.toContain('mine');
+  });
+
+  it('초기화 직후의 요청은 진행 중인 읽기에 합류해 변경을 잃지 않는다', async () => {
+    await login('demo@ieum.app');
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number };
+    delete stored.seedVersion;
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+
+    vi.resetModules();
+    const fresh = await import('./server');
+    const post = (path: string, body: object) => fresh.demoFetch(path, { method: 'POST', body: JSON.stringify(body) });
+    const before = post('/auth/login', { email: 'demo@ieum.app', password: 'ieum-demo-1234' });
+    fresh.resetDemo();
+    const signup = post('/auth/signup', { email: 'after@example.com', password: 'Passw0rd!', nickname: 'after' });
+    expect((await signup).ok).toBe(true);
+    expect((await before).ok).toBe(true);
+    // 늦게 끝난 읽기가 상태를 바꿔치기했다면 다음 저장에서 가입 정보가 사라집니다.
+    await post('/auth/login', { email: 'demo@ieum.app', password: 'ieum-demo-1234' });
+
+    const saved = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { users: { email: string }[] };
+    expect(saved.users.map((user) => user.email)).toContain('after@example.com');
+  });
+
   it('비밀번호를 평문으로 저장하지 않고 틀리면 거부한다', async () => {
     const created = await call('POST', '/auth/signup', { email: 'a@example.com', password: 'Passw0rd!', nickname: '새싹' });
     expect(created.status).toBe(201);
@@ -53,7 +138,9 @@ describe('데모 API', () => {
     stop();
     expect(events.map((e) => e.type)).toEqual(['message', 'read', 'message']);
     const list = await call('GET', '/conversations/dm1/messages', undefined, token);
-    expect(list.body.items[1].readAt).not.toBeNull();
+    // 가짜 타이머로는 답장과 시각이 같을 수 있어 순서 대신 내용으로 찾습니다.
+    const sent = (list.body.items as { body: string; readAt: string | null }[]).find((m) => m.body === '안녕하세요');
+    expect(sent?.readAt).toEqual(expect.any(String));
   });
 
   it('운영자만 신고를 보고, 정지하면 로그인이 막힌다', async () => {

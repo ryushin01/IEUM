@@ -1,5 +1,5 @@
 import { BASE_URL } from '@/shared/config/env';
-import { createSeed, DEMO_PASSWORD, type DemoMessage, type DemoPost, type DemoState, type DemoUser } from './seed';
+import { createSeed, DEMO_PASSWORD, mergeSeed, SEED_VERSION, type DemoMessage, type DemoPost, type DemoState, type DemoUser } from './seed';
 
 /**
  * 실제 API(apps/api)와 같은 응답을 주는 브라우저 안 목업입니다.
@@ -24,6 +24,9 @@ class HttpError extends Error {
 }
 
 let state: DemoState | null = null;
+let loading: Promise<DemoState> | null = null;
+/** 초기화할 때마다 올려, 그 전에 시작한 읽기가 이전 데이터를 되살리지 못하게 합니다. */
+let generation = 0;
 let replyIndex = 0;
 const listeners = new Set<(event: unknown) => void>();
 
@@ -38,16 +41,38 @@ async function sha256(value: string): Promise<string> {
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-async function load(): Promise<DemoState> {
-  if (state) return state;
+/** 저장 데이터를 읽고 합친 뒤에만 state에 넣어, 준비 전의 상태를 다른 요청이 고치지 못하게 합니다. */
+async function read(): Promise<DemoState> {
+  const started = generation;
+  let stored: DemoState | null = null;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) state = JSON.parse(raw) as DemoState;
+    if (raw) stored = JSON.parse(raw) as DemoState;
   } catch {
     // 저장소를 못 쓰면 메모리로만 동작합니다.
   }
-  state ??= createSeed(await sha256(DEMO_PASSWORD));
+  if (stored && (stored.seedVersion ?? 1) >= SEED_VERSION) {
+    state = stored;
+    return stored;
+  }
+  const seed = createSeed(await sha256(DEMO_PASSWORD));
+  // 기다리는 동안 초기화되었으면 결과를 버리고, 초기화 뒤의 읽기에 합류합니다.
+  if (started !== generation) return load();
+  state = stored ? mergeSeed(stored, seed) : seed;
+  // 합친 결과를 저장해야 지운 샘플 글이 다음 실행에 되살아나지 않습니다.
+  if (stored) save();
   return state;
+}
+
+function load(): Promise<DemoState> {
+  if (state) return Promise.resolve(state);
+  // 동시에 들어온 요청은 같은 준비 작업을 기다립니다.
+  if (loading) return loading;
+  const current = read().finally(() => {
+    if (loading === current) loading = null;
+  });
+  loading = current;
+  return current;
 }
 
 function save() {
@@ -60,6 +85,8 @@ function save() {
 
 export function resetDemo(): void {
   state = null;
+  loading = null;
+  generation += 1;
   try {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem('ieum.tokens');

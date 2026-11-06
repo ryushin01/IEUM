@@ -28,6 +28,8 @@ export interface DemoMessage { id: string; conversationId: string; senderId: str
 export interface DemoReport { id: string; reporterId: string; targetType: string; targetId: string; reason: string; createdAt: string; open: boolean }
 
 export interface DemoState {
+  /** 저장 당시의 샘플 데이터 버전입니다. 1은 값이 없던 처음 버전입니다. */
+  seedVersion?: number;
   users: DemoUser[];
   posts: DemoPost[];
   comments: DemoComment[];
@@ -61,6 +63,27 @@ const post = (id: string, authorId: string, minutes: number, caption: string, im
   };
 };
 
+/** 샘플 데이터에 항목을 추가하면 올립니다. 이전 방문자의 저장 데이터에 새 항목이 합쳐집니다. */
+export const SEED_VERSION = 2;
+
+/** 입력한 내용은 그대로 두고, 저장 데이터에 없는 샘플 항목을 뒤에 붙입니다. 이전에 지운 샘플 항목도 이때 한 번 돌아옵니다. */
+export function mergeSeed(stored: DemoState, seed: DemoState): DemoState {
+  const missing = <T extends { id: string }>(current: T[], next: T[]) => {
+    const ids = new Set(current.map((item) => item.id));
+    return [...current, ...next.filter((item) => !ids.has(item.id))];
+  };
+  return {
+    ...stored,
+    seedVersion: seed.seedVersion,
+    users: missing(stored.users, seed.users),
+    posts: missing(stored.posts, seed.posts),
+    comments: missing(stored.comments, seed.comments),
+    conversations: missing(stored.conversations, seed.conversations),
+    messages: missing(stored.messages, seed.messages),
+    reports: missing(stored.reports, seed.reports),
+  };
+}
+
 export function createSeed(passwordHash: string): DemoState {
   const everyone = ['demo', 'haneul', 'sora', 'mint'];
   const users = [
@@ -71,6 +94,7 @@ export function createSeed(passwordHash: string): DemoState {
     user('admin', '이음운영자', '이음 운영 계정입니다.', [], { isAdmin: true }),
   ].map((u) => ({ ...u, passwordHash }));
   return {
+    seedVersion: SEED_VERSION,
     users,
     posts: [
       post('p1', 'haneul', 6, '퇴근길 하늘이 유난히 예뻤던 날.\n다들 오늘 하루 어땠나요?', [['sunset', '노을 지는 바다 위로 해가 저무는 그림'], ['city', '불 켜진 건물들이 있는 밤의 도시 그림']], everyone),
