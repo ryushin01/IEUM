@@ -66,7 +66,7 @@ const post = (id: string, authorId: string, minutes: number, caption: string, im
 /** 샘플 데이터에 항목을 추가하면 올립니다. 이전 방문자의 저장 데이터에 새 항목이 합쳐집니다. */
 export const SEED_VERSION = 2;
 
-/** 입력한 내용은 그대로 두고, 저장 데이터에 없는 샘플 항목만 뒤에 붙입니다. */
+/** 입력한 내용은 그대로 두고, 저장 데이터에 없는 샘플 항목을 뒤에 붙입니다. 이전에 지운 샘플 항목도 이때 한 번 돌아옵니다. */
 export function mergeSeed(stored: DemoState, seed: DemoState): DemoState {
   const missing = <T extends { id: string }>(current: T[], next: T[]) => {
     const ids = new Set(current.map((item) => item.id));

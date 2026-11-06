@@ -4,7 +4,7 @@ import { PostCardView, type Post } from '@/entities/post';
 import { useMe } from '@/entities/session';
 import { CommentForm } from '@/features/post-comment';
 import { LikeButton } from '@/features/post-like';
-import { srOnly, UserAvatar } from '@/shared/ui';
+import { UserAvatar } from '@/shared/ui';
 import * as s from './PostCard.css';
 import { PostActionsMenu } from './PostActionsMenu';
 
@@ -19,7 +19,7 @@ export function PostCard({ post, list }: { post: Post; list?: boolean }) {
       actions={(
         <>
           <LikeButton post={post} />
-          {list && <Link to={`/posts/${post.id}`} className={s.comments}><MessageOutlined aria-hidden="true" />댓글 보기<span className={srOnly}>: {post.author.nickname} 님의 게시글</span></Link>}
+          {list && <Link to={`/posts/${post.id}`} className={s.comments} aria-label={`댓글 보기: ${post.author.nickname} 님의 글, ${post.caption.slice(0, 30)}`}><MessageOutlined aria-hidden="true" />댓글 보기</Link>}
         </>
       )}
       footer={list && (

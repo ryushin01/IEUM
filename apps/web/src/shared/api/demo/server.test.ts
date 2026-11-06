@@ -46,6 +46,25 @@ describe('데모 API', () => {
     expect((await reopen()).ids).not.toContain('p5');
   });
 
+  it('샘플 데이터를 합치는 중에 들어온 요청의 변경도 잃지 않는다', async () => {
+    await login('demo@ieum.app');
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number; posts: unknown[] };
+    delete stored.seedVersion;
+    stored.posts = stored.posts.slice(0, 6);
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+
+    vi.resetModules();
+    const { demoFetch: fetchDemo } = await import('./server');
+    const signup = (name: string) =>
+      fetchDemo('/auth/signup', { method: 'POST', body: JSON.stringify({ email: `${name}@example.com`, password: 'Passw0rd!', nickname: name }) });
+    const results = await Promise.all([signup('first'), signup('second')]);
+    expect(results.map((res) => res.ok)).toEqual([true, true]);
+
+    const saved = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { users: { email: string }[]; posts: { id: string }[] };
+    expect(saved.users.map((user) => user.email)).toEqual(expect.arrayContaining(['first@example.com', 'second@example.com']));
+    expect(saved.posts.map((post) => post.id)).toContain('p14');
+  });
+
   it('비밀번호를 평문으로 저장하지 않고 틀리면 거부한다', async () => {
     const created = await call('POST', '/auth/signup', { email: 'a@example.com', password: 'Passw0rd!', nickname: '새싹' });
     expect(created.status).toBe(201);
