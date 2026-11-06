@@ -47,6 +47,18 @@ test('서버 없이 동작하고 외부로 요청을 보내지 않는다', async
   await checkA11y(page);
 });
 
+test('앱 코드를 불러오기 전에도 고른 테마를 적용한다', async ({ page }) => {
+  await page.goto('login');
+  await page.evaluate(() => localStorage.setItem('ieum.theme', 'dark'));
+  // 앱 코드가 끝내 오지 않아도 HTML만으로 적용되어야 합니다.
+  await page.route('**/assets/*.js', (route) => route.abort());
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#1b1e25');
+  await page.unroute('**/assets/*.js');
+  await page.evaluate(() => localStorage.removeItem('ieum.theme'));
+});
+
 test('피드: 스크롤하면 샘플 글의 다음 페이지를 이어서 보여 준다', async ({ page }) => {
   await enter(page);
   const articles = page.getByRole('article');

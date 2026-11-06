@@ -153,4 +153,37 @@ void main() {
     await expectLater(tester, meetsGuideline(const MinimumTapTargetGuideline(size: Size(44, 44), link: 'KWCAG 6.1.3')));
     handle.dispose();
   });
+
+  group('좁은 화면과 큰 글자에서 넘치지 않는다', () {
+    Future<void> pumpScaled(WidgetTester tester, Widget child, {double scale = 2}) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ieumTheme(Brightness.light),
+          home: MediaQuery(
+            data: MediaQueryData(size: const Size(320, 640), textScaler: TextScaler.linear(scale)),
+            child: Scaffold(body: child),
+          ),
+        ),
+      );
+    }
+
+    testWidgets('머리글: 뒤로 가기, 스위치, 글쓰기를 모두 표시한다', (tester) async {
+      await pumpScaled(tester, AppHeader(dark: false, onToggleTheme: () {}, onBack: () {}, onWrite: () {}));
+      expect(tester.takeException(), isNull);
+      expect(tester.getRect(find.text('글쓰기')).right, lessThanOrEqualTo(320));
+    });
+
+    testWidgets('하단 메뉴', (tester) async {
+      await pumpScaled(tester, Align(alignment: Alignment.bottomCenter, child: BottomMenu(tab: MenuTab.home, unread: 120, onSelect: (_) {}, onScrollTop: () {})));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('게시글', (tester) async {
+      await pumpScaled(tester, SingleChildScrollView(child: PostCard(post: makePost(images: const []), me: const Me(nickname: '이음데모'), onLike: () {}, onSubmitComment: (_) async => null, onOpenPost: () {}, onOpenAuthor: () {})));
+      expect(tester.takeException(), isNull);
+    });
+  });
 }

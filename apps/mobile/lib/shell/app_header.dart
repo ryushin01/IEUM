@@ -41,28 +41,36 @@ class AppHeader extends StatelessWidget {
                     constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                     icon: Icon(Icons.arrow_back, color: colors.onHeader),
                   ),
-                Semantics(
-                  header: screenTitle != null,
-                  label: screenTitle == null ? 'IEUM' : 'IEUM, $screenTitle',
-                  excludeSemantics: true,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('IEUM', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: .5, color: colors.onHeader, height: 1)),
-                      const SizedBox(width: 4),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 3),
-                        child: Container(
-                          width: 7,
-                          height: 7,
-                          decoration: BoxDecoration(color: colors.primary, shape: BoxShape.circle),
+                // 공간이 부족하면 로고를 줄여 조작 요소가 밀려나지 않게 합니다.
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Semantics(
+                        header: screenTitle != null,
+                        label: screenTitle == null ? 'IEUM' : 'IEUM, $screenTitle',
+                        excludeSemantics: true,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text('IEUM', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: .5, color: colors.onHeader, height: 1)),
+                            const SizedBox(width: 4),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 3),
+                              child: Container(
+                                width: 7,
+                                height: 7,
+                                decoration: BoxDecoration(color: colors.primary, shape: BoxShape.circle),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
-                const Spacer(),
                 Semantics(
                   label: '다크 모드',
                   onTap: onToggleTheme,
