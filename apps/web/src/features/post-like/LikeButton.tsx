@@ -1,4 +1,4 @@
-import { HeartFilled, HeartOutlined } from '@ant-design/icons';
+import { LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { App, Button } from 'antd';
 import { patchPost, type Post } from '@/entities/post';
@@ -28,10 +28,10 @@ export function LikeButton({ post }: { post: Post }) {
       type="text"
       className={s.like}
       aria-pressed={post.liked}
-      icon={post.liked ? <HeartFilled aria-hidden="true" /> : <HeartOutlined aria-hidden="true" />}
+      icon={post.liked ? <LikeFilled aria-hidden="true" /> : <LikeOutlined aria-hidden="true" />}
       onClick={() => { if (!toggle.isPending) toggle.mutate(!post.liked); }}
     >
-      좋아요 {post.likeCount}<span className={srOnly}>개</span>
+      좋아요<span className={srOnly}> {post.likeCount}개</span>
     </Button>
   );
 }

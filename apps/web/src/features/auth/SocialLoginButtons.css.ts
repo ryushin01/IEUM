@@ -8,7 +8,7 @@ export const error = style({ marginTop: 12 });
 
 const base = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', minHeight: 48,
-  borderRadius: 14, fontFamily: `-apple-system, 'Apple SD Gothic Neo', Roboto, 'Noto Sans KR', sans-serif`,
+  borderRadius: 10, fontFamily: `-apple-system, 'Apple SD Gothic Neo', Roboto, 'Noto Sans KR', sans-serif`,
   fontSize: 15, fontWeight: 500, cursor: 'pointer',
   selectors: { '&:disabled': { opacity: 0.6, cursor: 'wait' } },
 } as const;

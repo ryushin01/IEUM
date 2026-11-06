@@ -26,6 +26,31 @@ class EmptyRepository implements PostRepository {
   Future<Post> setLiked(String postId, {required bool liked}) async => throw UnimplementedError();
 }
 
+/// 커서마다 정해진 페이지를 돌려주고, 요청한 커서를 기록합니다.
+class PagedRepository extends EmptyRepository {
+  final requested = <String?>[];
+
+  static Post _post(String id) => Post(
+    id: id,
+    author: const PostAuthor(id: 'u', nickname: '하늘빛'),
+    caption: '글 $id',
+    images: const [],
+    likeCount: 0,
+    commentCount: 0,
+    liked: false,
+    edited: false,
+    isHot: false,
+    createdAt: DateTime(2026),
+  );
+
+  @override
+  Future<FeedPage> fetchFeed({String? cursor}) async {
+    requested.add(cursor);
+    if (cursor == null) return FeedPage(items: [for (var i = 0; i < 10; i++) _post('a$i')], nextCursor: 'c1');
+    return FeedPage(items: [_post('b0')]);
+  }
+}
+
 Future<void> pumpFeed(WidgetTester tester, FeedController controller, {void Function(String)? onOpenPath}) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -45,14 +70,34 @@ Future<void> pumpFeed(WidgetTester tester, FeedController controller, {void Func
 }
 
 void main() {
-  testWidgets('헤더: 스위치가 로고를 가리지 않고 오른쪽 끝에 있다', (tester) async {
+  testWidgets('헤더: 로고는 왼쪽, 스위치와 글쓰기는 오른쪽에 겹치지 않게 있다', (tester) async {
     await pumpFeed(tester, FeedController(EmptyRepository()));
     final logo = tester.getRect(find.text('IEUM'));
     final toggle = tester.getRect(find.byType(Switch));
+    final write = tester.getRect(find.text('글쓰기'));
     final width = tester.getSize(find.byType(FeedView)).width;
+    expect(logo.left, moreOrLessEquals(16, epsilon: 1));
     expect(toggle.left, greaterThan(logo.right));
-    expect(toggle.right, greaterThan(width - 16));
-    expect(logo.center.dx, moreOrLessEquals(width / 2, epsilon: 16));
+    expect(write.left, greaterThan(toggle.right));
+    expect(write.right, lessThanOrEqualTo(width - 16));
+  });
+
+  testWidgets('끝 근처까지 스크롤하면 다음 페이지를 불러오고, 마지막 페이지 뒤에는 더 요청하지 않는다', (tester) async {
+    final repository = PagedRepository();
+    final controller = FeedController(repository);
+    await controller.reload();
+    await pumpFeed(tester, controller);
+    expect(repository.requested, [null]);
+
+    final list = find.byType(Scrollable).first;
+    await tester.drag(list, const Offset(0, -3000));
+    await tester.pumpAndSettle();
+    expect(repository.requested, [null, 'c1']);
+    expect(controller.posts.length, 11);
+
+    await tester.drag(list, const Offset(0, -3000));
+    await tester.pumpAndSettle();
+    expect(repository.requested, [null, 'c1']);
   });
 
   testWidgets('글이 없으면 첫 게시글 작성으로 안내한다', (tester) async {

@@ -22,8 +22,8 @@ class ShellPage extends GetView<ShellController> {
       final colors = dark ? IeumColors.dark : IeumColors.light;
       // 앱 화면도 웹에서 고른 테마를 따릅니다.
       return Theme(data: ieumTheme(controller.brightness.value), child: AnnotatedRegion<SystemUiOverlayStyle>(
-        // 헤더가 빨강 또는 어두운 색이라 상태 표시줄 글자는 항상 밝게 둡니다.
-        value: SystemUiOverlayStyle.light.copyWith(
+        // 헤더가 테마의 면 색이라 상태 표시줄 글자도 테마를 따릅니다.
+        value: (dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark).copyWith(
           statusBarColor: Colors.transparent,
           systemNavigationBarColor: colors.surface,
           systemNavigationBarIconBrightness: dark ? Brightness.light : Brightness.dark,
@@ -72,7 +72,6 @@ class ShellPage extends GetView<ShellController> {
                       BottomMenu(
                         tab: controller.tab,
                         unread: controller.conversations.unread,
-                        me: controller.me.value,
                         onSelect: controller.selectTab,
                         onScrollTop: controller.scrollToTop,
                       ),
@@ -110,6 +109,7 @@ class ShellPage extends GetView<ShellController> {
         controller: controller.conversations,
         dark: dark,
         onToggleTheme: controller.toggleTheme,
+        onWrite: () => controller.selectTab(MenuTab.write),
         onOpen: (id) => controller.openPath('/dm/$id'),
       );
     }

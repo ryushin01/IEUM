@@ -10,7 +10,7 @@ const fontDir = join(dirname(require.resolve('@fontsource/gothic-a1/package.json
 const font = readFileSync(join(fontDir, 'gothic-a1-latin-900-normal.woff2')).toString('base64');
 const out = fileURLToPath(new URL('../../mobile/assets/icon/', import.meta.url));
 
-const RED = '#d9252f';
+const BLUE = '#0b6be0';
 const WHITE = '#ffffff';
 
 function html(size: number, background: string, color: string, textSize: number, stroke: number) {
@@ -23,8 +23,8 @@ function html(size: number, background: string, color: string, textSize: number,
 }
 
 const targets: [string, number, string, string, number, number][] = [
-  // 아이콘: 빨간 배경에 글자만 둡니다.
-  ['icon.png', 1024, RED, WHITE, 280, 0],
+  // 아이콘: 파란 배경에 글자만 둡니다.
+  ['icon.png', 1024, BLUE, WHITE, 280, 0],
   // 적응형 아이콘: 가운데 66%가 안전 영역이라 글자를 줄입니다.
   ['foreground.png', 1024, 'transparent', WHITE, 190, 0],
   ['splash.png', 768, 'transparent', WHITE, 170, 0],

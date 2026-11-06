@@ -4,10 +4,10 @@ export type ThemeMode = 'light' | 'dark';
 
 const FONT = `'Gothic A1', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`;
 
-/** theme.css.ts의 톡톡 토큰과 같은 값입니다. */
+/** theme.css.ts의 토큰과 같은 값입니다. */
 const COLORS = {
-  light: { primary: '#d9252f', onPrimary: '#ffffff', text: '#1f1b1c', muted: '#625b5f', error: '#b3131d', surface: '#ffffff', bg: '#f4f4f6', control: '#8a8387' },
-  dark: { primary: '#ff6b72', onPrimary: '#161314', text: '#f7f4f4', muted: '#c9c2c5', error: '#ff9db1', surface: '#262223', bg: '#161314', control: '#8f888b' },
+  light: { primary: '#0b6be0', onPrimary: '#ffffff', text: '#2b2d38', muted: '#646a75', error: '#d3222a', surface: '#ffffff', bg: '#f5f6f8', control: '#31313b' },
+  dark: { primary: '#5ea3ff', onPrimary: '#10131a', text: '#eef0f3', muted: '#a9afba', error: '#ff8a8f', surface: '#1b1e25', bg: '#111318', control: '#a9afba' },
 };
 
 export function antdTheme(mode: ThemeMode): ThemeConfig {
@@ -31,7 +31,7 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
       colorTextPlaceholder: c.muted,
       fontFamily: FONT,
       fontSize: 16,
-      borderRadius: 14,
+      borderRadius: 10,
       controlHeight: 48,
       motionDurationMid: '0.1s',
     },
@@ -40,7 +40,7 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
         fontWeight: 700,
         primaryShadow: 'none',
         dangerShadow: 'none',
-        dangerColor: mode === 'light' ? '#ffffff' : '#161314',
+        dangerColor: mode === 'light' ? '#ffffff' : '#10131a',
         primaryColor: c.onPrimary,
         defaultHoverColor: c.primary,
         defaultHoverBorderColor: c.primary,

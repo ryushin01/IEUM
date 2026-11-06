@@ -27,7 +27,7 @@ export function SettingsPage() {
     queryFn: () => callNative('app.getInfo'),
   });
   return (
-    <>
+    <div className={s.page}>
       <h1 className={s.title}>설정</h1>
       <ul>
         {me?.isAdmin && <li className={s.row}><Link className={s.action} to="/admin/reports">신고 처리</Link></li>}
@@ -41,6 +41,6 @@ export function SettingsPage() {
       </ul>
       {info.data && <p className={s.version}>버전 {info.data.version} ({info.data.build})</p>}
       <DeleteAccountDialog open={deleting} hasPassword={me?.hasPassword ?? true} onClose={() => setDeleting(false)} />
-    </>
+    </div>
   );
 }

@@ -47,6 +47,15 @@ test('서버 없이 동작하고 외부로 요청을 보내지 않는다', async
   await checkA11y(page);
 });
 
+test('피드: 스크롤하면 샘플 글의 다음 페이지를 이어서 보여 준다', async ({ page }) => {
+  await enter(page);
+  const articles = page.getByRole('article');
+  await expect(articles).toHaveCount(10);
+  await articles.last().scrollIntoViewIfNeeded();
+  await expect(articles).toHaveCount(14);
+  await expect(page.getByRole('button', { name: '더 보기' })).toHaveCount(0);
+});
+
 test('하위 경로에서 새로고침해도 유지되고, 변경 내용이 남으며, 초기화할 수 있다', async ({ page }) => {
   await enter(page);
   await expect(page).toHaveURL(/\/IEUM\/?$/);

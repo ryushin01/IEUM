@@ -92,8 +92,8 @@ test.describe('로그인 후', () => {
 
     await card.getByRole('textbox', { name: '댓글' }).fill('목록에서 쓴 댓글');
     await card.getByRole('button', { name: '게시', exact: true }).click();
-    await expect(card.getByRole('button', { name: '댓글 1개 모두 보기' })).toBeVisible();
-    await card.getByRole('button', { name: '댓글 1개 모두 보기' }).click();
+    await expect(card.getByText('댓글 1개')).toBeVisible();
+    await card.getByRole('link', { name: '댓글 보기' }).click();
     await expect(page.getByText('목록에서 쓴 댓글')).toBeVisible();
     await page.getByRole('textbox', { name: '댓글' }).fill('첫 댓글');
     await page.getByRole('button', { name: '게시', exact: true }).click();

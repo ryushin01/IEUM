@@ -141,7 +141,11 @@ void main() {
       // 좋아요 (Flutter → 목업 API). 시드에서 이미 누른 글입니다.
       final first = page.shell.feed.posts.first;
       expect(first.liked, isTrue);
-      await tester.tap(find.byIcon(Icons.favorite).first);
+      // 화면 높이에 따라 좋아요 줄이 스크롤해야 보이는 위치에 있습니다.
+      final like = find.byIcon(Icons.thumb_up).first;
+      await tester.ensureVisible(like);
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(like);
       await pumpFor(tester, const Duration(seconds: 1));
       expect(page.shell.feed.posts.first.liked, isFalse);
       expect(page.shell.feed.posts.first.likeCount, first.likeCount - 1);
@@ -149,14 +153,15 @@ void main() {
       // 댓글 (Flutter → 웹뷰 상세 화면에 반영)
       await tester.enterText(find.byType(TextField).first, 'Flutter에서 쓴 댓글');
       await tester.pump(const Duration(milliseconds: 200));
-      final postButton = find.widgetWithText(FilledButton, '게시').first;
+      final postButton = find.widgetWithText(TextButton, '게시').first;
       await tester.ensureVisible(postButton);
       await tester.pump(const Duration(milliseconds: 500));
       await shot(tester, 'feed-comment');
       await tester.tap(postButton);
       await pumpFor(tester, const Duration(seconds: 1));
       expect(page.shell.feed.posts.first.commentCount, first.commentCount + 1);
-      final allComments = find.text('댓글 ${first.commentCount + 1}개 모두 보기').first;
+      expect(find.textContaining('댓글 ${first.commentCount + 1}개').first, findsOneWidget);
+      final allComments = find.text('댓글 보기').first;
       await tester.ensureVisible(allComments);
       await tester.pump(const Duration(milliseconds: 300));
       await tester.tap(allComments);
@@ -173,7 +178,8 @@ void main() {
       expect(page.shell.path.value, '/');
 
       // 새 글 (웹뷰)
-      await tapMenu(tester, Icons.add);
+      await tester.tap(find.text('글쓰기'));
+      await tester.pump(const Duration(milliseconds: 300));
       await page.waitUntil('document.body.innerText.includes("앨범에서 선택")', '작성 화면');
       await page.fill('#post-caption', '오늘의 기록을 남겨 보세요.');
       expect(find.byType(PostCard), findsNothing);

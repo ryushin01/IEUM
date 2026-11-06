@@ -28,8 +28,8 @@ export function CommentForm({ postId }: { postId: string }) {
     <form className={s.form} onSubmit={submit}>
       <div className={s.row}>
         <label htmlFor={inputId} className={srOnly}>댓글</label>
-        <Input id={inputId} placeholder="댓글 쓰기 (최대 100자)" maxLength={100} value={body} onChange={(e) => setBody(e.target.value)} />
-        <Button htmlType="submit" type="primary" loading={create.isPending} disabled={!body.trim()}>게시</Button>
+        <Input id={inputId} variant="borderless" placeholder="댓글 쓰기 (최대 100자)" maxLength={100} value={body} onChange={(e) => setBody(e.target.value)} />
+        <Button className={s.submit} htmlType="submit" type="text" loading={create.isPending} disabled={!body.trim()}>게시</Button>
       </div>
       {create.error && <Alert className={s.error} type="error" title={create.error.message} />}
     </form>

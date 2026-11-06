@@ -37,9 +37,10 @@ export function PostCardView({ post, clamp, menu, actions, footer }: Props) {
         </Link>
         {menu}
       </header>
-      <ImageCarousel images={images} />
-      {actions && <div className={s.actions}>{actions}</div>}
       <p className={`${s.caption} ${clamp ? s.captionClamp : ''}`}>{post.caption}</p>
+      <ImageCarousel images={images} />
+      <p className={s.stats}>좋아요 {post.likeCount.toLocaleString()}개 · 댓글 {post.commentCount.toLocaleString()}개</p>
+      {actions && <div className={s.actions}>{actions}</div>}
       {footer}
     </article>
   );

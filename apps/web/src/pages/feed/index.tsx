@@ -10,8 +10,8 @@ export function FeedPage() {
   if (isNativeApp()) return null;
   return (
     <>
-      <h1 className={s.hero}><span className={srOnly}>피드. </span>오늘은 누구와<br />이어져 볼까요?</h1>
-      <div className={s.list}><PostFeed /></div>
+      <h1 className={s.hero}><span className={srOnly}>피드. </span>오늘은 누구와<br /><em className={s.emphasis}>이어져 볼까요?</em></h1>
+      <PostFeed />
     </>
   );
 }

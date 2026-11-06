@@ -51,7 +51,7 @@ class _FeedViewState extends State<FeedView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AppHeader(dark: widget.dark, onToggleTheme: widget.onToggleTheme),
+        AppHeader(dark: widget.dark, onToggleTheme: widget.onToggleTheme, onWrite: () => widget.onOpenPath('/posts/new')),
         Expanded(child: Obx(_buildBody)),
       ],
     );
@@ -108,44 +108,37 @@ class _FeedViewState extends State<FeedView> {
   }
 }
 
-/// 첫 카드가 빨간 영역 위로 겹쳐 올라오는 피드 상단입니다.
+/// 굵은 문구가 있는 피드 상단입니다. 첫 글 위에 흰 구획으로 놓입니다.
 class _Hero extends StatelessWidget {
   const _Hero({required this.child});
-
-  static const _overlap = 48.0;
-  static const _fontSize = 25.0;
-  static const _lineHeight = 1.3;
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final colors = IeumColors.of(context);
-    // 글자 크기 설정을 키워도 제목 두 줄이 카드에 가리지 않도록 높이를 계산합니다.
-    final heading = MediaQuery.textScalerOf(context).scale(_fontSize) * _lineHeight * 2;
-    final height = 4 + heading + 16 + _overlap;
-    return Stack(
+    const style = TextStyle(fontSize: 26, height: 1.35, fontWeight: FontWeight.w700, letterSpacing: -.5);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Positioned(
-          left: 0,
-          right: 0,
-          top: 0,
-          height: height,
-          child: ColoredBox(
-            color: colors.header,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-              child: Semantics(
-                header: true,
-                child: Text(
-                  '오늘은 누구와\n이어져 볼까요?',
-                  style: TextStyle(fontSize: _fontSize, height: _lineHeight, fontWeight: FontWeight.w800, letterSpacing: -.5, color: colors.onHeader),
-                ),
+        Container(
+          color: colors.surface,
+          margin: const EdgeInsets.only(bottom: IeumColors.band),
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+          child: Semantics(
+            header: true,
+            child: Text.rich(
+              TextSpan(
+                style: style.copyWith(color: colors.text),
+                children: [
+                  const TextSpan(text: '오늘은 누구와\n'),
+                  TextSpan(text: '이어져 볼까요?', style: TextStyle(color: colors.primary)),
+                ],
               ),
             ),
           ),
         ),
-        Padding(padding: EdgeInsets.only(top: height - _overlap), child: child),
+        child,
       ],
     );
   }

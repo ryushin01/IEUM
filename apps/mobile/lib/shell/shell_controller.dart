@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+
+import '../app/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -217,7 +219,7 @@ class ShellController extends GetxController with WidgetsBindingObserver {
 
   void toggleTheme() => _callWeb('toggleTheme()');
 
-  Color get _background => brightness.value == Brightness.dark ? const Color(0xFF222222) : Colors.white;
+  Color get _background => brightness.value == Brightness.dark ? IeumColors.dark.surface : Colors.white;
 
   void load() {
     status.value = ShellStatus.loading;

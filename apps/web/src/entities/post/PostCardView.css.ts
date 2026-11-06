@@ -1,13 +1,15 @@
 import { style } from '@vanilla-extract/css';
 import { vars } from '@/shared/theme/theme.css';
 
-export const card = style({ margin: '0 12px 14px', padding: 14, borderRadius: 24, backgroundColor: vars.color.surface, boxShadow: `0 6px 18px ${vars.color.shadow}` });
-export const header = style({ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, paddingBottom: 10 });
+/** 카드 대신 흰 구획을 회색 띠로 나눕니다. */
+export const card = style({ marginBottom: vars.layout.band, padding: '16px 16px 12px', backgroundColor: vars.color.surface });
+export const header = style({ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 });
 export const author = style({ display: 'flex', alignItems: 'center', gap: 12, minHeight: 44, minWidth: 0, textDecoration: 'none' });
-export const names = style({ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 });
+export const names = style({ display: 'flex', flexDirection: 'column', minWidth: 0 });
 export const nameRow = style({ display: 'flex', alignItems: 'center', gap: 4, minWidth: 0 });
-export const nickname = style({ fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' });
+export const nickname = style({ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' });
 export const date = style({ fontSize: 13, color: vars.color.muted });
-export const actions = style({ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 10 });
-export const caption = style({ padding: '10px 2px 0', fontSize: 15, fontWeight: 500, lineHeight: 1.55, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' });
+export const caption = style({ padding: '12px 0', fontSize: 16, lineHeight: 1.55, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' });
 export const captionClamp = style({ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' });
+export const stats = style({ padding: '12px 0', fontSize: 14, color: vars.color.muted });
+export const actions = style({ display: 'flex', alignItems: 'stretch', borderTop: `1px solid ${vars.color.border}` });
