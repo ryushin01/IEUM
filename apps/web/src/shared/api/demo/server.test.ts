@@ -117,7 +117,9 @@ describe('데모 API', () => {
     stop();
     expect(events.map((e) => e.type)).toEqual(['message', 'read', 'message']);
     const list = await call('GET', '/conversations/dm1/messages', undefined, token);
-    expect(list.body.items[1].readAt).not.toBeNull();
+    // 가짜 타이머로는 답장과 시각이 같을 수 있어 순서 대신 내용으로 찾습니다.
+    const sent = (list.body.items as { body: string; readAt: string | null }[]).find((m) => m.body === '안녕하세요');
+    expect(sent?.readAt).not.toBeNull();
   });
 
   it('운영자만 신고를 보고, 정지하면 로그인이 막힌다', async () => {
