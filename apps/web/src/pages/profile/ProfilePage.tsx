@@ -20,7 +20,8 @@ function PostGrid({ authorId, nickname }: { authorId: string; nickname: string }
   const posts = feed.data.pages.flatMap((page) => page.items);
   if (posts.length === 0) return <EmptyView title="아직 게시글이 없습니다." />;
   return (
-    <>
+    <section className={s.posts} aria-labelledby="profile-posts">
+      <h2 id="profile-posts" className={s.postsTitle}>작성 글</h2>
       <ul className={s.grid} aria-label={`${nickname} 님의 게시글`}>
         {posts.map((post, i) => (
           <li key={post.id}>
@@ -35,17 +36,17 @@ function PostGrid({ authorId, nickname }: { authorId: string; nickname: string }
           <Button block loading={feed.isFetchingNextPage} onClick={() => void feed.fetchNextPage()}>더 보기</Button>
         </div>
       )}
-    </>
+    </section>
   );
 }
 
 function Head({ user, count }: { user: PublicUser; count?: number }) {
   return (
     <div className={s.head}>
-      <UserAvatar nickname={user.nickname} src={user.avatarUrl} size={72} decorative={false} ring />
+      <UserAvatar nickname={user.nickname} src={user.avatarUrl} size={96} decorative={false} />
       <div className={s.info}>
         <h1 className={s.name}>{user.nickname} {user.isOfficial && <OfficialMark />}</h1>
-        {count !== undefined && <p className={s.count}>게시글 {count}개</p>}
+        {count !== undefined && <p className={s.count}>게시글 <strong className={s.countValue}>{count}</strong>개</p>}
         {user.bio && <p className={s.bio}>{user.bio}</p>}
         {user.interests.length > 0 && (
           <ul className={s.interests} aria-label="관심사">

@@ -15,7 +15,7 @@ export function CommentSection({ postId, postAuthorId }: { postId: string; postA
   const [report, setReport] = useState<ReportTarget | null>(null);
   return (
     <section className={s.section} aria-labelledby="comments-title">
-      <h2 id="comments-title" className={s.title}>댓글</h2>
+      <h2 id="comments-title" className={s.title}>댓글 {comments.data?.length ?? ''}</h2>
       {comments.isPending && <LoadingView label="댓글을 불러오는 중" />}
       {comments.isError && <ErrorView error={comments.error} onRetry={() => void comments.refetch()} />}
       {comments.data?.length === 0 && <EmptyView title="첫 댓글을 남겨 보세요." />}
@@ -50,7 +50,7 @@ function CommentItem({ comment, postId, postAuthorId, onReport }: ItemProps) {
   ];
   return (
     <li className={s.item}>
-      <UserAvatar nickname={comment.author.nickname} src={comment.author.avatarUrl} size={28} />
+      <UserAvatar nickname={comment.author.nickname} src={comment.author.avatarUrl} size={40} />
       <div>
         <Link to={`/users/${comment.author.id}`} className={s.author}>{comment.author.nickname}</Link>
         <p className={s.body}>{comment.body}</p>

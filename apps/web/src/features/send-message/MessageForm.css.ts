@@ -1,5 +1,7 @@
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { vars } from '@/shared/theme/theme.css';
 
-export const form = style({ display: 'grid', gap: 8, padding: '12px 14px', borderRadius: '24px 24px 0 0', backgroundColor: vars.color.surface, boxShadow: `0 -4px 16px ${vars.color.shadow}` });
+export const form = style({ display: 'grid', gap: 8, padding: '10px 16px', borderTop: `1px solid ${vars.color.border}`, backgroundColor: vars.color.surface });
 export const row = style({ display: 'flex', gap: 8 });
+globalStyle(`${row} .ant-input`, { paddingInline: 18, borderColor: vars.color.control, borderRadius: 999 });
+globalStyle(`${row} .ant-btn`, { flexShrink: 0, width: 48, borderRadius: '50%' });

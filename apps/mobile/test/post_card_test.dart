@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ieum/app/theme.dart';
 import 'package:ieum/data/models.dart';
 import 'package:ieum/feed/post_card.dart';
+import 'package:ieum/shell/app_header.dart';
 import 'package:ieum/shell/bottom_menu.dart';
 
 Post makePost({List<PostImage> images = const [], bool official = true, bool hot = true}) => Post(
@@ -44,7 +45,8 @@ void main() {
   testWidgets('sprout 조건대로 표시하고 낭독 정보를 제공한다', (tester) async {
     final handle = tester.ensureSemantics();
     await pumpCard(tester, makePost());
-    expect(find.text('댓글 2개 모두 보기'), findsOneWidget);
+    expect(find.text('댓글 보기'), findsOneWidget);
+    expect(find.textContaining('댓글 2개'), findsOneWidget);
     expect(find.textContaining('수정됨'), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp(r'하늘빛, 공식 계정, 인기 게시글')), findsOneWidget);
     expect(find.bySemanticsLabel('좋아요 3개'), findsOneWidget);
@@ -55,8 +57,8 @@ void main() {
     var liked = 0;
     var opened = 0;
     await pumpCard(tester, makePost(), onLike: () => liked++, onOpenPost: () => opened++);
-    await tester.tap(find.byIcon(Icons.favorite_border));
-    await tester.tap(find.text('댓글 2개 모두 보기'));
+    await tester.tap(find.byIcon(Icons.thumb_up_outlined));
+    await tester.tap(find.text('댓글 보기'));
     expect(liked, 1);
     expect(opened, 1);
   });
@@ -68,15 +70,15 @@ void main() {
       sent.add(body);
       return result;
     });
-    final button = find.widgetWithText(FilledButton, '게시');
-    expect(tester.widget<FilledButton>(button).onPressed, isNull);
+    final button = find.widgetWithText(TextButton, '게시');
+    expect(tester.widget<TextButton>(button).onPressed, isNull);
 
     await tester.enterText(find.byType(TextField), '좋아요');
     await tester.pump();
     await tester.tap(button);
     await tester.pump();
     expect(sent, ['좋아요']);
-    expect(find.text('좋아요'), findsNothing);
+    expect(tester.widget<TextField>(find.byType(TextField)).controller!.text, isEmpty);
 
     result = '금칙어가 있습니다.';
     await tester.enterText(find.byType(TextField), '나쁜 말');
@@ -119,18 +121,35 @@ void main() {
       MaterialApp(
         theme: ieumTheme(Brightness.light),
         home: Scaffold(
-          bottomNavigationBar: BottomMenu(tab: MenuTab.home, unread: 3, me: null, onSelect: selected.add, onScrollTop: () {}),
+          bottomNavigationBar: BottomMenu(tab: MenuTab.home, unread: 3, onSelect: selected.add, onScrollTop: () {}),
         ),
       ),
     );
     expect(find.bySemanticsLabel('메시지, 읽지 않은 메시지 3개'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.add));
-    expect(selected, [MenuTab.write]);
+    await tester.tap(find.byIcon(Icons.person_outline));
+    expect(selected, [MenuTab.me]);
     // 스크린 리더로도 모든 항목을 실행할 수 있어야 합니다.
-    for (final label in ['홈', '내 정보', '새 게시글', '메시지, 읽지 않은 메시지 3개', '맨 위로']) {
+    for (final label in ['홈', '내 정보', '메시지, 읽지 않은 메시지 3개', '맨 위로']) {
       final data = tester.getSemantics(find.bySemanticsLabel(label)).getSemanticsData();
       expect(data.hasAction(SemanticsAction.tap), isTrue, reason: label);
     }
+    await expectLater(tester, meetsGuideline(const MinimumTapTargetGuideline(size: Size(44, 44), link: 'KWCAG 6.1.3')));
+    handle.dispose();
+  });
+
+  testWidgets('머리글: 글쓰기를 실행할 수 있고 조작 영역이 44 이상이다', (tester) async {
+    final handle = tester.ensureSemantics();
+    var written = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ieumTheme(Brightness.light),
+        home: Scaffold(body: AppHeader(dark: false, onToggleTheme: () {}, onWrite: () => written++)),
+      ),
+    );
+    await tester.tap(find.text('글쓰기'));
+    expect(written, 1);
+    final data = tester.getSemantics(find.bySemanticsLabel('글쓰기')).getSemanticsData();
+    expect(data.hasAction(SemanticsAction.tap), isTrue);
     await expectLater(tester, meetsGuideline(const MinimumTapTargetGuideline(size: Size(44, 44), link: 'KWCAG 6.1.3')));
     handle.dispose();
   });

@@ -7,11 +7,11 @@ export const srOnly = style({
 });
 
 export const logo = style({
-  display: 'inline-flex', alignItems: 'center', gap: 6, fontWeight: 900,
+  display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 800,
   letterSpacing: '0.02em', lineHeight: 1, color: 'inherit', textDecoration: 'none',
 });
 export const logoMark = style({
-  width: '0.42em', height: '0.42em', borderRadius: '50%', backgroundColor: vars.color.accent,
+  width: '0.3em', height: '0.3em', alignSelf: 'flex-end', marginBottom: '0.12em', borderRadius: '50%', backgroundColor: vars.color.primary,
 });
 
 export const avatar = style({
@@ -20,10 +20,10 @@ export const avatar = style({
 });
 export const avatarFallback = style({
   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, borderRadius: '50%',
-  backgroundColor: vars.color.likeSoft, color: vars.color.like, fontSize: '0.5em', fontWeight: 800,
+  backgroundColor: vars.color.avatarBg, color: vars.color.onAvatar, fontSize: '0.5em', fontWeight: 700,
 });
 
-export const carousel = style({ position: 'relative', overflow: 'hidden', borderRadius: 18 });
+export const carousel = style({ position: 'relative', overflow: 'hidden' });
 export const track = style({
   display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', aspectRatio: '1 / 1',
   backgroundColor: vars.color.surface, scrollbarWidth: 'none',
@@ -47,7 +47,7 @@ export const centered = style({
   gap: 12, padding: '48px 16px', textAlign: 'center', color: vars.color.muted,
 });
 
-/** 프로필 링: 인기 게시글 작성자와 프로필 화면에 씁니다. */
+/** 프로필 링: 인기 게시글 작성자에게 씁니다. */
 export const hotRing = style({
   display: 'flex', alignSelf: 'flex-start', flexShrink: 0, padding: 2, borderRadius: '50%',
   backgroundColor: vars.color.primary,
@@ -61,7 +61,7 @@ export const chips = style({ display: 'flex', flexWrap: 'wrap', gap: 8 });
 export const chipInput = style({ position: 'absolute', opacity: 0, width: 1, height: 1 });
 export const chip = style({
   display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44, padding: '0 16px', borderRadius: 999, fontWeight: 700,
-  border: `1px solid ${vars.color.border}`, color: vars.color.muted, cursor: 'pointer',
+  border: `1px solid ${vars.color.control}`, color: vars.color.muted, cursor: 'pointer',
   selectors: {
     [`${chipInput}:checked + &`]: { borderColor: vars.color.primary, backgroundColor: vars.color.primary, color: vars.color.onPrimary },
     [`${chipInput}:focus-visible + &`]: { outline: `2px solid ${vars.color.focus}`, outlineOffset: 2 },

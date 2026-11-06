@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// 톡톡 디자인 토큰입니다. 웹의 apps/web/src/shared/theme/theme.css.ts와 같은 값을 유지합니다.
+/// 카닥 앱을 참고한 디자인 토큰입니다. 웹의 apps/web/src/shared/theme/theme.css.ts와 같은 값을 유지합니다.
 class IeumColors {
   const IeumColors({
     required this.bg,
@@ -11,64 +11,61 @@ class IeumColors {
     required this.control,
     required this.primary,
     required this.onPrimary,
-    required this.primaryStrong,
-    required this.accentSoft,
-    required this.onAccentSoft,
+    required this.ink,
+    required this.onInk,
     required this.header,
     required this.onHeader,
     required this.like,
-    required this.likeSoft,
     required this.official,
     required this.error,
+    required this.avatarBg,
+    required this.onAvatar,
     required this.bubbleOther,
-    required this.shadow,
   });
 
-  static const accent = Color(0xFFC4E538);
-  static const ink = Color(0xFF1F1B1C);
-
   static const light = IeumColors(
-    bg: Color(0xFFF4F4F6),
+    bg: Color(0xFFF5F6F8),
     surface: Color(0xFFFFFFFF),
-    text: ink,
-    muted: Color(0xFF625B5F),
-    border: Color(0xFFDEDBDD),
-    control: Color(0xFF8A8387),
-    primary: Color(0xFFD9252F),
+    text: Color(0xFF2B2D38),
+    muted: Color(0xFF646A75),
+    border: Color(0xFFE3E5E9),
+    control: Color(0xFF8A8F98),
+    primary: Color(0xFF0B6BE0),
     onPrimary: Color(0xFFFFFFFF),
-    primaryStrong: Color(0xFF9E1019),
-    accentSoft: Color(0xFFEAF6C2),
-    onAccentSoft: Color(0xFF2F3A00),
-    header: Color(0xFFD9252F),
-    onHeader: Color(0xFFFFFFFF),
-    like: Color(0xFFB3131D),
-    likeSoft: Color(0xFFFFE9EA),
-    official: Color(0xFF1F6FC4),
-    error: Color(0xFFB3131D),
-    bubbleOther: Color(0xFFFFFFFF),
-    shadow: Color(0x141F1B1C),
+    ink: Color(0xFF31313B),
+    onInk: Color(0xFFFFFFFF),
+    header: Color(0xFFFFFFFF),
+    onHeader: Color(0xFF2B2D38),
+    like: Color(0xFF0B6BE0),
+    official: Color(0xFF0B6BE0),
+    error: Color(0xFFD3222A),
+    avatarBg: Color(0xFFCCD1D4),
+    onAvatar: Color(0xFF2B2D38),
+    bubbleOther: Color(0xFFF0F1F4),
   );
   static const dark = IeumColors(
-    bg: Color(0xFF161314),
-    surface: Color(0xFF262223),
-    text: Color(0xFFF7F4F4),
-    muted: Color(0xFFC9C2C5),
-    border: Color(0xFF4A4446),
-    control: Color(0xFF8F888B),
-    primary: Color(0xFFFF6B72),
-    onPrimary: Color(0xFF161314),
-    primaryStrong: Color(0xFFA83A40),
-    accentSoft: Color(0xFF39401A),
-    onAccentSoft: Color(0xFFE4F39A),
-    header: Color(0xFF2A1416),
-    onHeader: Color(0xFFF7F4F4),
-    like: Color(0xFFFFC2C5),
-    likeSoft: Color(0xFF4A2024),
-    official: Color(0xFF6FB4F5),
-    error: Color(0xFFFF9DB1),
-    bubbleOther: Color(0xFF3A3536),
-    shadow: Color(0x00000000),
+    bg: Color(0xFF111318),
+    surface: Color(0xFF1B1E25),
+    text: Color(0xFFEEF0F3),
+    muted: Color(0xFFA9AFBA),
+    border: Color(0xFF343843),
+    control: Color(0xFF7F8693),
+    primary: Color(0xFF5EA3FF),
+    onPrimary: Color(0xFF10131A),
+    ink: Color(0xFFEEF0F3),
+    onInk: Color(0xFF1B1E25),
+    header: Color(0xFF1B1E25),
+    onHeader: Color(0xFFEEF0F3),
+    like: Color(0xFF5EA3FF),
+    official: Color(0xFF5EA3FF),
+    error: Color(0xFFFF8A8F),
+    avatarBg: Color(0xFF3A3F4A),
+    onAvatar: Color(0xFFEEF0F3),
+    bubbleOther: Color(0xFF2A2E37),
   );
+
+  /// 회색 구획 띠의 두께입니다.
+  static const band = 8.0;
 
   final Color bg;
   final Color surface;
@@ -78,17 +75,16 @@ class IeumColors {
   final Color control;
   final Color primary;
   final Color onPrimary;
-  final Color primaryStrong;
-  final Color accentSoft;
-  final Color onAccentSoft;
+  final Color ink;
+  final Color onInk;
   final Color header;
   final Color onHeader;
   final Color like;
-  final Color likeSoft;
   final Color official;
   final Color error;
+  final Color avatarBg;
+  final Color onAvatar;
   final Color bubbleOther;
-  final Color shadow;
 
   static IeumColors of(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? dark : light;
 }
@@ -96,7 +92,7 @@ class IeumColors {
 ThemeData ieumTheme(Brightness brightness) {
   final colors = brightness == Brightness.dark ? IeumColors.dark : IeumColors.light;
   OutlineInputBorder border(Color color) =>
-      OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: color));
+      OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: color));
   return ThemeData(
     useMaterial3: true,
     brightness: brightness,
@@ -117,7 +113,7 @@ ThemeData ieumTheme(Brightness brightness) {
         foregroundColor: colors.onPrimary,
         minimumSize: const Size(56, 48),
         textStyle: const TextStyle(fontFamily: 'GothicA1', fontWeight: FontWeight.w700, fontSize: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(

@@ -14,7 +14,7 @@ export function DmListPage() {
 function DmList() {
   const conversations = useConversations();
   return (
-    <>
+    <div className={s.page}>
       <h1 className={s.title}>메시지</h1>
       {conversations.isPending && <LoadingView label="대화를 불러오는 중" />}
       {conversations.isError && <ErrorView error={conversations.error} onRetry={() => void conversations.refetch()} />}
@@ -40,6 +40,6 @@ function DmList() {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }

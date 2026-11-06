@@ -11,8 +11,8 @@ export function LoginPage() {
   return (
     <main className={s.page}>
       <div className={s.brand}>
-        <h1 className={s.title}><Logo size={64} /><span className={srOnly}> 로그인</span></h1>
-        <p className={s.tagline}>나와 너를 잇는 공간</p>
+        <h1 className={s.title}><Logo size={32} /><span className={srOnly}> 로그인</span></h1>
+        <p className={s.tagline}>나와 너를 <strong className={s.taglineStrong}>잇는 공간</strong></p>
       </div>
       <DemoLogin />
       <LoginForm />
@@ -27,9 +27,9 @@ export function SignupPage() {
   usePageTitle('회원가입');
   return (
     <main className={s.page}>
-      <div className={s.brand}>
-        <Logo size={40} />
-        <h1 className={s.tagline} style={{ fontWeight: 800 }}>회원가입</h1>
+      <div className={s.subBrand}>
+        <Logo size={24} />
+        <h1 className={s.subTitle}>회원가입</h1>
       </div>
       <SignupForm />
       <p className={s.footer}>이미 계정이 있나요? <Link to="/login">로그인</Link></p>
@@ -44,9 +44,9 @@ export function SocialSignupPage() {
   if (!state?.signupToken) return <Navigate to="/login" replace />;
   return (
     <main className={s.page}>
-      <div className={s.brand}>
-        <Logo size={40} />
-        <h1 className={s.tagline} style={{ fontWeight: 800 }}>추가 정보 입력</h1>
+      <div className={s.subBrand}>
+        <Logo size={24} />
+        <h1 className={s.subTitle}>추가 정보 입력</h1>
       </div>
       <SocialSignupForm state={state} />
     </main>
@@ -75,9 +75,9 @@ export function ForgotPasswordPage() {
   usePageTitle('비밀번호 찾기');
   return (
     <main className={s.page}>
-      <div className={s.brand}>
-        <Logo size={40} />
-        <h1 className={s.tagline} style={{ fontWeight: 800 }}>비밀번호 찾기</h1>
+      <div className={s.subBrand}>
+        <Logo size={24} />
+        <h1 className={s.subTitle}>비밀번호 찾기</h1>
       </div>
       <ForgotPasswordForm />
       <p className={s.footer}><Link to="/login">로그인으로 돌아가기</Link></p>
@@ -89,9 +89,9 @@ export function ResetPasswordPage() {
   usePageTitle('새 비밀번호 설정');
   return (
     <main className={s.page}>
-      <div className={s.brand}>
-        <Logo size={40} />
-        <h1 className={s.tagline} style={{ fontWeight: 800 }}>새 비밀번호 설정</h1>
+      <div className={s.subBrand}>
+        <Logo size={24} />
+        <h1 className={s.subTitle}>새 비밀번호 설정</h1>
       </div>
       <ResetPasswordForm />
     </main>

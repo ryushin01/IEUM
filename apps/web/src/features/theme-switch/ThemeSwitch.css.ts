@@ -1,7 +1,8 @@
 import { style } from '@vanilla-extract/css';
 
-const INK = '#1f1b1c';
-const LIME = '#c4e538';
+const INK = '#31313b';
+const ACTIVE = '#5ea3ff';
+const ON_ACTIVE = '#10131a';
 
 export const hitArea = style({ display: 'inline-flex' });
 
@@ -11,14 +12,14 @@ export const track = style({
   backgroundColor: INK, color: '#ffffff', cursor: 'pointer', transition: 'background-color 0.1s',
   selectors: {
     '&::after': { content: '""', position: 'absolute', inset: '-10px -4px' },
-    '&[aria-checked="true"]': { backgroundColor: LIME, color: INK },
+    '&[aria-checked="true"]': { backgroundColor: ACTIVE, color: ON_ACTIVE },
   },
   '@media': { '(prefers-reduced-motion: reduce)': { transition: 'none' } },
 });
 
 export const handle = style({
   position: 'absolute', top: 4, left: 4, width: 20, height: 20, borderRadius: '50%', backgroundColor: '#ffffff',
-  boxShadow: '0 2px 4px rgba(0, 35, 11, 0.2)', transition: 'transform 0.1s',
+  transition: 'transform 0.1s',
   selectors: { '[aria-checked="true"] > &': { transform: 'translateX(28px)' } },
   '@media': { '(prefers-reduced-motion: reduce)': { transition: 'none' } },
 });

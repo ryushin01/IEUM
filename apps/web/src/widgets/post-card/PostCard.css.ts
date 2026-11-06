@@ -1,8 +1,8 @@
 import { style } from '@vanilla-extract/css';
 import { vars } from '@/shared/theme/theme.css';
 
-export const allComments = style({
-  display: 'block', minHeight: 44, padding: '0 2px', border: 0, background: 'none',
-  color: vars.color.muted, font: 'inherit', fontSize: 14, cursor: 'pointer',
+export const comments = style({
+  display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 48,
+  color: vars.color.text, textDecoration: 'none',
 });
-export const write = style({ display: 'flex', alignItems: 'center', gap: 8 });
+export const write = style({ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 8 });
