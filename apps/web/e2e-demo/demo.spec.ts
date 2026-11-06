@@ -71,16 +71,24 @@ test('마우스를 올린 위험 버튼도 명도 대비를 지킨다', async ({
   await checkA11y(page);
 });
 
-test('앱 코드를 불러오기 전에도 고른 테마를 적용한다', async ({ page }) => {
+test('앱 코드를 불러오기 전에도 고른 테마를 적용한다', async ({ browser, baseURL }) => {
+  // Service Worker가 받은 요청은 route로 막을 수 없으므로 끕니다.
+  const context = await browser.newContext({ baseURL, serviceWorkers: 'block' });
+  const page = await context.newPage();
   await page.goto('login');
   await page.evaluate(() => localStorage.setItem('ieum.theme', 'dark'));
-  // 앱 코드가 끝내 오지 않아도 HTML만으로 적용되어야 합니다.
-  await page.route('**/assets/*.js', (route) => route.abort());
-  await page.reload();
+  let blocked = 0;
+  await page.route('**/assets/*.js', (route) => {
+    blocked += 1;
+    return route.abort();
+  });
+  await page.goto('login');
+  expect(blocked).toBeGreaterThan(0);
+  // 앱이 실행되지 않았으므로 HTML의 스크립트만으로 적용된 것입니다.
+  await expect(page.locator('#root')).toBeEmpty();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#1b1e25');
-  await page.unroute('**/assets/*.js');
-  await page.evaluate(() => localStorage.removeItem('ieum.theme'));
+  await context.close();
 });
 
 test('피드: 스크롤하면 샘플 글의 다음 페이지를 이어서 보여 준다', async ({ page }) => {

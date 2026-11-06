@@ -158,7 +158,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
       await shot(tester, 'feed-comment');
       await tester.tap(postButton);
-      await pumpFor(tester, const Duration(seconds: 1));
+      // 느린 기기에서는 응답이 늦을 수 있어 결과를 기다립니다.
+      for (var i = 0; i < 100 && page.shell.feed.posts.first.commentCount == first.commentCount; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
       expect(page.shell.feed.posts.first.commentCount, first.commentCount + 1);
       expect(find.textContaining('댓글 ${first.commentCount + 1}개').first, findsOneWidget);
       final allComments = find.text('댓글 보기').first;
