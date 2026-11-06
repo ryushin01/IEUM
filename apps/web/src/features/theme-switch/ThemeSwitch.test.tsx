@@ -19,6 +19,17 @@ describe('ThemeSwitch', () => {
     expect(toggle).toHaveAttribute('aria-checked', 'false');
   });
 
+  it('브라우저 주소창 색을 헤더 색에 맞춘다', () => {
+    const meta = document.createElement('meta');
+    meta.name = 'theme-color';
+    document.head.append(meta);
+    setThemeMode('dark');
+    expect(meta).toHaveAttribute('content', '#1b1e25');
+    setThemeMode('light');
+    expect(meta).toHaveAttribute('content', '#ffffff');
+    meta.remove();
+  });
+
   it('스페이스와 엔터로 전환한다', async () => {
     setThemeMode('light');
     render(<ThemeSwitch />);

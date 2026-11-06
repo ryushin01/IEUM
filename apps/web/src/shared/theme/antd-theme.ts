@@ -10,6 +10,11 @@ const COLORS = {
   dark: { primary: '#5ea3ff', onPrimary: '#10131a', text: '#eef0f3', muted: '#a9afba', error: '#ff8a8f', surface: '#1b1e25', bg: '#111318', control: '#a9afba' },
 };
 
+/** 브라우저 주소창 색입니다. 헤더(theme.css.ts의 header)와 같은 면 색을 씁니다. */
+export function browserThemeColor(mode: ThemeMode): string {
+  return COLORS[mode].surface;
+}
+
 export function antdTheme(mode: ThemeMode): ThemeConfig {
   const c = COLORS[mode];
   return {

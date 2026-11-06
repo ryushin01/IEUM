@@ -67,6 +67,7 @@ test.describe('로그인 후', () => {
 
     await page.getByRole('switch', { name: '다크 모드' }).click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#1b1e25');
     // 링크 색 전환 애니메이션 도중의 색을 재지 않도록 기다립니다.
     await page.waitForTimeout(500);
     await checkA11y(page);

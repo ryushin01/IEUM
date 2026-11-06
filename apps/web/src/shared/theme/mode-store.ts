@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { callNative, isNativeApp } from '@/shared/bridge';
-import type { ThemeMode } from './antd-theme';
+import { browserThemeColor, type ThemeMode } from './antd-theme';
 
 const KEY = 'ieum.theme';
 const listeners = new Set<() => void>();
@@ -19,7 +19,7 @@ let mode: ThemeMode = initial();
 
 function apply() {
   document.documentElement.dataset.theme = mode;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', mode === 'dark' ? '#222222' : '#ffffff');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', browserThemeColor(mode));
   if (isNativeApp()) void callNative('ui.setTheme', { mode }).catch(() => {});
 }
 
