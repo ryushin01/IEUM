@@ -3,6 +3,8 @@ import { DEMO, login } from './helpers';
 
 const API = 'http://localhost:4100';
 const PAGE_SIZE = 10;
+/** 다른 실행에서 만든 글과 섞이지 않게 합니다. */
+const RUN = `스크롤 확인 ${Date.now()}`;
 
 test('피드: 끝까지 스크롤하면 다음 페이지를 이어서 불러온다', async ({ page, request }) => {
   const session = await request.post(`${API}/auth/login`, { data: DEMO });
@@ -11,7 +13,7 @@ test('피드: 끝까지 스크롤하면 다음 페이지를 이어서 불러온�
   for (let i = 0; i < PAGE_SIZE + 2; i++) {
     const created = await request.post(`${API}/posts`, {
       headers: { authorization: `Bearer ${accessToken}` },
-      data: { caption: `스크롤 확인 ${i}`, images: [{ url: `${API}/uploads/seed-1.png` }] },
+      data: { caption: `${RUN} #${i}`, images: [{ url: `${API}/uploads/seed-1.png` }] },
     });
     expect(created.ok()).toBe(true);
   }
@@ -33,6 +35,7 @@ test('피드: 끝까지 스크롤하면 다음 페이지를 이어서 불러온�
     await expect(more).toHaveCount(0, { timeout: 500 });
   }).toPass();
   const captions = await page.locator('article p').allTextContents();
-  const posts = captions.filter((text) => text.startsWith('스크롤 확인'));
-  expect(new Set(posts).size).toBe(PAGE_SIZE + 2);
+  const posts = captions.filter((text) => text.startsWith(RUN));
+  // 만든 글이 정확히 한 번씩 보여야 합니다. 중복되면 개수가 달라집니다.
+  expect(posts.toSorted()).toEqual(Array.from({ length: PAGE_SIZE + 2 }, (_, i) => `${RUN} #${i}`).toSorted());
 });
