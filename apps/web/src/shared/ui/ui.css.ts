@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { vars } from '@/shared/theme/theme.css';
 
 export const srOnly = style({
@@ -35,7 +35,11 @@ export const carouselButton = style({
   position: 'absolute', top: '50%', transform: 'translateY(-50%)', width: 44, height: 44, padding: 0,
   display: 'flex', alignItems: 'center', justifyContent: 'center', border: 0, borderRadius: '50%',
   backgroundColor: 'rgba(0, 0, 0, 0.6)', color: '#fff', cursor: 'pointer',
-  selectors: { '&:disabled': { display: 'none' } },
+  selectors: {
+    '&:disabled': { display: 'none' },
+    // 사진 색과 상관없이 보이도록 흰 테두리와 검은 그림자를 겹칩니다.
+    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: 2, boxShadow: '0 0 0 2px #000' },
+  },
 });
 export const carouselCounter = style({
   position: 'absolute', top: 12, right: 12, padding: '2px 10px', borderRadius: 12,
@@ -46,6 +50,9 @@ export const centered = style({
   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
   gap: 12, padding: '48px 16px', textAlign: 'center', color: vars.color.muted,
 });
+
+// 안내 화면의 링크도 조작 영역을 44px 이상으로 맞춥니다.
+globalStyle(`${centered} a`, { display: 'inline-flex', alignItems: 'center', minHeight: 44 });
 
 /** 프로필 링: 인기 게시글 작성자에게 씁니다. */
 export const hotRing = style({

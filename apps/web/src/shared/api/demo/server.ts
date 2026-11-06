@@ -1,5 +1,5 @@
 import { BASE_URL } from '@/shared/config/env';
-import { createSeed, DEMO_PASSWORD, type DemoMessage, type DemoPost, type DemoState, type DemoUser } from './seed';
+import { createSeed, DEMO_PASSWORD, mergeSeed, SEED_VERSION, type DemoMessage, type DemoPost, type DemoState, type DemoUser } from './seed';
 
 /**
  * 실제 API(apps/api)와 같은 응답을 주는 브라우저 안 목업입니다.
@@ -46,7 +46,12 @@ async function load(): Promise<DemoState> {
   } catch {
     // 저장소를 못 쓰면 메모리로만 동작합니다.
   }
-  state ??= createSeed(await sha256(DEMO_PASSWORD));
+  const stored: DemoState | null = state;
+  if (stored && (stored.seedVersion ?? 1) >= SEED_VERSION) return stored;
+  const seed = createSeed(await sha256(DEMO_PASSWORD));
+  state = stored ? mergeSeed(stored, seed) : seed;
+  // 합친 결과를 저장해야 지운 샘플 글이 다음 실행에 되살아나지 않습니다.
+  if (stored) save();
   return state;
 }
 

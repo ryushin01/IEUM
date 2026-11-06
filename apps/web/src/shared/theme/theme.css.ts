@@ -59,6 +59,12 @@ globalStyle('html, body', {
   WebkitTextSizeAdjust: '100%',
   overscrollBehaviorY: 'none',
 });
+// KWCAG 6.1.2: 키보드로 옮긴 초점이 고정된 헤더와 하단 메뉴에 가리지 않게 합니다.
+globalStyle('html', {
+  scrollPaddingTop: `calc(${vars.layout.header} + 8px)`,
+  scrollPaddingBottom: `calc(${vars.layout.nav} + 8px)`,
+  '@media': { 'screen and (min-width: 768px)': { scrollPaddingTop: 8, scrollPaddingBottom: 8 } },
+});
 globalStyle('h1, h2, h3, p, ul, ol, figure', { margin: 0, padding: 0 });
 globalStyle('ul, ol', { listStyle: 'none' });
 globalStyle('img', { display: 'block', maxWidth: '100%' });

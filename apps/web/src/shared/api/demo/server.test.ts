@@ -18,6 +18,34 @@ beforeEach(() => {
 });
 
 describe('데모 API', () => {
+  it('이전 버전 데이터에는 새 샘플 글만 한 번 합치고, 입력한 내용은 유지한다', async () => {
+    await login('demo@ieum.app');
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number; posts: { id: string; caption: string }[] };
+    delete stored.seedVersion;
+    stored.posts = [{ ...stored.posts[0]!, id: 'mine', caption: '내가 쓴 글' }, ...stored.posts.slice(0, 6)];
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+
+    /** 페이지를 새로 연 것처럼 저장소에서 다시 읽습니다. */
+    const reopen = async () => {
+      vi.resetModules();
+      const { demoFetch: fetchDemo } = await import('./server');
+      const send = async (method: string, path: string, body?: object, token?: string) =>
+        (await fetchDemo(path, { method, headers: token ? { authorization: `Bearer ${token}` } : {}, ...(body ? { body: JSON.stringify(body) } : {}) })).json() as Promise<{ accessToken: string; items: { id: string }[]; nextCursor: string }>;
+      const { accessToken } = await send('POST', '/auth/login', { email: 'demo@ieum.app', password: 'ieum-demo-1234' });
+      const first = await send('GET', '/posts', undefined, accessToken);
+      const second = await send('GET', `/posts?cursor=${first.nextCursor}`, undefined, accessToken);
+      return { ids: [...first.items, ...second.items].map((post) => post.id), remove: (id: string) => fetchDemo(`/posts/${id}`, { method: 'DELETE', headers: { authorization: `Bearer ${accessToken}` } }) };
+    };
+
+    const merged = await reopen();
+    expect(merged.ids).toEqual(expect.arrayContaining(['mine', 'p1', 'p14']));
+    expect(merged.ids).toHaveLength(15);
+
+    // 합친 뒤에 지운 샘플 글은 되살아나지 않습니다.
+    await merged.remove('p5');
+    expect((await reopen()).ids).not.toContain('p5');
+  });
+
   it('비밀번호를 평문으로 저장하지 않고 틀리면 거부한다', async () => {
     const created = await call('POST', '/auth/signup', { email: 'a@example.com', password: 'Passw0rd!', nickname: '새싹' });
     expect(created.status).toBe(201);

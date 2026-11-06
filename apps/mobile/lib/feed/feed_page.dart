@@ -51,7 +51,7 @@ class _FeedViewState extends State<FeedView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AppHeader(dark: widget.dark, onToggleTheme: widget.onToggleTheme, onWrite: () => widget.onOpenPath('/posts/new')),
+        AppHeader(dark: widget.dark, onToggleTheme: widget.onToggleTheme, onWrite: () => widget.onOpenPath('/posts/new'), screenTitle: '피드'),
         Expanded(child: Obx(_buildBody)),
       ],
     );
@@ -87,7 +87,7 @@ class _FeedViewState extends State<FeedView> {
           return Obx(() {
             if (index >= posts.length) return const SizedBox.shrink();
             final post = posts[index];
-            final card = PostCard(
+            return PostCard(
               key: ValueKey(post.id),
               post: post,
               me: widget.me.value,
@@ -100,46 +100,9 @@ class _FeedViewState extends State<FeedView> {
               onOpenPost: () => widget.onOpenPath('/posts/${post.id}'),
               onOpenAuthor: () => widget.onOpenPath('/users/${post.author.id}'),
             );
-            return index == 0 ? _Hero(child: card) : card;
           });
         },
       ),
-    );
-  }
-}
-
-/// 굵은 문구가 있는 피드 상단입니다. 첫 글 위에 흰 구획으로 놓입니다.
-class _Hero extends StatelessWidget {
-  const _Hero({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = IeumColors.of(context);
-    const style = TextStyle(fontSize: 26, height: 1.35, fontWeight: FontWeight.w700, letterSpacing: -.5);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          color: colors.surface,
-          margin: const EdgeInsets.only(bottom: IeumColors.band),
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
-          child: Semantics(
-            header: true,
-            child: Text.rich(
-              TextSpan(
-                style: style.copyWith(color: colors.text),
-                children: [
-                  const TextSpan(text: '오늘은 누구와\n'),
-                  TextSpan(text: '이어져 볼까요?', style: TextStyle(color: colors.primary)),
-                ],
-              ),
-            ),
-          ),
-        ),
-        child,
-      ],
     );
   }
 }

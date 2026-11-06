@@ -100,6 +100,13 @@ void main() {
     expect(repository.requested, [null, 'c1']);
   });
 
+  testWidgets('화면에 제목이 없어도 머리글로 화면 이름을 낭독한다', (tester) async {
+    final handle = tester.ensureSemantics();
+    await pumpFeed(tester, FeedController(EmptyRepository()));
+    expect(tester.getSemantics(find.bySemanticsLabel('IEUM, 피드')), isSemantics(isHeader: true));
+    handle.dispose();
+  });
+
   testWidgets('글이 없으면 첫 게시글 작성으로 안내한다', (tester) async {
     final controller = FeedController(EmptyRepository());
     await controller.reload();
