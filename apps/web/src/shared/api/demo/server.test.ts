@@ -65,6 +65,23 @@ describe('데모 API', () => {
     expect(saved.posts.map((post) => post.id)).toContain('p14');
   });
 
+  it('샘플 데이터를 합치는 중에 초기화하면 이전 데이터를 되살리지 않는다', async () => {
+    await login('demo@ieum.app');
+    const stored = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { seedVersion?: number; posts: { id: string }[] };
+    delete stored.seedVersion;
+    stored.posts = [{ ...stored.posts[0]!, id: 'mine' }];
+    localStorage.setItem('ieum.demo.state', JSON.stringify(stored));
+
+    vi.resetModules();
+    const fresh = await import('./server');
+    const pending = fresh.demoFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email: 'demo@ieum.app', password: 'ieum-demo-1234' }) });
+    fresh.resetDemo();
+    expect((await pending).ok).toBe(true);
+
+    const saved = JSON.parse(localStorage.getItem('ieum.demo.state')!) as { posts: { id: string }[] };
+    expect(saved.posts.map((post) => post.id)).not.toContain('mine');
+  });
+
   it('비밀번호를 평문으로 저장하지 않고 틀리면 거부한다', async () => {
     const created = await call('POST', '/auth/signup', { email: 'a@example.com', password: 'Passw0rd!', nickname: '새싹' });
     expect(created.status).toBe(201);

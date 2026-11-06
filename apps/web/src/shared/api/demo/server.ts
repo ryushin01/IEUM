@@ -25,6 +25,8 @@ class HttpError extends Error {
 
 let state: DemoState | null = null;
 let loading: Promise<DemoState> | null = null;
+/** 초기화할 때마다 올려, 그 전에 시작한 읽기가 이전 데이터를 되살리지 못하게 합니다. */
+let generation = 0;
 let replyIndex = 0;
 const listeners = new Set<(event: unknown) => void>();
 
@@ -41,6 +43,7 @@ async function sha256(value: string): Promise<string> {
 
 /** 저장 데이터를 읽고 합친 뒤에만 state에 넣어, 준비 전의 상태를 다른 요청이 고치지 못하게 합니다. */
 async function read(): Promise<DemoState> {
+  const started = generation;
   let stored: DemoState | null = null;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -53,6 +56,8 @@ async function read(): Promise<DemoState> {
     return stored;
   }
   const seed = createSeed(await sha256(DEMO_PASSWORD));
+  // 기다리는 동안 초기화되었으면 지금 저장소 기준으로 다시 읽습니다.
+  if (started !== generation) return read();
   state = stored ? mergeSeed(stored, seed) : seed;
   // 합친 결과를 저장해야 지운 샘플 글이 다음 실행에 되살아나지 않습니다.
   if (stored) save();
@@ -62,10 +67,12 @@ async function read(): Promise<DemoState> {
 function load(): Promise<DemoState> {
   if (state) return Promise.resolve(state);
   // 동시에 들어온 요청은 같은 준비 작업을 기다립니다.
-  loading ??= read().finally(() => {
-    loading = null;
+  if (loading) return loading;
+  const current = read().finally(() => {
+    if (loading === current) loading = null;
   });
-  return loading;
+  loading = current;
+  return current;
 }
 
 function save() {
@@ -79,6 +86,7 @@ function save() {
 export function resetDemo(): void {
   state = null;
   loading = null;
+  generation += 1;
   try {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem('ieum.tokens');
