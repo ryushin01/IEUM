@@ -47,6 +47,30 @@ test('서버 없이 동작하고 외부로 요청을 보내지 않는다', async
   await checkA11y(page);
 });
 
+test('마우스를 올린 주요 버튼도 명도 대비를 지킨다', async ({ page }) => {
+  for (const mode of ['light', 'dark']) {
+    await page.goto('login');
+    await page.evaluate((value) => localStorage.setItem('ieum.theme', value), mode);
+    await page.goto('login');
+    await page.getByRole('button', { name: '로그인', exact: true }).hover();
+    await page.waitForTimeout(400);
+    await checkA11y(page);
+  }
+  await page.evaluate(() => localStorage.removeItem('ieum.theme'));
+});
+
+test('마우스를 올린 위험 버튼도 명도 대비를 지킨다', async ({ page }) => {
+  await enter(page, '운영자로 둘러보기');
+  await page.goto('admin/reports');
+  await page.getByRole('button', { name: '콘텐츠 삭제' }).first().hover();
+  await page.waitForTimeout(400);
+  await checkA11y(page);
+  await page.getByRole('button', { name: '콘텐츠 삭제' }).first().click();
+  await page.getByRole('dialog').getByRole('button', { name: /삭\s*제/ }).hover();
+  await page.waitForTimeout(400);
+  await checkA11y(page);
+});
+
 test('앱 코드를 불러오기 전에도 고른 테마를 적용한다', async ({ page }) => {
   await page.goto('login');
   await page.evaluate(() => localStorage.setItem('ieum.theme', 'dark'));

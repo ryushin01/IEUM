@@ -42,7 +42,7 @@ test('피드: 끝까지 스크롤하면 다음 페이지를 이어서 불러온�
   // 프로필 격자도 스크롤만으로 이어집니다.
   await page.goto('/me');
   const grid = page.getByRole('list', { name: /님의 게시글/ }).getByRole('link');
-  await expect(grid).toHaveCount(PAGE_SIZE);
-  await grid.last().scrollIntoViewIfNeeded();
+  // 격자는 한 화면에 여러 줄이 들어가므로 첫 페이지 뒤 바로 다음 페이지까지 불러올 수 있습니다.
   await expect.poll(() => grid.count()).toBeGreaterThan(PAGE_SIZE);
+  await expect(page.getByRole('button', { name: '더 보기' })).toHaveCount(0);
 });
