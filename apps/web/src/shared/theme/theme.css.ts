@@ -19,13 +19,13 @@ const layout = { header: '56px', nav: '64px', content: '614px', band: '8px' };
 /** 카닥 앱을 참고한 디자인 토큰입니다. Flutter의 lib/app/theme.dart와 같은 값을 유지하고, 글자는 배경과 4.5:1 이상을 맞춥니다. */
 createGlobalTheme(':root, [data-theme="light"]', vars, {
   color: {
-    bg: '#f5f6f8', surface: '#ffffff', text: '#2b2d38', muted: '#646a75', border: '#e3e5e9', control: '#8a8f98',
+    bg: '#f5f6f8', surface: '#ffffff', text: '#2b2d38', muted: '#646a75', border: '#eceef1', control: '#8a8f98',
     primary: '#0b6be0', onPrimary: '#ffffff',
     ink: '#31313b', onInk: '#ffffff',
     accentSoft: '#e8f1fd', onAccentSoft: '#0a4fa8',
     header: '#ffffff', onHeader: '#2b2d38',
     like: '#0b6be0', official: '#0b6be0', error: '#d3222a', focus: '#2b2d38',
-    avatarBg: '#ccd1d4', onAvatar: '#2b2d38',
+    avatarBg: '#e3e6ea', onAvatar: '#2b2d38',
     bubbleOther: '#f0f1f4',
   },
   layout,
@@ -33,7 +33,7 @@ createGlobalTheme(':root, [data-theme="light"]', vars, {
 
 createGlobalTheme('[data-theme="dark"]', vars, {
   color: {
-    bg: '#111318', surface: '#1b1e25', text: '#eef0f3', muted: '#a9afba', border: '#343843', control: '#7f8693',
+    bg: '#111318', surface: '#1b1e25', text: '#eef0f3', muted: '#a9afba', border: '#2c303a', control: '#7f8693',
     primary: '#5ea3ff', onPrimary: '#10131a',
     ink: '#eef0f3', onInk: '#1b1e25',
     accentSoft: '#1c2d47', onAccentSoft: '#b9d6ff',

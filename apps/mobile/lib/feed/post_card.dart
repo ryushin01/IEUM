@@ -203,7 +203,7 @@ class _PostCardState extends State<PostCard> {
       child: Container(
         margin: const EdgeInsets.only(bottom: IeumColors.band),
         color: colors.surface,
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -266,12 +266,12 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
               child: Text(post.caption, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, height: 1.55)),
             ),
             if (post.images.isNotEmpty) ImageCarousel(images: post.images, authorNickname: post.author.nickname),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text('좋아요 ${post.likeCount}개 · 댓글 ${post.commentCount}개', style: TextStyle(fontSize: 13, color: colors.muted)),
             ),
             Divider(height: 1, thickness: 1, color: colors.border),
@@ -288,7 +288,7 @@ class _PostCardState extends State<PostCard> {
                       onPressed: _like,
                       style: TextButton.styleFrom(
                         foregroundColor: post.liked ? colors.like : colors.text,
-                        minimumSize: const Size(44, 48),
+                        minimumSize: const Size(44, 44),
                         shape: const RoundedRectangleBorder(),
                       ),
                       icon: Icon(post.liked ? Icons.thumb_up : Icons.thumb_up_outlined, color: post.liked ? colors.like : colors.text, size: 20),
@@ -301,7 +301,7 @@ class _PostCardState extends State<PostCard> {
                     onPressed: widget.onOpenPost,
                     style: TextButton.styleFrom(
                       foregroundColor: colors.text,
-                      minimumSize: const Size(44, 48),
+                      minimumSize: const Size(44, 44),
                       shape: const RoundedRectangleBorder(),
                     ),
                     icon: Icon(Icons.chat_bubble_outline, color: colors.text, size: 20),

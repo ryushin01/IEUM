@@ -27,7 +27,16 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
-      - run: pnpm --filter @ieum/web exec playwright install --with-deps chromium
+      # apt 다운로드가 가끔 10분 넘게 멈춥니다. 러너에 있는 라이브러리를 쓰고, 브라우저만 받아 캐시합니다.
+      - id: playwright
+        run: echo "version=$(pnpm --filter @ieum/web exec playwright --version)" >> "$GITHUB_OUTPUT"
+      - id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @ieum/web exec playwright install chromium
       - run: pnpm --filter @ieum/web test:storybook
       - run: pnpm test:e2e
       - run: pnpm --filter @ieum/web test:e2e:demo

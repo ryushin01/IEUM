@@ -91,6 +91,7 @@ export function PostForm() {
         htmlFor="post-caption"
         validateStatus={captionError ? 'error' : undefined}
         help={captionError ? '내용을 입력해 주세요.' : undefined}
+        style={{ marginBottom: 36 }}
       >
         <Input.TextArea
           id="post-caption"
