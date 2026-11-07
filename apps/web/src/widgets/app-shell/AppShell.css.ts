@@ -5,6 +5,7 @@ const WIDE = 'screen and (min-width: 768px)';
 const RAIL = '100px';
 
 export const skip = style({
+  minHeight: 44,
   position: 'fixed', top: -100, left: 8, zIndex: 300, padding: '10px 16px',
   backgroundColor: vars.color.primary, color: vars.color.onPrimary,
   selectors: { '&:focus': { top: 8 } },
@@ -37,7 +38,7 @@ export const theme = style({
 /** 진한 알약 모양의 글쓰기 버튼 */
 export const write = style({
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4, minHeight: 44, padding: '0 14px',
-  borderRadius: 999, backgroundColor: vars.color.ink, color: vars.color.onInk, fontSize: 14, fontWeight: 700,
+  borderRadius: 999, backgroundColor: vars.color.ink, color: vars.color.onInk, fontSize: 13, fontWeight: 600,
   textDecoration: 'none', whiteSpace: 'nowrap',
 });
 
@@ -55,8 +56,8 @@ export const navList = style({
 export const navItem = style({ flex: 1, minWidth: 0 });
 export const navLink = style({
   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, width: '100%', height: '100%', minHeight: 44,
-  padding: 0, border: 0, background: 'none', color: vars.color.muted, font: 'inherit', fontSize: 12, textDecoration: 'none', cursor: 'pointer',
-  selectors: { '&[aria-current="page"]': { color: vars.color.primary, fontWeight: 700 } },
+  padding: 0, border: 0, background: 'none', color: vars.color.muted, font: 'inherit', fontSize: 11, textDecoration: 'none', cursor: 'pointer',
+  selectors: { '&[aria-current="page"]': { color: vars.color.primary, fontWeight: 600 } },
 });
 export const navIcon = style({
   position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',

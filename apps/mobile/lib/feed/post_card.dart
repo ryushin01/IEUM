@@ -27,7 +27,7 @@ class UserAvatar extends StatelessWidget {
                 child: Center(
                   child: Text(
                     nickname.characters.first,
-                    style: TextStyle(color: IeumColors.of(context).onAvatar, fontSize: size * .45, fontWeight: FontWeight.w700),
+                    style: TextStyle(color: IeumColors.of(context).onAvatar, fontSize: size * .4, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -100,7 +100,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                 decoration: BoxDecoration(color: Colors.black.withValues(alpha: .7), borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                  child: Text('${_index + 1} / $count', style: const TextStyle(color: Colors.white, fontSize: 14)),
+                  child: Text('${_index + 1} / $count', style: const TextStyle(color: Colors.white, fontSize: 12)),
                 ),
               ),
             ),
@@ -234,7 +234,7 @@ class _PostCardState extends State<PostCard> {
                                         child: Text(
                                           post.author.nickname,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                                         ),
                                       ),
                                       if (post.author.isOfficial) ...[
@@ -245,7 +245,7 @@ class _PostCardState extends State<PostCard> {
                                   ),
                                   Text(
                                     '${timeAgo(post.createdAt)}${post.edited ? ' · 수정됨' : ''}',
-                                    style: TextStyle(fontSize: 13, color: colors.muted),
+                                    style: TextStyle(fontSize: 12, color: colors.muted),
                                   ),
                                 ],
                               ),
@@ -267,12 +267,12 @@ class _PostCardState extends State<PostCard> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(post.caption, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, height: 1.55)),
+              child: Text(post.caption, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, height: 1.55)),
             ),
             if (post.images.isNotEmpty) ImageCarousel(images: post.images, authorNickname: post.author.nickname),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text('좋아요 ${post.likeCount}개 · 댓글 ${post.commentCount}개', style: TextStyle(fontSize: 14, color: colors.muted)),
+              child: Text('좋아요 ${post.likeCount}개 · 댓글 ${post.commentCount}개', style: TextStyle(fontSize: 13, color: colors.muted)),
             ),
             Divider(height: 1, thickness: 1, color: colors.border),
             Row(
@@ -292,7 +292,7 @@ class _PostCardState extends State<PostCard> {
                         shape: const RoundedRectangleBorder(),
                       ),
                       icon: Icon(post.liked ? Icons.thumb_up : Icons.thumb_up_outlined, color: post.liked ? colors.like : colors.text, size: 20),
-                      label: Text('좋아요', style: TextStyle(fontSize: 15, fontWeight: post.liked ? FontWeight.w700 : FontWeight.w400)),
+                      label: Text('좋아요', style: TextStyle(fontSize: 14, fontWeight: post.liked ? FontWeight.w600 : FontWeight.w400)),
                     ),
                   ),
                 ),
@@ -305,7 +305,7 @@ class _PostCardState extends State<PostCard> {
                       shape: const RoundedRectangleBorder(),
                     ),
                     icon: Icon(Icons.chat_bubble_outline, color: colors.text, size: 20),
-                    label: const Text('댓글 보기', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
+                    label: const Text('댓글 보기', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
                   ),
                 ),
               ],
@@ -353,7 +353,7 @@ class _PostCardState extends State<PostCard> {
                               minimumSize: const Size(56, 44),
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               shape: const StadiumBorder(),
-                              textStyle: const TextStyle(fontFamily: 'GothicA1', fontWeight: FontWeight.w700, fontSize: 15),
+                              textStyle: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 14),
                             ),
                             child: const Text('게시'),
                           ),

@@ -32,7 +32,7 @@ class DmListView extends StatelessWidget {
               header: true,
               child: Text(
                 '메시지',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: -.5, color: colors.text),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -.3, color: colors.text),
               ),
             ),
           ),
@@ -133,11 +133,11 @@ class ConversationTile extends StatelessWidget {
                               child: Text(
                                 c.other.nickname,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Text(timeAgo(c.lastMessageAt), style: TextStyle(fontSize: 13, color: colors.muted)),
+                            Text(timeAgo(c.lastMessageAt), style: TextStyle(fontSize: 12, color: colors.muted)),
                           ],
                         ),
                         Text(
@@ -158,7 +158,7 @@ class ConversationTile extends StatelessWidget {
                       child: Text(
                         '${c.unreadCount}',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: colors.onPrimary, fontWeight: FontWeight.w700, fontSize: 14),
+                        style: TextStyle(color: colors.onPrimary, fontWeight: FontWeight.w600, fontSize: 12),
                       ),
                     ),
                   ],

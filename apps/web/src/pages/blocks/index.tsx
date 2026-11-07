@@ -11,7 +11,7 @@ export function BlocksPage() {
   const { message } = App.useApp();
   return (
     <>
-      <h1 style={{ padding: '16px 16px 8px', fontSize: 22, fontWeight: 800 }}>차단한 사용자</h1>
+      <h1 style={{ padding: '16px 16px 8px', fontSize: 20, fontWeight: 700 }}>차단한 사용자</h1>
       {blocks.isPending && <LoadingView />}
       {blocks.isError && <ErrorView error={blocks.error} onRetry={() => void blocks.refetch()} />}
       {blocks.data?.length === 0 && <EmptyView title="차단한 사용자가 없습니다." />}

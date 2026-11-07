@@ -2,7 +2,7 @@ import { theme, type ThemeConfig } from 'antd';
 
 export type ThemeMode = 'light' | 'dark';
 
-const FONT = `'Gothic A1', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`;
+const FONT = `'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`;
 
 /** theme.css.ts의 토큰과 같은 값입니다. */
 const COLORS = {
@@ -40,14 +40,14 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
       colorTextTertiary: c.muted,
       colorTextPlaceholder: c.muted,
       fontFamily: FONT,
-      fontSize: 16,
+      fontSize: 14,
       borderRadius: 10,
-      controlHeight: 48,
+      controlHeight: 44,
       motionDurationMid: '0.1s',
     },
     components: {
       Button: {
-        fontWeight: 700,
+        fontWeight: 600,
         primaryShadow: 'none',
         dangerShadow: 'none',
         dangerColor: mode === 'light' ? '#ffffff' : '#10131a',

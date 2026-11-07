@@ -79,7 +79,7 @@ class _Item extends StatelessWidget {
               children: [
                 SizedBox(height: 28, child: Center(child: IconTheme(data: IconThemeData(color: foreground, size: 24), child: child))),
                 const SizedBox(height: 2),
-                Text(label, style: TextStyle(fontSize: 12, height: 1.2, fontWeight: selected ? FontWeight.w700 : FontWeight.w400, color: foreground)),
+                Text(label, style: TextStyle(fontSize: 11, height: 1.2, fontWeight: selected ? FontWeight.w600 : FontWeight.w400, color: foreground)),
               ],
             ),
           ),

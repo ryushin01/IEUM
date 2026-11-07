@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const require = createRequire(import.meta.url);
-const fontDir = join(dirname(require.resolve('@fontsource/gothic-a1/package.json')), 'files');
-const font = readFileSync(join(fontDir, 'gothic-a1-latin-900-normal.woff2')).toString('base64');
+const fontDir = join(dirname(require.resolve('pretendard/package.json')), 'dist/web/static/woff2');
+const font = readFileSync(join(fontDir, 'Pretendard-ExtraBold.woff2')).toString('base64');
 const out = fileURLToPath(new URL('../../mobile/assets/icon/', import.meta.url));
 
 const BLUE = '#0b6be0';
@@ -15,10 +15,10 @@ const WHITE = '#ffffff';
 
 function html(size: number, background: string, color: string, textSize: number, stroke: number) {
   return `<!doctype html><style>
-    @font-face { font-family: 'Gothic A1'; src: url(data:font/woff2;base64,${font}); }
+    @font-face { font-family: 'Pretendard'; src: url(data:font/woff2;base64,${font}); }
     html, body { margin: 0; width: ${size}px; height: ${size}px; background: ${background}; }
     body { display: flex; align-items: center; justify-content: center; }
-    span { font: 900 ${textSize}px/1 'Gothic A1'; letter-spacing: 0.02em; color: ${color}; -webkit-text-stroke: ${stroke}px ${color}; }
+    span { font: 800 ${textSize}px/1 'Pretendard'; letter-spacing: -0.01em; color: ${color}; -webkit-text-stroke: ${stroke}px ${color}; }
   </style><span>IEUM</span>`;
 }
 

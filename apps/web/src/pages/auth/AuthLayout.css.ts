@@ -8,8 +8,8 @@ export const page = style({
 });
 export const brand = style({ padding: '48px 0 8px', textAlign: 'center' });
 export const title = style({ fontSize: 'inherit' });
-export const tagline = style({ marginTop: 20, fontSize: 26, fontWeight: 400, lineHeight: 1.3, letterSpacing: '-0.02em' });
-export const taglineStrong = style({ display: 'block', marginTop: 4, color: vars.color.primary, fontSize: 38, fontWeight: 700 });
+export const tagline = style({ marginTop: 20, fontSize: 20, fontWeight: 400, lineHeight: 1.3, letterSpacing: '-0.02em' });
+export const taglineStrong = style({ display: 'block', marginTop: 4, color: vars.color.primary, fontSize: 30, fontWeight: 700 });
 export const subBrand = style({ padding: '24px 0 0' });
-export const subTitle = style({ marginTop: 20, fontSize: 26, fontWeight: 700, lineHeight: 1.35, letterSpacing: '-0.02em' });
+export const subTitle = style({ marginTop: 20, fontSize: 22, fontWeight: 700, lineHeight: 1.35, letterSpacing: '-0.02em' });
 export const footer = style({ textAlign: 'center', color: vars.color.muted });

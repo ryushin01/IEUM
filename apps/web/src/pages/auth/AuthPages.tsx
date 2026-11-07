@@ -11,7 +11,7 @@ export function LoginPage() {
   return (
     <main className={s.page}>
       <div className={s.brand}>
-        <h1 className={s.title}><Logo size={32} /><span className={srOnly}> 로그인</span></h1>
+        <h1 className={s.title}><Logo size={28} /><span className={srOnly}> 로그인</span></h1>
         <p className={s.tagline}>나와 너를 <strong className={s.taglineStrong}>잇는 공간</strong></p>
       </div>
       <DemoLogin />
@@ -28,7 +28,7 @@ export function SignupPage() {
   return (
     <main className={s.page}>
       <div className={s.subBrand}>
-        <Logo size={24} />
+        <Logo size={22} />
         <h1 className={s.subTitle}>회원가입</h1>
       </div>
       <SignupForm />
@@ -45,7 +45,7 @@ export function SocialSignupPage() {
   return (
     <main className={s.page}>
       <div className={s.subBrand}>
-        <Logo size={24} />
+        <Logo size={22} />
         <h1 className={s.subTitle}>추가 정보 입력</h1>
       </div>
       <SocialSignupForm state={state} />
@@ -76,7 +76,7 @@ export function ForgotPasswordPage() {
   return (
     <main className={s.page}>
       <div className={s.subBrand}>
-        <Logo size={24} />
+        <Logo size={22} />
         <h1 className={s.subTitle}>비밀번호 찾기</h1>
       </div>
       <ForgotPasswordForm />
@@ -90,7 +90,7 @@ export function ResetPasswordPage() {
   return (
     <main className={s.page}>
       <div className={s.subBrand}>
-        <Logo size={24} />
+        <Logo size={22} />
         <h1 className={s.subTitle}>새 비밀번호 설정</h1>
       </div>
       <ResetPasswordForm />
