@@ -38,4 +38,13 @@ test('피드: 끝까지 스크롤하면 다음 페이지를 이어서 불러온�
   const posts = captions.filter((text) => text.startsWith(RUN));
   // 만든 글이 정확히 한 번씩 보여야 합니다. 중복되면 개수가 달라집니다.
   expect(posts.toSorted()).toEqual(Array.from({ length: PAGE_SIZE + 2 }, (_, i) => `${RUN} #${i}`).toSorted());
+
+  // 프로필 격자도 스크롤만으로 이어집니다.
+  // 격자가 짧아 화면이 크면 첫 페이지 뒤 바로 이어서 불러옵니다. 스크롤이 필요하도록 화면을 줄입니다.
+  await page.setViewportSize({ width: 412, height: 150 });
+  await page.goto('/me');
+  const grid = page.getByRole('list', { name: /님의 게시글/ }).getByRole('link');
+  await expect(grid).toHaveCount(PAGE_SIZE);
+  await grid.last().scrollIntoViewIfNeeded();
+  await expect.poll(() => grid.count()).toBeGreaterThan(PAGE_SIZE);
 });

@@ -6,8 +6,8 @@ const FONT = `'Gothic A1', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`;
 
 /** theme.css.ts의 토큰과 같은 값입니다. */
 const COLORS = {
-  light: { primary: '#0b6be0', onPrimary: '#ffffff', text: '#2b2d38', muted: '#646a75', error: '#d3222a', surface: '#ffffff', bg: '#f5f6f8', control: '#31313b' },
-  dark: { primary: '#5ea3ff', onPrimary: '#10131a', text: '#eef0f3', muted: '#a9afba', error: '#ff8a8f', surface: '#1b1e25', bg: '#111318', control: '#a9afba' },
+  light: { primaryHover: '#0a5ec6', primaryActive: '#0952ad', errorHover: '#b81c23', errorActive: '#9c171d', primary: '#0b6be0', onPrimary: '#ffffff', text: '#2b2d38', muted: '#646a75', error: '#d3222a', surface: '#ffffff', bg: '#f5f6f8', control: '#31313b' },
+  dark: { primaryHover: '#7db5ff', primaryActive: '#4a90ee', errorHover: '#ffa3a7', errorActive: '#f47378', primary: '#5ea3ff', onPrimary: '#10131a', text: '#eef0f3', muted: '#a9afba', error: '#ff8a8f', surface: '#1b1e25', bg: '#111318', control: '#a9afba' },
 };
 
 /** 브라우저 주소창 색입니다. 헤더(theme.css.ts의 header)와 같은 면 색을 씁니다. */
@@ -22,6 +22,11 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
     algorithm: mode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
     token: {
       colorPrimary: c.primary,
+      // 자동으로 만든 색은 글자 대비가 4.5:1 아래로 떨어지므로 직접 정합니다.
+      colorPrimaryHover: c.primaryHover,
+      colorPrimaryActive: c.primaryActive,
+      colorErrorHover: c.errorHover,
+      colorErrorActive: c.errorActive,
       colorTextLightSolid: c.onPrimary,
       colorLink: c.text,
       colorError: c.error,

@@ -27,7 +27,7 @@ export function ForgotPasswordForm() {
     );
   }
   return (
-    <Form<{ email: string }> layout="vertical" requiredMark={false} onFinish={(values) => { if (!send.isPending) send.mutate(values); }}>
+    <Form<{ email: string }> noValidate layout="vertical" requiredMark={false} onFinish={(values) => { if (!send.isPending) send.mutate(values); }}>
       <Form.Item
         label="이메일"
         name="email"

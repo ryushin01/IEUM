@@ -1,24 +1,17 @@
 import { Button } from 'antd';
-import { useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { usePostFeed } from '@/entities/post';
+import { useLoadMoreOnScroll } from '@/shared/lib';
 import { EmptyView, ErrorView, LoadingView } from '@/shared/ui';
 import { PostCard } from './PostCard';
 
 export function PostFeed() {
   const feed = usePostFeed();
-  const sentinel = useRef<HTMLDivElement>(null);
-  const { hasNextPage, isFetchingNextPage, fetchNextPage } = feed;
-
-  useEffect(() => {
-    const el = sentinel.current;
-    if (!el || !hasNextPage || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry?.isIntersecting && !isFetchingNextPage) void fetchNextPage();
-    }, { rootMargin: '600px' });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const sentinel = useLoadMoreOnScroll({
+    hasNextPage: feed.hasNextPage,
+    isFetchingNextPage: feed.isFetchingNextPage,
+    fetchNextPage: feed.fetchNextPage,
+  });
 
   if (feed.isPending) return <LoadingView label="게시글을 불러오는 중" />;
   if (feed.isError) return <ErrorView error={feed.error} onRetry={() => void feed.refetch()} />;
@@ -32,9 +25,9 @@ export function PostFeed() {
         {posts.map((post) => <li key={post.id}><PostCard post={post} list /></li>)}
       </ul>
       <div ref={sentinel} />
-      {hasNextPage && (
+      {feed.hasNextPage && (
         <div style={{ padding: 16 }}>
-          <Button block loading={isFetchingNextPage} onClick={() => void fetchNextPage()}>더 보기</Button>
+          <Button block loading={feed.isFetchingNextPage} onClick={() => void feed.fetchNextPage()}>더 보기</Button>
         </div>
       )}
     </>

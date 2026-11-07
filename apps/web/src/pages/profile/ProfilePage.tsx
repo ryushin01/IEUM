@@ -8,13 +8,18 @@ import { useMe } from '@/entities/session';
 import { useUser, type PublicUser } from '@/entities/user';
 import { ReportDialog, useBlockUser, type ReportTarget } from '@/features/moderation';
 import { request } from '@/shared/api';
-import { usePageTitle } from '@/shared/lib';
+import { useLoadMoreOnScroll, usePageTitle } from '@/shared/lib';
 import { interestLabel } from '@/shared/config/interests';
 import { EmptyView, ErrorView, LoadingView, OfficialMark, UserAvatar } from '@/shared/ui';
 import * as s from './Profile.css';
 
 function PostGrid({ authorId, nickname }: { authorId: string; nickname: string }) {
   const feed = usePostFeed(authorId);
+  const sentinel = useLoadMoreOnScroll({
+    hasNextPage: feed.hasNextPage,
+    isFetchingNextPage: feed.isFetchingNextPage,
+    fetchNextPage: feed.fetchNextPage,
+  });
   if (feed.isPending) return <LoadingView label="게시글을 불러오는 중" />;
   if (feed.isError) return <ErrorView error={feed.error} onRetry={() => void feed.refetch()} />;
   const posts = feed.data.pages.flatMap((page) => page.items);
@@ -31,6 +36,7 @@ function PostGrid({ authorId, nickname }: { authorId: string; nickname: string }
           </li>
         ))}
       </ul>
+      <div ref={sentinel} />
       {feed.hasNextPage && (
         <div style={{ padding: 16 }}>
           <Button block loading={feed.isFetchingNextPage} onClick={() => void feed.fetchNextPage()}>더 보기</Button>

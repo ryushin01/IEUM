@@ -16,11 +16,14 @@ export const queryClient = new QueryClient({
 });
 
 /** antd는 @layer 안에 두어 layer 밖의 vanilla-extract 스타일이 항상 이기도록 합니다. */
+/** 물결 효과는 button 안에 div를 넣어 콘텐츠 모델을 어깁니다. */
+const NO_WAVE = { disabled: true };
+
 export function AppProviders({ children }: { children: ReactNode }) {
   const mode = useThemeMode();
   return (
     <StyleProvider layer>
-      <ConfigProvider theme={antdTheme(mode)} locale={koKR}>
+      <ConfigProvider theme={antdTheme(mode)} locale={koKR} wave={NO_WAVE}>
         <AntApp>
           <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
         </AntApp>

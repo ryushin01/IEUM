@@ -52,7 +52,7 @@ export const centered = style({
 });
 
 // 안내 화면의 링크도 조작 영역을 44px 이상으로 맞춥니다.
-globalStyle(`${centered} a`, { display: 'inline-flex', alignItems: 'center', minHeight: 44 });
+globalStyle(`${centered} a`, { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44 });
 
 /** 프로필 링: 인기 게시글 작성자에게 씁니다. */
 export const hotRing = style({

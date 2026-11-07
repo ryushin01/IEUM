@@ -47,6 +47,50 @@ test('서버 없이 동작하고 외부로 요청을 보내지 않는다', async
   await checkA11y(page);
 });
 
+test('마우스를 올린 주요 버튼도 명도 대비를 지킨다', async ({ page }) => {
+  for (const mode of ['light', 'dark']) {
+    await page.goto('login');
+    await page.evaluate((value) => localStorage.setItem('ieum.theme', value), mode);
+    await page.goto('login');
+    await page.getByRole('button', { name: '로그인', exact: true }).hover();
+    await page.waitForTimeout(400);
+    await checkA11y(page);
+  }
+  await page.evaluate(() => localStorage.removeItem('ieum.theme'));
+});
+
+test('마우스를 올린 위험 버튼도 명도 대비를 지킨다', async ({ page }) => {
+  await enter(page, '운영자로 둘러보기');
+  await page.goto('admin/reports');
+  await page.getByRole('button', { name: '콘텐츠 삭제' }).first().hover();
+  await page.waitForTimeout(400);
+  await checkA11y(page);
+  await page.getByRole('button', { name: '콘텐츠 삭제' }).first().click();
+  await page.getByRole('dialog').getByRole('button', { name: /삭\s*제/ }).hover();
+  await page.waitForTimeout(400);
+  await checkA11y(page);
+});
+
+test('앱 코드를 불러오기 전에도 고른 테마를 적용한다', async ({ browser, baseURL }) => {
+  // Service Worker가 받은 요청은 route로 막을 수 없으므로 끕니다.
+  const context = await browser.newContext({ baseURL, serviceWorkers: 'block' });
+  const page = await context.newPage();
+  await page.goto('login');
+  await page.evaluate(() => localStorage.setItem('ieum.theme', 'dark'));
+  let blocked = 0;
+  await page.route('**/assets/*.js', (route) => {
+    blocked += 1;
+    return route.abort();
+  });
+  await page.goto('login');
+  expect(blocked).toBeGreaterThan(0);
+  // 앱이 실행되지 않았으므로 HTML의 스크립트만으로 적용된 것입니다.
+  await expect(page.locator('#root')).toBeEmpty();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#1b1e25');
+  await context.close();
+});
+
 test('피드: 스크롤하면 샘플 글의 다음 페이지를 이어서 보여 준다', async ({ page }) => {
   await enter(page);
   const articles = page.getByRole('article');
