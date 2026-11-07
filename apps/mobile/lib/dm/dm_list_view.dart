@@ -27,7 +27,7 @@ class DmListView extends StatelessWidget {
         children: [
           AppHeader(dark: dark, onToggleTheme: onToggleTheme, onWrite: onWrite),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
             child: Semantics(
               header: true,
               child: Text(
@@ -116,12 +116,12 @@ class ConversationTile extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 72),
+            constraints: const BoxConstraints(minHeight: 68),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
                 children: [
-                  UserAvatar(nickname: c.other.nickname, url: c.other.avatarUrl, size: 48),
+                  UserAvatar(nickname: c.other.nickname, url: c.other.avatarUrl, size: 44),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -144,7 +144,7 @@ class ConversationTile extends StatelessWidget {
                           c.lastMessage,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: colors.muted),
+                          style: TextStyle(fontSize: 13, color: colors.muted),
                         ),
                       ],
                     ),

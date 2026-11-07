@@ -113,23 +113,34 @@ class _WriteButton extends StatelessWidget {
       label: '글쓰기',
       onTap: onTap,
       excludeSemantics: true,
-      child: Material(
-        color: colors.ink,
-        shape: const StadiumBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 44),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.edit_outlined, size: 16, color: colors.onInk),
-                  const SizedBox(width: 4),
-                  Text('글쓰기', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.onInk)),
-                ],
+      // 보이는 크기는 줄이고 조작 영역은 44를 유지합니다.
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 44),
+          child: Center(
+            widthFactor: 1,
+            child: Material(
+              color: colors.ink,
+              shape: const StadiumBorder(),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: onTap,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 36),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.edit_outlined, size: 16, color: colors.onInk),
+                        const SizedBox(width: 4),
+                        Text('글쓰기', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.onInk)),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

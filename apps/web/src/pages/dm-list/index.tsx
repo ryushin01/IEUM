@@ -23,7 +23,7 @@ function DmList() {
         {conversations.data?.map((c) => (
           <li key={c.id}>
             <Link className={s.link} to={`/dm/${c.id}`}>
-              <UserAvatar nickname={c.other.nickname} src={c.other.avatarUrl} size={48} />
+              <UserAvatar nickname={c.other.nickname} src={c.other.avatarUrl} size={44} />
               <span className={s.texts}>
                 <span className={s.top}>
                   <span className={s.name}>{c.other.nickname}</span>

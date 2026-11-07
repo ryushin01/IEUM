@@ -37,9 +37,11 @@ export const theme = style({
 });
 /** 진한 알약 모양의 글쓰기 버튼 */
 export const write = style({
-  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4, minHeight: 44, padding: '0 14px',
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4, position: 'relative', minHeight: 36, padding: '0 12px',
   borderRadius: 999, backgroundColor: vars.color.ink, color: vars.color.onInk, fontSize: 13, fontWeight: 600,
   textDecoration: 'none', whiteSpace: 'nowrap',
+  // 보이는 크기는 줄이고 조작 영역은 44px을 유지합니다.
+  selectors: { '&::after': { content: '""', position: 'absolute', top: -4, right: 0, bottom: -4, left: 0 } },
 });
 
 export const nav = style({
@@ -61,7 +63,7 @@ export const navLink = style({
 });
 export const navIcon = style({
   position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
-  minWidth: 32, height: 28, fontSize: 24,
+  minWidth: 32, height: 26, fontSize: 22,
 });
 export const badge = style({
   position: 'absolute', top: -4, right: -8, minWidth: 18, height: 18, padding: '0 4px', borderRadius: 9,
