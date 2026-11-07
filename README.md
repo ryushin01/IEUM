@@ -43,7 +43,7 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴�
 
 ## 기술 스택
 
-![Flutter, Dart, React, Vite, TypeScript, Node.js, PostgreSQL, Vitest, Storybook](https://skillicons.dev/icons?i=flutter,dart,react,vite,ts,nodejs,postgres,vitest,storybook)
+![Flutter, Dart, React, Vite, TypeScript, Node.js, PostgreSQL, Vitest, Storybook](docs/images/tech-stack.svg)
 
 | 구분 | 사용 기술 |
 |---|---|
