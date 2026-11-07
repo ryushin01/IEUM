@@ -15,7 +15,7 @@ const WHITE = '#ffffff';
 
 function html(size: number, background: string, color: string, textSize: number, stroke: number) {
   return `<!doctype html><style>
-    @font-face { font-family: 'Pretendard'; src: url(data:font/woff2;base64,${font}); }
+    @font-face { font-family: 'Pretendard'; font-weight: 800; src: url(data:font/woff2;base64,${font}); }
     html, body { margin: 0; width: ${size}px; height: ${size}px; background: ${background}; }
     body { display: flex; align-items: center; justify-content: center; }
     span { font: 800 ${textSize}px/1 'Pretendard'; letter-spacing: -0.01em; color: ${color}; -webkit-text-stroke: ${stroke}px ${color}; }

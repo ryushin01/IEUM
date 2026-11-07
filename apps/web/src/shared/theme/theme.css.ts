@@ -80,7 +80,7 @@ globalStyle('.ant-btn-icon-only', { flexShrink: 0 });
 globalStyle('.ant-checkbox-wrapper, .ant-radio-wrapper', { minHeight: 44, alignItems: 'center' });
 globalStyle(':focus-visible', { outline: `2px solid ${vars.color.focus}`, outlineOffset: 2 });
 // iOS는 16px보다 작은 입력칸에 초점이 가면 화면을 확대하므로 터치 기기에서는 입력 글자만 16px로 둡니다.
-globalStyle('input.ant-input, textarea.ant-input', { '@media': { '(pointer: coarse)': { fontSize: 16 } } });
+globalStyle('input.ant-input, textarea.ant-input', { '@media': { '(any-pointer: coarse)': { fontSize: 16 } } });
 globalStyle('input.ant-input:focus-visible, textarea.ant-input:focus-visible', { outlineOffset: -1 });
 // 비밀번호 칸은 바깥 틀이 초점을 표시하므로 안쪽 입력에 테두리를 겹치지 않습니다.
 globalStyle('.ant-input-affix-wrapper input.ant-input:focus-visible', { outline: 'none' });
