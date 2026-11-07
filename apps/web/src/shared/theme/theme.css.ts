@@ -50,8 +50,9 @@ globalStyle('html, body', {
   margin: 0,
   backgroundColor: vars.color.bg,
   color: vars.color.text,
-  fontFamily: `'Gothic A1', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`,
-  fontSize: 16,
+  fontFamily: `'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`,
+  fontSize: 14,
+  letterSpacing: '-0.01em',
   lineHeight: 1.5,
   // 한글이 단어 중간에서 끊기지 않게 하되, 긴 문자열은 넘치지 않게 합니다.
   wordBreak: 'keep-all',
@@ -67,6 +68,7 @@ globalStyle('html', {
 });
 globalStyle('h1, h2, h3, p, ul, ol, figure', { margin: 0, padding: 0 });
 globalStyle('ul, ol', { listStyle: 'none' });
+globalStyle('button, input, textarea, select', { letterSpacing: 'inherit' });
 globalStyle('img', { display: 'block', maxWidth: '100%' });
 globalStyle('a', { color: 'inherit' });
 // 본문 속 링크는 색만으로 구분하지 않습니다. (KWCAG 5.4.1)
@@ -77,6 +79,8 @@ globalStyle('.ant-btn', { minWidth: 44 });
 globalStyle('.ant-btn-icon-only', { flexShrink: 0 });
 globalStyle('.ant-checkbox-wrapper, .ant-radio-wrapper', { minHeight: 44, alignItems: 'center' });
 globalStyle(':focus-visible', { outline: `2px solid ${vars.color.focus}`, outlineOffset: 2 });
+// iOS는 16px보다 작은 입력칸에 초점이 가면 화면을 확대하므로 터치 기기에서는 입력 글자만 16px로 둡니다.
+globalStyle('input.ant-input, textarea.ant-input', { '@media': { '(any-pointer: coarse)': { fontSize: 16 } } });
 globalStyle('input.ant-input:focus-visible, textarea.ant-input:focus-visible', { outlineOffset: -1 });
 // 비밀번호 칸은 바깥 틀이 초점을 표시하므로 안쪽 입력에 테두리를 겹치지 않습니다.
 globalStyle('.ant-input-affix-wrapper input.ant-input:focus-visible', { outline: 'none' });

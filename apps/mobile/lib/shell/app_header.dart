@@ -55,7 +55,7 @@ class AppHeader extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('IEUM', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: .5, color: colors.onHeader, height: 1)),
+                            Text('IEUM', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -.2, color: colors.onHeader, height: 1)),
                             const SizedBox(width: 4),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 3),
@@ -128,7 +128,7 @@ class _WriteButton extends StatelessWidget {
                 children: [
                   Icon(Icons.edit_outlined, size: 16, color: colors.onInk),
                   const SizedBox(width: 4),
-                  Text('글쓰기', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: colors.onInk)),
+                  Text('글쓰기', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.onInk)),
                 ],
               ),
             ),

@@ -11,7 +11,7 @@ export const row = style({
 globalStyle(`${row} input.ant-input:focus-visible`, { outline: 'none' });
 export const submit = style({
   selectors: {
-    '&.ant-btn:not(:disabled)': { color: vars.color.primary, fontWeight: 700 },
+    '&.ant-btn:not(:disabled)': { color: vars.color.primary, fontWeight: 600 },
     // 비활성 버튼도 무엇인지 읽을 수 있게 보조 글자 대비를 유지합니다.
     '&.ant-btn:disabled': { color: vars.color.muted },
   },

@@ -5,7 +5,7 @@ import { ReportCard, useLiftSuspension, useOpenReports, useSuspendedUsers } from
 import { timeAgo, usePageTitle } from '@/shared/lib';
 import { EmptyView, ErrorView, LoadingView } from '@/shared/ui';
 
-const titleStyle = { padding: '16px 16px 8px', fontSize: 22, fontWeight: 800 };
+const titleStyle = { padding: '16px 16px 8px', fontSize: 20, fontWeight: 700 };
 
 export function AdminReportsPage() {
   usePageTitle('신고 처리');
@@ -40,7 +40,7 @@ function Suspended() {
   if (!users.data?.length) return null;
   return (
     <section aria-labelledby="suspended-title">
-      <h2 id="suspended-title" style={{ ...titleStyle, fontSize: 18 }}>정지된 사용자</h2>
+      <h2 id="suspended-title" style={{ ...titleStyle, fontSize: 15 }}>정지된 사용자</h2>
       <ul>
         {users.data.map((user) => (
           <li key={user.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px' }}>

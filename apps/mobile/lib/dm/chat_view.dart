@@ -85,7 +85,7 @@ class _ChatViewState extends State<ChatView> {
                           child: Text(
                             other.nickname,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                           ),
                         ),
                         Icon(Icons.more_vert, color: colors.text),
@@ -249,12 +249,12 @@ class MessageBubble extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                child: Text(message.body, style: TextStyle(color: mine ? colors.onPrimary : colors.text, fontSize: 16)),
+                child: Text(message.body, style: TextStyle(color: mine ? colors.onPrimary : colors.text, fontSize: 14)),
               ),
             ),
           ),
           const SizedBox(height: 4),
-          Text('${timeAgo(message.createdAt)}${read ? ' · 읽음' : ''}', style: TextStyle(fontSize: 12, color: colors.muted)),
+          Text('${timeAgo(message.createdAt)}${read ? ' · 읽음' : ''}', style: TextStyle(fontSize: 11, color: colors.muted)),
         ],
       ),
     );

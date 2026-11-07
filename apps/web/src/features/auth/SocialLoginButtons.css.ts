@@ -9,7 +9,7 @@ export const error = style({ marginTop: 12 });
 const base = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', minHeight: 48,
   borderRadius: 10, fontFamily: `-apple-system, 'Apple SD Gothic Neo', Roboto, 'Noto Sans KR', sans-serif`,
-  fontSize: 15, fontWeight: 500, cursor: 'pointer',
+  fontSize: 14, fontWeight: 500, cursor: 'pointer',
   selectors: { '&:disabled': { opacity: 0.6, cursor: 'wait' } },
 } as const;
 
@@ -30,4 +30,4 @@ export const button = styleVariants({
     },
   },
 });
-export const demoNote = style({ marginBottom: 12, textAlign: 'center', fontSize: 14, color: vars.color.muted });
+export const demoNote = style({ marginBottom: 12, textAlign: 'center', fontSize: 13, color: vars.color.muted });

@@ -40,7 +40,7 @@ export function AppShell() {
       <header className={s.header}>
         {!root && <Button className={s.back} type="text" aria-label="뒤로 가기" icon={<ArrowLeftOutlined aria-hidden="true" />} onClick={() => void goBack()} />}
         <Link to="/" className={s.brand} aria-label="IEUM 홈">
-          <Logo size={24} />
+          <Logo size={20} />
         </Link>
         <div className={s.tools}>
           <ThemeSwitch className={s.theme} />

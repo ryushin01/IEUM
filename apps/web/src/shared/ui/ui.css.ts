@@ -7,8 +7,8 @@ export const srOnly = style({
 });
 
 export const logo = style({
-  display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 800,
-  letterSpacing: '0.02em', lineHeight: 1, color: 'inherit', textDecoration: 'none',
+  display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 700,
+  letterSpacing: '-0.01em', lineHeight: 1, color: 'inherit', textDecoration: 'none',
 });
 export const logoMark = style({
   width: '0.3em', height: '0.3em', alignSelf: 'flex-end', marginBottom: '0.12em', borderRadius: '50%', backgroundColor: vars.color.primary,
@@ -20,7 +20,7 @@ export const avatar = style({
 });
 export const avatarFallback = style({
   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, borderRadius: '50%',
-  backgroundColor: vars.color.avatarBg, color: vars.color.onAvatar, fontSize: '0.5em', fontWeight: 700,
+  backgroundColor: vars.color.avatarBg, color: vars.color.onAvatar, fontSize: '0.5em', fontWeight: 600,
 });
 
 export const carousel = style({ position: 'relative', overflow: 'hidden' });
@@ -43,7 +43,7 @@ export const carouselButton = style({
 });
 export const carouselCounter = style({
   position: 'absolute', top: 12, right: 12, padding: '2px 10px', borderRadius: 12,
-  backgroundColor: 'rgba(0, 0, 0, 0.7)', color: '#fff', fontSize: 14,
+  backgroundColor: 'rgba(0, 0, 0, 0.7)', color: '#fff', fontSize: 12,
 });
 
 export const centered = style({
@@ -60,14 +60,14 @@ export const hotRing = style({
   backgroundColor: vars.color.primary,
 });
 export const hotInner = style({ display: 'flex', padding: 1, borderRadius: '50%', backgroundColor: vars.color.surface });
-export const official = style({ color: vars.color.official, fontSize: 14, flexShrink: 0 });
+export const official = style({ color: vars.color.official, fontSize: 13, flexShrink: 0 });
 
 export const chipGroup = style({ margin: 0, padding: 0, border: 0, minWidth: 0 });
 export const chipLegend = style({ marginBottom: 8, padding: 0 });
 export const chips = style({ display: 'flex', flexWrap: 'wrap', gap: 8 });
 export const chipInput = style({ position: 'absolute', opacity: 0, width: 1, height: 1 });
 export const chip = style({
-  display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44, padding: '0 16px', borderRadius: 999, fontWeight: 700,
+  display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44, padding: '0 16px', borderRadius: 999, fontWeight: 600,
   border: `1px solid ${vars.color.control}`, color: vars.color.muted, cursor: 'pointer',
   selectors: {
     [`${chipInput}:checked + &`]: { borderColor: vars.color.primary, backgroundColor: vars.color.primary, color: vars.color.onPrimary },

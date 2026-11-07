@@ -25,7 +25,7 @@ function Avatar({ nickname, src, size = 36, decorative = true }: Omit<Props, 'ho
   return (
     <span
       className={avatarFallback}
-      style={{ width: size, height: size, fontSize: size * 0.45 }}
+      style={{ width: size, height: size, fontSize: size * 0.4 }}
       {...(decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': label })}
     >
       {nickname.slice(0, 1)}

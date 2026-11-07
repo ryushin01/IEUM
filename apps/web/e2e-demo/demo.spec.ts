@@ -374,3 +374,21 @@ test.describe('Service Worker를 쓸 수 없는 환경', () => {
     expect(apiRequests).toEqual([]);
   });
 });
+
+test.describe('글꼴과 입력칸 크기', () => {
+  // 기본 프로젝트가 터치 기기(Pixel 7)입니다.
+  test('Pretendard를 불러오고 터치 기기 입력칸은 iOS 확대를 막도록 16px이다', async ({ page }) => {
+    await page.goto('login');
+    await expect.poll(() => page.evaluate(() => document.fonts.check('14px "Pretendard Variable"', '가'))).toBe(true);
+    await expect(page.locator('body')).toHaveCSS('font-size', '14px');
+    await expect(page.getByLabel('이메일')).toHaveCSS('font-size', '16px');
+  });
+
+  test('마우스를 쓰는 기기의 입력칸은 본문과 같은 크기다', async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL, hasTouch: false, isMobile: false, viewport: { width: 1280, height: 800 } });
+    const page = await context.newPage();
+    await page.goto('login');
+    await expect(page.getByLabel('이메일')).toHaveCSS('font-size', '14px');
+    await context.close();
+  });
+});

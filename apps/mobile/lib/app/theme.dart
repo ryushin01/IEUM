@@ -96,7 +96,15 @@ ThemeData ieumTheme(Brightness brightness) {
   return ThemeData(
     useMaterial3: true,
     brightness: brightness,
-    fontFamily: 'GothicA1',
+    fontFamily: 'Pretendard',
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: -.2),
+      titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: -.15),
+      bodyLarge: TextStyle(fontSize: 14, letterSpacing: -.14),
+      bodyMedium: TextStyle(fontSize: 14, letterSpacing: -.14),
+      bodySmall: TextStyle(fontSize: 12, letterSpacing: -.12),
+      labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: -.14),
+    ),
     scaffoldBackgroundColor: colors.bg,
     colorScheme: ColorScheme.fromSeed(
       seedColor: colors.primary,
@@ -111,8 +119,8 @@ ThemeData ieumTheme(Brightness brightness) {
       style: FilledButton.styleFrom(
         backgroundColor: colors.primary,
         foregroundColor: colors.onPrimary,
-        minimumSize: const Size(56, 48),
-        textStyle: const TextStyle(fontFamily: 'GothicA1', fontWeight: FontWeight.w700, fontSize: 16),
+        minimumSize: const Size(56, 44),
+        textStyle: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: -.14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
@@ -121,7 +129,7 @@ ThemeData ieumTheme(Brightness brightness) {
       filled: true,
       fillColor: colors.surface,
       hintStyle: TextStyle(color: colors.muted),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       border: border(colors.control),
       enabledBorder: border(colors.control),
       focusedBorder: border(colors.text),
