@@ -1,7 +1,7 @@
 # IEUM (이음)
 
 [![CI](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml/badge.svg)](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml)
-![version](https://img.shields.io/badge/version-1.6.0-4545ff)
+![version](https://img.shields.io/badge/version-1.6.1-4545ff)
 
 **나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. 피드, DM, 하단 메뉴는 Flutter 위젯으로, 나머지 화면은 웹뷰(React)로 만들고 브릿지로 연결한 하이브리드 앱입니다.
 
@@ -17,7 +17,7 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴�
 
 | 로그인 | 피드 |
 |---|---|
-| <img src="docs/images/login.jpg" alt="IEUM 로고, 데모 둘러보기 버튼, 로그인 양식, 소셜 로그인 버튼" width="280"> | <img src="docs/images/feed.jpg" alt="화면을 가득 채운 사진, 그 위의 작성자와 내용, 오른쪽의 좋아요와 댓글 보기 버튼, 댓글 입력칸, 하단 메뉴" width="280"> |
+| <img src="docs/images/login.jpg" alt="IEUM 로고, 데모 둘러보기 버튼, 로그인 양식, 소셜 로그인 버튼" width="280"> | <img src="docs/images/feed.jpg" alt="흐린 배경 위에 잘리지 않고 표시된 사진, 그 아래쪽의 작성자와 내용, 오른쪽의 좋아요와 댓글 보기 버튼, 댓글 입력칸, 하단 메뉴" width="280"> |
 
 | 게시글 상세 | 게시글 작성 |
 |---|---|

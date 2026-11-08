@@ -1,7 +1,7 @@
 name: ieum
 description: 나와 너를 잇는 공간, 이음
 publish_to: none
-version: 1.6.0+9
+version: 1.6.1+10
 
 environment:
   sdk: ^3.11.0

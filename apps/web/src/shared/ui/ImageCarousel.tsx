@@ -33,7 +33,9 @@ export function ImageCarousel({ images, fill }: Props) {
       >
         {images.map((image, i) => (
           <div key={image.url + i} className={s.slide}>
-            <img className={s.slideImage} src={image.url} alt={image.alt} loading={i === 0 ? 'eager' : 'lazy'} />
+            {/* 사진을 자르지 않고, 남는 자리를 같은 사진을 흐리게 깔아 채웁니다. 장식이라 낭독하지 않습니다. */}
+            <img className={s.slideBackdrop} src={image.url} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+            <img className={`${s.slideImage} ${fill ? s.slideImageTop : ''}`} src={image.url} alt={image.alt} loading={i === 0 ? 'eager' : 'lazy'} />
           </div>
         ))}
       </div>

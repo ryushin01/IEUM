@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ieum/app/theme.dart';
 import 'package:ieum/data/models.dart';
 import 'package:ieum/feed/post_card.dart';
+import 'package:ieum/feed/post_image_view.dart';
 import 'package:ieum/shell/app_header.dart';
 import 'package:ieum/shell/bottom_menu.dart';
 
@@ -96,6 +97,20 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('2 / 2'), findsOneWidget);
     expect(find.byTooltip('다음 사진'), findsNothing);
+  });
+
+  testWidgets('사진은 자르지 않고 흐린 배경은 낭독하지 않는다', (tester) async {
+    final handle = tester.ensureSemantics();
+    final image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+    await pumpCard(tester, makePost(images: [PostImage(url: image, alt: '바다 사진')]));
+    final views = tester.widgetList<PostImageView>(find.byType(PostImageView)).toList();
+    expect(views.map((view) => view.fit), [BoxFit.cover, BoxFit.contain]);
+    expect(views.last.alignment, Alignment.topCenter);
+    // 앞면과 흐린 배경이 디코딩한 사진 하나를 함께 씁니다.
+    final providers = tester.widgetList<Image>(find.byType(Image)).map((widget) => widget.image).toList();
+    expect((providers.first as MemoryImage).bytes, same((providers.last as MemoryImage).bytes));
+    expect(find.bySemanticsLabel('바다 사진'), findsOneWidget);
+    handle.dispose();
   });
 
   testWidgets('조작 영역이 44 이상이다', (tester) async {
