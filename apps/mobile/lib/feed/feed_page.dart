@@ -20,7 +20,7 @@ class FeedView extends StatefulWidget {
 
   final FeedController controller;
   final Rxn<Me> me;
-  final ScrollController scrollController;
+  final PageController scrollController;
   final bool dark;
   final VoidCallback onToggleTheme;
   final void Function(String path) onOpenPath;
@@ -75,13 +75,17 @@ class _FeedViewState extends State<FeedView> {
       onRefresh: controller.reload,
       color: IeumColors.of(context).onPrimary,
       backgroundColor: IeumColors.of(context).primary,
-      child: ListView.builder(
+      // 키보드가 올라와도 PageView는 보던 게시글을 유지합니다.
+      child: PageView.builder(
         controller: widget.scrollController,
+        scrollDirection: Axis.vertical,
         physics: const AlwaysScrollableScrollPhysics(),
+        // 스크린 리더가 다음 게시글로 넘어갈 수 있게 미리 만들어 둡니다.
+        allowImplicitScrolling: true,
         itemCount: posts.length + (controller.hasMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= posts.length) {
-            return Padding(padding: const EdgeInsets.all(24), child: Center(child: CircularProgressIndicator(color: IeumColors.of(context).primary)));
+            return Center(child: CircularProgressIndicator(color: IeumColors.of(context).primary));
           }
           // 좋아요처럼 글 하나만 바뀌어도 다시 그리도록 여기서 읽습니다.
           return Obx(() {

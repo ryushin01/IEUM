@@ -141,11 +141,7 @@ void main() {
       // 좋아요 (Flutter → 목업 API). 시드에서 이미 누른 글입니다.
       final first = page.shell.feed.posts.first;
       expect(first.liked, isTrue);
-      // 화면 높이에 따라 좋아요 줄이 스크롤해야 보이는 위치에 있습니다.
-      final like = find.byIcon(Icons.thumb_up).first;
-      await tester.ensureVisible(like);
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.tap(like);
+      await tester.tap(find.byIcon(Icons.thumb_up).first);
       await pumpFor(tester, const Duration(seconds: 1));
       expect(page.shell.feed.posts.first.liked, isFalse);
       expect(page.shell.feed.posts.first.likeCount, first.likeCount - 1);
@@ -154,7 +150,6 @@ void main() {
       await tester.enterText(find.byType(TextField).first, 'Flutter에서 쓴 댓글');
       await tester.pump(const Duration(milliseconds: 200));
       final postButton = find.widgetWithText(TextButton, '게시').first;
-      await tester.ensureVisible(postButton);
       await tester.pump(const Duration(milliseconds: 500));
       await shot(tester, 'feed-comment');
       await tester.tap(postButton);
@@ -164,10 +159,7 @@ void main() {
       }
       expect(page.shell.feed.posts.first.commentCount, first.commentCount + 1);
       expect(find.textContaining('댓글 ${first.commentCount + 1}개').first, findsOneWidget);
-      final allComments = find.text('댓글 보기').first;
-      await tester.ensureVisible(allComments);
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.tap(allComments);
+      await tester.tap(find.text('댓글 보기').first);
       await pumpFor(tester, const Duration(milliseconds: 500));
       expect(find.byType(PostCard), findsNothing);
       await page.waitUntil('document.body.innerText.includes("Flutter에서 쓴 댓글")', '웹뷰 상세의 댓글');

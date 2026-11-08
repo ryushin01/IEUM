@@ -15,6 +15,7 @@ export function PostCard({ post, list }: { post: Post; list?: boolean }) {
     <PostCardView
       post={post}
       clamp={list}
+      immersive={list}
       menu={<PostActionsMenu post={post} />}
       actions={(
         <>

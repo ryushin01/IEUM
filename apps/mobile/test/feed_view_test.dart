@@ -60,7 +60,7 @@ Future<void> pumpFeed(WidgetTester tester, FeedController controller, {void Func
         body: FeedView(
           controller: controller,
           me: Rxn<Me>(),
-          scrollController: ScrollController(),
+          scrollController: PageController(),
           dark: false,
           onToggleTheme: () {},
           onOpenPath: onOpenPath ?? (_) {},
@@ -91,12 +91,12 @@ void main() {
     expect(repository.requested, [null]);
 
     final list = find.byType(Scrollable).first;
-    await tester.drag(list, const Offset(0, -3000));
+    await tester.drag(list, const Offset(0, -9000));
     await tester.pumpAndSettle();
     expect(repository.requested, [null, 'c1']);
     expect(controller.posts.length, 11);
 
-    await tester.drag(list, const Offset(0, -3000));
+    await tester.drag(list, const Offset(0, -9000));
     await tester.pumpAndSettle();
     expect(repository.requested, [null, 'c1']);
   });

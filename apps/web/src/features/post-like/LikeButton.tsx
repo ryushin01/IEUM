@@ -1,7 +1,7 @@
 import { LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { App, Button } from 'antd';
-import { patchPost, type Post } from '@/entities/post';
+import { invalidateLikedPosts, patchPost, type Post } from '@/entities/post';
 import { request } from '@/shared/api';
 import { callNative, isNativeApp } from '@/shared/bridge';
 import { srOnly } from '@/shared/ui';
@@ -17,7 +17,10 @@ export function LikeButton({ post }: { post: Post }) {
       if (isNativeApp()) void callNative('ui.haptic').catch(() => {});
       patchPost(client, post.id, (p) => ({ ...p, liked: nextLiked, likeCount: p.likeCount + (nextLiked ? 1 : -1) }));
     },
-    onSuccess: (updated) => patchPost(client, post.id, () => updated),
+    onSuccess: (updated) => {
+      patchPost(client, post.id, () => updated);
+      void invalidateLikedPosts(client);
+    },
     onError: (error, nextLiked) => {
       patchPost(client, post.id, (p) => ({ ...p, liked: !nextLiked, likeCount: p.likeCount + (nextLiked ? -1 : 1) }));
       void message.error(error.message);

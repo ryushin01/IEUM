@@ -343,9 +343,10 @@ async function route(method: string, url: URL, body: Body, form: FormData | null
   if (key === 'GET /posts') {
     const me = auth();
     const authorId = url.searchParams.get('authorId');
+    const liked = url.searchParams.get('liked') === 'true';
     const offset = Number(url.searchParams.get('cursor') ?? 0);
     const list = db.posts
-      .filter((p) => !hidden(db, me, p.authorId) && (!authorId || p.authorId === authorId))
+      .filter((p) => !hidden(db, me, p.authorId) && (!authorId || p.authorId === authorId) && (!liked || p.likes.includes(me)))
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     return {
       data: {

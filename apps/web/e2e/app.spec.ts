@@ -150,6 +150,13 @@ test.describe('로그인 후', () => {
     await page.getByRole('link', { name: '내 정보' }).click();
     await expect(page.getByRole('heading', { name: '이음데모' })).toBeVisible();
     await checkA11y(page);
+    // 탭: 방향키로 옮길 수 있고, 내가 좋아요한 글만 나옵니다.
+    await page.getByRole('tab', { name: '작성 글' }).focus();
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('tab', { name: '좋아요한 글' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByRole('list', { name: '좋아요한 게시글' }).or(page.getByText('아직 좋아요한 글이 없습니다.'))).toBeVisible();
+    await checkA11y(page);
     await page.getByRole('button', { name: '프로필 편집' }).click();
     await page.getByLabel('소개').fill('E2E로 바꾼 소개');
     await page.getByRole('button', { name: '저장' }).click();

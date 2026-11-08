@@ -141,6 +141,8 @@ test('좋아요는 중복되지 않고 커서 페이지가 이어진다', async 
   await call('PUT', `/posts/${ids[0]}/like`, user.accessToken);
   const liked = await call('PUT', `/posts/${ids[0]}/like`, user.accessToken);
   assert.equal(liked.body.likeCount, 1);
+  const mine = await call('GET', '/posts?liked=true', user.accessToken);
+  assert.deepEqual(mine.body.items.map((post: { id: string }) => post.id), [ids[0]]);
   const p1 = await call('GET', `/posts?authorId=${user.user.id}`, user.accessToken);
   assert.equal(p1.body.items.length, 10);
   const p2 = await call('GET', `/posts?authorId=${user.user.id}&cursor=${p1.body.nextCursor}`, user.accessToken);

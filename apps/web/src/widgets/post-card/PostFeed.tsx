@@ -4,6 +4,7 @@ import { usePostFeed } from '@/entities/post';
 import { useLoadMoreOnScroll } from '@/shared/lib';
 import { EmptyView, ErrorView, LoadingView } from '@/shared/ui';
 import { PostCard } from './PostCard';
+import { feedList } from './PostCard.css';
 
 export function PostFeed() {
   const feed = usePostFeed();
@@ -21,7 +22,7 @@ export function PostFeed() {
   }
   return (
     <>
-      <ul>
+      <ul className={feedList}>
         {posts.map((post) => <li key={post.id}><PostCard post={post} list /></li>)}
       </ul>
       <div ref={sentinel} />

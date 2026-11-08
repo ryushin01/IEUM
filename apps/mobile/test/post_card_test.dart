@@ -26,15 +26,13 @@ Future<void> pumpCard(WidgetTester tester, Post post, {Future<String?> Function(
     MaterialApp(
       theme: ieumTheme(Brightness.light),
       home: Scaffold(
-        body: SingleChildScrollView(
-          child: PostCard(
-            post: post,
-            me: const Me(nickname: '나'),
-            onLike: onLike ?? () {},
-            onSubmitComment: onComment ?? (_) async => null,
-            onOpenPost: onOpenPost ?? () {},
-            onOpenAuthor: () {},
-          ),
+        body: PostCard(
+          post: post,
+          me: const Me(nickname: '나'),
+          onLike: onLike ?? () {},
+          onSubmitComment: onComment ?? (_) async => null,
+          onOpenPost: onOpenPost ?? () {},
+          onOpenAuthor: () {},
         ),
       ),
     ),
@@ -182,7 +180,7 @@ void main() {
     });
 
     testWidgets('게시글', (tester) async {
-      await pumpScaled(tester, SingleChildScrollView(child: PostCard(post: makePost(images: const []), me: const Me(nickname: '이음데모'), onLike: () {}, onSubmitComment: (_) async => null, onOpenPost: () {}, onOpenAuthor: () {})));
+      await pumpScaled(tester, PostCard(post: makePost(images: const []), me: const Me(nickname: '이음데모'), onLike: () {}, onSubmitComment: (_) async => null, onOpenPost: () {}, onOpenAuthor: () {}));
       expect(tester.takeException(), isNull);
     });
   });

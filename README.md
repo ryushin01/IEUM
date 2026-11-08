@@ -1,7 +1,7 @@
 # IEUM (이음)
 
 [![CI](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml/badge.svg)](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml)
-![version](https://img.shields.io/badge/version-1.5.0-4545ff)
+![version](https://img.shields.io/badge/version-1.6.0-4545ff)
 
 **나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. 피드, DM, 하단 메뉴는 Flutter 위젯으로, 나머지 화면은 웹뷰(React)로 만들고 브릿지로 연결한 하이브리드 앱입니다.
 
@@ -17,7 +17,7 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴�
 
 | 로그인 | 피드 |
 |---|---|
-| <img src="docs/images/login.jpg" alt="IEUM 로고, 데모 둘러보기 버튼, 로그인 양식, 소셜 로그인 버튼" width="280"> | <img src="docs/images/feed.jpg" alt="파란 글쓰기 버튼이 있는 어두운 헤더, 공식 계정 마크와 인기 글 링이 있는 게시글, 좋아요와 댓글 보기 버튼, 하단 메뉴" width="280"> |
+| <img src="docs/images/login.jpg" alt="IEUM 로고, 데모 둘러보기 버튼, 로그인 양식, 소셜 로그인 버튼" width="280"> | <img src="docs/images/feed.jpg" alt="화면을 가득 채운 사진, 그 위의 작성자와 내용, 오른쪽의 좋아요와 댓글 보기 버튼, 댓글 입력칸, 하단 메뉴" width="280"> |
 
 | 게시글 상세 | 게시글 작성 |
 |---|---|
@@ -36,7 +36,7 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴�
 | 영역 | 내용 |
 |---|---|
 | 계정 | 이메일 가입(닉네임 중복 확인, 관심사 최대 3개), 카카오·네이버·Google·Apple 로그인, 비밀번호 재설정, 토큰 자동 재발급, 앱 내 계정 삭제 |
-| 게시글 | 작성·수정·삭제, 이미지 최대 5장, 커서 무한 스크롤, 좋아요, 댓글 100자, 공식 마크, 인기 글 표시 |
+| 게시글 | 작성·수정·삭제, 이미지 최대 5장, 커서 무한 스크롤, 좋아요, 댓글 100자, 공식 마크, 인기 글 표시, 세로 전체화면 피드, 내 프로필의 좋아요한 글 탭 |
 | DM | WebSocket 실시간 수신, 읽음 표시, 안 읽은 수, 재연결 후 동기화 |
 | 안전 | 신고, 차단, 금칙어 필터, 약관 동의, 운영자 신고 처리(삭제, 정지), 사진 위치 정보 제거 |
 | 앱 | Keychain·Keystore 토큰 저장, 네이티브 사진 선택·촬영·업로드, 오프라인 화면, 뒤로 가기, 스플래시 |
