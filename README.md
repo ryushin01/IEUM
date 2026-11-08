@@ -50,7 +50,7 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴�
 | 앱 | Flutter(피드·DM·하단 메뉴 위젯), webview_flutter, GetX(`get`), dio, flutter_secure_storage, image_picker, url_launcher, flutter_web_auth_2 |
 | 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router |
 | API | Node.js, Fastify 5, ws, PostgreSQL(`pg`), PGlite(로컬·테스트), jose, sharp, nodemailer, S3 호환 저장소 |
-| 품질 | ESLint(FSD 계층 규칙), Vitest, Storybook 10(axe), Playwright(E2E, axe), MSW(데모 API), flutter test |
+| 품질 | ESLint(FSD 계층 규칙), Steiger, Vitest, Storybook 10(axe), Playwright(E2E, axe), MSW(데모 API), flutter test |
 
 ## 시작하기
 
