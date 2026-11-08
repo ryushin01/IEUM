@@ -8,10 +8,10 @@ import 'package:ieum/feed/post_card.dart';
 import 'package:ieum/shell/app_header.dart';
 import 'package:ieum/shell/bottom_menu.dart';
 
-Post makePost({List<PostImage> images = const [], bool official = true, bool hot = true}) => Post(
+Post makePost({List<PostImage> images = const [], bool official = true, bool hot = true, String caption = '퇴근길 하늘'}) => Post(
   id: 'p1',
   author: PostAuthor(id: 'u1', nickname: '하늘빛', isOfficial: official),
-  caption: '퇴근길 하늘',
+  caption: caption,
   images: images,
   likeCount: 3,
   commentCount: 2,
@@ -26,15 +26,13 @@ Future<void> pumpCard(WidgetTester tester, Post post, {Future<String?> Function(
     MaterialApp(
       theme: ieumTheme(Brightness.light),
       home: Scaffold(
-        body: SingleChildScrollView(
-          child: PostCard(
-            post: post,
-            me: const Me(nickname: '나'),
-            onLike: onLike ?? () {},
-            onSubmitComment: onComment ?? (_) async => null,
-            onOpenPost: onOpenPost ?? () {},
-            onOpenAuthor: () {},
-          ),
+        body: PostCard(
+          post: post,
+          me: const Me(nickname: '나'),
+          onLike: onLike ?? () {},
+          onSubmitComment: onComment ?? (_) async => null,
+          onOpenPost: onOpenPost ?? () {},
+          onOpenAuthor: () {},
         ),
       ),
     ),
@@ -181,8 +179,51 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('키보드로 사진 영역이 낮아져도 글과 동작에 닿을 수 있다', (tester) async {
+      var liked = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ieumTheme(Brightness.light),
+          home: MediaQuery(
+            data: const MediaQueryData(size: Size(320, 640), textScaler: TextScaler.linear(2)),
+            child: Scaffold(
+              body: Align(
+                alignment: Alignment.topCenter,
+                // 키보드가 차지하고 남은 높이입니다.
+                child: SizedBox(
+                  height: 240,
+                  child: PostCard(
+                    post: makePost(caption: List.filled(40, '긴 내용').join(' ')),
+                    me: const Me(nickname: '이음데모'),
+                    onLike: () => liked++,
+                    onSubmitComment: (_) async => null,
+                    onOpenPost: () {},
+                    onOpenAuthor: () {},
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      // 작성자는 글 묶음의 맨 위, 메뉴는 동작 줄의 맨 아래입니다.
+      await tester.ensureVisible(find.text('하늘빛'));
+      await tester.pumpAndSettle();
+      expect(tester.getRect(find.text('하늘빛')).top, greaterThanOrEqualTo(0));
+      final menu = find.byTooltip('게시글 메뉴 열기');
+      await tester.ensureVisible(menu);
+      await tester.pumpAndSettle();
+      expect(tester.getRect(menu).bottom, lessThanOrEqualTo(240));
+      final like = find.byIcon(Icons.thumb_up_outlined);
+      await tester.ensureVisible(like);
+      await tester.pumpAndSettle();
+      await tester.tap(like);
+      expect(liked, 1);
+    });
+
     testWidgets('게시글', (tester) async {
-      await pumpScaled(tester, SingleChildScrollView(child: PostCard(post: makePost(images: const []), me: const Me(nickname: '이음데모'), onLike: () {}, onSubmitComment: (_) async => null, onOpenPost: () {}, onOpenAuthor: () {})));
+      await pumpScaled(tester, PostCard(post: makePost(images: const []), me: const Me(nickname: '이음데모'), onLike: () {}, onSubmitComment: (_) async => null, onOpenPost: () {}, onOpenAuthor: () {}));
       expect(tester.takeException(), isNull);
     });
   });

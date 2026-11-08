@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { vars } from '@/shared/theme/theme.css';
 
 export const head = style({ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12, padding: '20px 16px 16px', backgroundColor: vars.color.surface });
@@ -14,6 +14,13 @@ export const postsTitle = style({
   position: 'relative', margin: '0 16px', padding: '14px 0', borderBottom: `1px solid ${vars.color.border}`, fontSize: 15, fontWeight: 600,
   selectors: { '&::after': { content: '""', position: 'absolute', left: 0, bottom: -1, width: 56, height: 2, backgroundColor: vars.color.text } },
 });
+export const tabs = style({ marginTop: 8 });
+// 탭을 폭 전체로 나누고, 고른 탭은 색 말고 굵기와 밑줄로도 구분합니다.
+globalStyle(`${tabs} .ant-tabs-nav-list`, { width: '100%' });
+globalStyle(`${tabs} .ant-tabs-tab`, { flex: 1, padding: 0 });
+// 초점을 받는 요소가 안쪽 글자라서 여기를 44px로 키웁니다. (KWCAG 6.1.3)
+globalStyle(`${tabs} .ant-tabs-tab-btn`, { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: 44 });
+globalStyle(`${tabs} .ant-tabs-tab-active .ant-tabs-tab-btn`, { fontWeight: 600 });
 export const grid = style({ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, marginTop: 2 });
 export const gridLink = style({ display: 'block', aspectRatio: '1 / 1', overflow: 'hidden', backgroundColor: vars.color.accentSoft });
 export const gridImage = style({ width: '100%', height: '100%', objectFit: 'cover' });

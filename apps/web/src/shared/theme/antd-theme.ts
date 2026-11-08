@@ -62,6 +62,7 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
         defaultActiveBorderColor: c.primary,
       },
       Input: { activeBorderColor: c.text, hoverBorderColor: c.text, activeShadow: 'none' },
+      Tabs: { itemColor: c.muted, itemSelectedColor: c.text, itemHoverColor: c.text, itemActiveColor: c.text, inkBarColor: c.text, horizontalMargin: '0 16px', horizontalItemGutter: 0, titleFontSize: 15 },
       Form: { verticalLabelPadding: '0' },
       Checkbox: { colorWhite: c.onPrimary },
       Radio: { dotSize: 8, colorWhite: c.onPrimary },

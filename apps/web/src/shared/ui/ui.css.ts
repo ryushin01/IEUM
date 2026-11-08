@@ -24,6 +24,8 @@ export const track = style({
   backgroundColor: vars.color.surface, scrollbarWidth: 'none',
   selectors: { '&::-webkit-scrollbar': { display: 'none' } },
 });
+export const carouselFill = style({ height: '100%', borderRadius: 0 });
+export const trackFill = style({ height: '100%', aspectRatio: 'auto' });
 export const slide = style({ flex: '0 0 100%', scrollSnapAlign: 'start', scrollSnapStop: 'always' });
 export const slideImage = style({ width: '100%', height: '100%', objectFit: 'cover' });
 export const carouselButton = style({

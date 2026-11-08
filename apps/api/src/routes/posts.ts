@@ -36,13 +36,15 @@ export function postRoutes(app: FastifyInstance, ctx: AppContext) {
 
   app.get('/posts', async (req) => {
     const me = await ctx.requireUser(req);
-    const { cursor, authorId } = req.query as { cursor?: string; authorId?: string };
+    const { cursor, authorId, liked } = req.query as { cursor?: string; authorId?: string; liked?: string };
     const params: unknown[] = [me];
     const where = [NOT_BLOCKED('p.author_id', '$1')];
     if (authorId) {
       params.push(authorId);
       where.push(`p.author_id = $${params.length}`);
     }
+    // 내가 좋아요한 글만 볼 수 있습니다. 다른 사람의 목록은 받을 수 없습니다.
+    if (liked === 'true') where.push('EXISTS (SELECT 1 FROM likes l WHERE l.post_id = p.id AND l.user_id = $1)');
     if (cursor) {
       const { createdAt, id } = decodeCursor(cursor);
       params.push(createdAt, id);

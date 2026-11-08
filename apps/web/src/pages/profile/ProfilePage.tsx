@@ -1,9 +1,9 @@
 import { MoreOutlined } from '@ant-design/icons';
 import { useMutation } from '@tanstack/react-query';
-import { App, Button, Dropdown } from 'antd';
+import { App, Button, Dropdown, Tabs } from 'antd';
 import { useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router';
-import { usePostFeed } from '@/entities/post';
+import { usePostFeed, type PostFilter } from '@/entities/post';
 import { useMe } from '@/entities/session';
 import { useUser, type PublicUser } from '@/entities/user';
 import { ReportDialog, useBlockUser, type ReportTarget } from '@/features/moderation';
@@ -13,8 +13,8 @@ import { interestLabel } from '@/shared/config';
 import { EmptyView, ErrorView, LoadingView, OfficialMark, UserAvatar } from '@/shared/ui';
 import * as s from './Profile.css';
 
-function PostGrid({ authorId, nickname }: { authorId: string; nickname: string }) {
-  const feed = usePostFeed(authorId);
+function PostGrid({ filter, label, empty }: { filter: PostFilter; label: string; empty: string }) {
+  const feed = usePostFeed(filter);
   const sentinel = useLoadMoreOnScroll({
     hasNextPage: feed.hasNextPage,
     isFetchingNextPage: feed.isFetchingNextPage,
@@ -23,11 +23,10 @@ function PostGrid({ authorId, nickname }: { authorId: string; nickname: string }
   if (feed.isPending) return <LoadingView label="게시글을 불러오는 중" />;
   if (feed.isError) return <ErrorView error={feed.error} onRetry={() => void feed.refetch()} />;
   const posts = feed.data.pages.flatMap((page) => page.items);
-  if (posts.length === 0) return <EmptyView title="아직 게시글이 없습니다." />;
+  if (posts.length === 0) return <EmptyView title={empty} />;
   return (
-    <section className={s.posts} aria-labelledby="profile-posts">
-      <h2 id="profile-posts" className={s.postsTitle}>작성 글</h2>
-      <ul className={s.grid} aria-label={`${nickname} 님의 게시글`}>
+    <>
+      <ul className={s.grid} aria-label={label}>
         {posts.map((post, i) => (
           <li key={post.id}>
             <Link to={`/posts/${post.id}`} className={s.gridLink} aria-label={`게시글 ${i + 1}: ${post.caption.slice(0, 30)}`}>
@@ -42,7 +41,29 @@ function PostGrid({ authorId, nickname }: { authorId: string; nickname: string }
           <Button block loading={feed.isFetchingNextPage} onClick={() => void feed.fetchNextPage()}>더 보기</Button>
         </div>
       )}
+    </>
+  );
+}
+
+function UserPosts({ user }: { user: PublicUser }) {
+  return (
+    <section className={s.posts} aria-labelledby="profile-posts">
+      <h2 id="profile-posts" className={s.postsTitle}>작성 글</h2>
+      <PostGrid filter={{ authorId: user.id }} label={`${user.nickname} 님의 게시글`} empty="아직 게시글이 없습니다." />
     </section>
+  );
+}
+
+/** 내 프로필에서만 좋아요한 글을 볼 수 있습니다. */
+function MyPosts({ user }: { user: PublicUser }) {
+  return (
+    <Tabs
+      className={s.tabs}
+      items={[
+        { key: 'posts', label: '작성 글', children: <PostGrid filter={{ authorId: user.id }} label={`${user.nickname} 님의 게시글`} empty="아직 게시글이 없습니다." /> },
+        { key: 'liked', label: '좋아요한 글', children: <PostGrid filter={{ liked: true }} label="좋아요한 게시글" empty="아직 좋아요한 글이 없습니다." /> },
+      ]}
+    />
   );
 }
 
@@ -77,7 +98,7 @@ export function MyProfilePage() {
         <Button block onClick={() => void navigate('/me/edit')}>프로필 편집</Button>
         <Button block onClick={() => void navigate('/settings')}>설정</Button>
       </div>
-      <PostGrid authorId={me.data.id} nickname={me.data.nickname} />
+      <MyPosts user={me.data} />
     </>
   );
 }
@@ -139,7 +160,7 @@ export function UserProfilePage() {
           <Button aria-label="사용자 메뉴" icon={<MoreOutlined aria-hidden="true" />} />
         </Dropdown>
       </div>
-      {blocked ? <EmptyView title="차단한 사용자입니다." /> : <PostGrid authorId={id} nickname={user.data.nickname} />}
+      {blocked ? <EmptyView title="차단한 사용자입니다." /> : <UserPosts user={user.data} />}
       <ReportDialog target={report} onClose={() => setReport(null)} />
     </>
   );

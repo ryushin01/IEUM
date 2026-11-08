@@ -44,7 +44,8 @@ class ShellController extends GetxController with WidgetsBindingObserver {
   final loggedIn = false.obs;
   final sessionChecked = false.obs;
   final me = Rxn<Me>();
-  final feedScroll = ScrollController();
+  /// 피드는 게시글을 한 장씩 넘깁니다.
+  final feedScroll = PageController();
 
   late final WebViewController webView;
   late final BridgeRouter _router;

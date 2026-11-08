@@ -22,17 +22,24 @@ export interface Comment {
   createdAt: string;
 }
 
-const feedKey = (authorId?: string) => ['posts', authorId ?? 'all'] as const;
+/** 작성자의 글이나 내가 좋아요한 글로 좁힙니다. 없으면 전체 피드입니다. */
+export interface PostFilter {
+  authorId?: string;
+  liked?: boolean;
+}
+
+const feedKey = ({ authorId, liked }: PostFilter) => ['posts', liked ? 'liked' : authorId ?? 'all'] as const;
 export const postKey = (id: string) => ['post', id] as const;
 export const commentsKey = (id: string) => ['comments', id] as const;
 
-export const usePostFeed = (authorId?: string) =>
+export const usePostFeed = (filter: PostFilter = {}) =>
   useInfiniteQuery({
-    queryKey: feedKey(authorId),
+    queryKey: feedKey(filter),
     initialPageParam: null as string | null,
     queryFn: ({ pageParam, signal }) => {
       const params = new URLSearchParams();
-      if (authorId) params.set('authorId', authorId);
+      if (filter.authorId) params.set('authorId', filter.authorId);
+      if (filter.liked) params.set('liked', 'true');
       if (pageParam) params.set('cursor', pageParam);
       return request<Page<Post>>(`/posts?${params}`, { signal });
     },
@@ -66,5 +73,8 @@ export function removePost(client: QueryClient, id: string): void {
     });
   client.removeQueries({ queryKey: postKey(id) });
 }
+
+/** 좋아요를 바꾸면 목록에 글이 들어오거나 빠집니다. */
+export const invalidateLikedPosts = (client: QueryClient) => client.invalidateQueries({ queryKey: ['posts', 'liked'] });
 
 export const invalidatePosts = (client: QueryClient) => client.invalidateQueries({ queryKey: ['posts'] });
