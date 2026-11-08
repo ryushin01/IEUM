@@ -2,9 +2,9 @@ import { createGlobalThemeContract, createGlobalTheme, globalStyle } from '@vani
 
 export const vars = createGlobalThemeContract({
   color: {
-    bg: 'bg', surface: 'surface', text: 'text', muted: 'muted', border: 'border', control: 'control',
+    bg: 'bg', surface: 'surface', elevated: 'elevated', text: 'text', muted: 'muted', border: 'border', control: 'control',
     primary: 'primary', onPrimary: 'on-primary',
-    ink: 'ink', onInk: 'on-ink',
+    accent: 'accent', onAccent: 'on-accent',
     accentSoft: 'accent-soft', onAccentSoft: 'on-accent-soft',
     header: 'header', onHeader: 'on-header',
     like: 'like', official: 'official', error: 'error', focus: 'focus',
@@ -16,31 +16,34 @@ export const vars = createGlobalThemeContract({
 
 const layout = { header: '56px', nav: '64px', content: '614px', band: '8px' };
 
-/** 카닥 앱을 참고한 디자인 토큰입니다. Flutter의 lib/app/theme.dart와 같은 값을 유지하고, 글자는 배경과 4.5:1 이상을 맞춥니다. */
+/**
+ * 닷슬래시대시 앱을 참고한 단색 디자인 토큰입니다. 면은 하나로 평평하게 두고 파랑은 한 화면의 강조에만 씁니다.
+ * Flutter의 lib/app/theme.dart와 같은 값을 유지하고, 글자는 배경과 4.5:1 이상을 맞춥니다.
+ */
 createGlobalTheme(':root, [data-theme="light"]', vars, {
   color: {
-    bg: '#f5f6f8', surface: '#ffffff', text: '#2b2d38', muted: '#646a75', border: '#eceef1', control: '#8a8f98',
-    primary: '#0b6be0', onPrimary: '#ffffff',
-    ink: '#31313b', onInk: '#ffffff',
-    accentSoft: '#e8f1fd', onAccentSoft: '#0a4fa8',
-    header: '#ffffff', onHeader: '#2b2d38',
-    like: '#0b6be0', official: '#0b6be0', error: '#d3222a', focus: '#2b2d38',
-    avatarBg: '#e3e6ea', onAvatar: '#2b2d38',
-    bubbleOther: '#f0f1f4',
+    bg: '#ffffff', surface: '#ffffff', elevated: '#ffffff', text: '#111214', muted: '#62656e', border: '#e6e7ea', control: '#8a8d96',
+    primary: '#111214', onPrimary: '#ffffff',
+    accent: '#1a1aff', onAccent: '#ffffff',
+    accentSoft: '#f0f1f3', onAccentSoft: '#111214',
+    header: '#ffffff', onHeader: '#111214',
+    like: '#1a1aff', official: '#1a1aff', error: '#d3222a', focus: '#111214',
+    avatarBg: '#ebecef', onAvatar: '#111214',
+    bubbleOther: '#f0f1f3',
   },
   layout,
 });
 
 createGlobalTheme('[data-theme="dark"]', vars, {
   color: {
-    bg: '#111318', surface: '#1b1e25', text: '#eef0f3', muted: '#a9afba', border: '#2c303a', control: '#7f8693',
-    primary: '#5ea3ff', onPrimary: '#10131a',
-    ink: '#eef0f3', onInk: '#1b1e25',
-    accentSoft: '#1c2d47', onAccentSoft: '#b9d6ff',
-    header: '#1b1e25', onHeader: '#eef0f3',
-    like: '#5ea3ff', official: '#5ea3ff', error: '#ff8a8f', focus: '#eef0f3',
-    avatarBg: '#3a3f4a', onAvatar: '#eef0f3',
-    bubbleOther: '#2a2e37',
+    bg: '#111214', surface: '#111214', elevated: '#24262c', text: '#f4f5f7', muted: '#9a9da6', border: '#2a2c32', control: '#6f727b',
+    primary: '#ffffff', onPrimary: '#111214',
+    accent: '#4545ff', onAccent: '#ffffff',
+    accentSoft: '#24262c', onAccentSoft: '#f4f5f7',
+    header: '#111214', onHeader: '#f4f5f7',
+    like: '#9d9dff', official: '#9d9dff', error: '#ff6b5e', focus: '#ffffff',
+    avatarBg: '#2a2c32', onAvatar: '#f4f5f7',
+    bubbleOther: '#24262c',
   },
   layout,
 });
@@ -81,7 +84,17 @@ globalStyle('.ant-checkbox-wrapper, .ant-radio-wrapper', { minHeight: 44, alignI
 globalStyle(':focus-visible', { outline: `2px solid ${vars.color.focus}`, outlineOffset: 2 });
 // iOS는 16px보다 작은 입력칸에 초점이 가면 화면을 확대하므로 터치 기기에서는 입력 글자만 16px로 둡니다.
 globalStyle('input.ant-input, textarea.ant-input', { '@media': { '(any-pointer: coarse)': { fontSize: 16 } } });
-globalStyle('input.ant-input:focus-visible, textarea.ant-input:focus-visible', { outlineOffset: -1 });
+// 밑줄형 입력칸은 초점을 받으면 밑줄을 2px로 굵혀 표시합니다. (KWCAG 6.1.2)
+globalStyle('.ant-input-underlined', { paddingInline: 0 });
+globalStyle('.ant-input-underlined:focus-visible, .ant-input-underlined:focus-within', { outline: 'none', boxShadow: `inset 0 -2px 0 ${vars.color.focus}` });
+globalStyle('.ant-input-underlined input.ant-input:focus-visible', { outline: 'none' });
+// 폭 전체를 쓰는 주요 버튼은 글자를 왼쪽에, 긴 화살표를 오른쪽에 둡니다. 화살표는 꾸밈이라 낭독되지 않습니다.
+globalStyle('.ant-btn-primary.ant-btn-block', { justifyContent: 'space-between', paddingInline: 20 });
+globalStyle('.ant-btn-primary.ant-btn-block::after', {
+  content: '""', width: 34, height: 10, flexShrink: 0, backgroundColor: 'currentColor',
+  // 오래된 안드로이드 웹뷰는 접두사가 붙은 속성만 지원해, 없으면 화살표가 사각형으로 그려집니다.
+  WebkitMaskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 10'%3E%3Cpath d='M0 9h32L24 1' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E")`, WebkitMaskRepeat: 'no-repeat', WebkitMaskSize: 'contain',
+  maskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 10'%3E%3Cpath d='M0 9h32L24 1' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E")`, maskRepeat: 'no-repeat', maskSize: 'contain',
+});
 // 비밀번호 칸은 바깥 틀이 초점을 표시하므로 안쪽 입력에 테두리를 겹치지 않습니다.
 globalStyle('.ant-input-affix-wrapper input.ant-input:focus-visible', { outline: 'none' });
-globalStyle('.ant-input-affix-wrapper:focus-within', { outline: `2px solid ${vars.color.focus}`, outlineOffset: -1 });

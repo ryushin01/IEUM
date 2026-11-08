@@ -35,10 +35,10 @@ export const tools = style({
 export const theme = style({
   '@media': { [WIDE]: { position: 'fixed', left: 22, bottom: 35, zIndex: 110 } },
 });
-/** 진한 알약 모양의 글쓰기 버튼 */
+/** 화면에서 유일한 파랑 면인 글쓰기 버튼 */
 export const write = style({
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4, position: 'relative', minHeight: 36, padding: '0 12px',
-  borderRadius: 999, backgroundColor: vars.color.ink, color: vars.color.onInk, fontSize: 13, fontWeight: 600,
+  borderRadius: 8, backgroundColor: vars.color.accent, color: vars.color.onAccent, fontSize: 13, fontWeight: 600,
   textDecoration: 'none', whiteSpace: 'nowrap',
   // 보이는 크기는 줄이고 조작 영역은 44px을 유지합니다.
   selectors: { '&::after': { content: '""', position: 'absolute', top: -4, right: 0, bottom: -4, left: 0 } },

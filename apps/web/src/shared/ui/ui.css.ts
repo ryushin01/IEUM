@@ -6,13 +6,8 @@ export const srOnly = style({
   overflow: 'hidden', clipPath: 'inset(50%)', whiteSpace: 'nowrap', border: 0,
 });
 
-export const logo = style({
-  display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 700,
-  letterSpacing: '-0.01em', lineHeight: 1, color: 'inherit', textDecoration: 'none',
-});
-export const logoMark = style({
-  width: '0.3em', height: '0.3em', alignSelf: 'flex-end', marginBottom: '0.12em', borderRadius: '50%', backgroundColor: vars.color.primary,
-});
+export const logo = style({ display: 'block', height: '0.75em', width: 'auto', fill: 'currentColor', color: 'inherit' });
+export const logoMark = style({ fill: vars.color.accent });
 
 export const avatar = style({
   display: 'block', flexShrink: 0, borderRadius: '50%', objectFit: 'cover',
@@ -23,7 +18,7 @@ export const avatarFallback = style({
   backgroundColor: vars.color.avatarBg, color: vars.color.onAvatar, fontSize: '0.5em', fontWeight: 600,
 });
 
-export const carousel = style({ position: 'relative', overflow: 'hidden' });
+export const carousel = style({ position: 'relative', overflow: 'hidden', borderRadius: 8 });
 export const track = style({
   display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', aspectRatio: '1 / 1',
   backgroundColor: vars.color.surface, scrollbarWidth: 'none',
@@ -57,7 +52,7 @@ globalStyle(`${centered} a`, { display: 'inline-flex', alignItems: 'center', jus
 /** 프로필 링: 인기 게시글 작성자에게 씁니다. */
 export const hotRing = style({
   display: 'flex', alignSelf: 'flex-start', flexShrink: 0, padding: 2, borderRadius: '50%',
-  backgroundColor: vars.color.primary,
+  backgroundColor: vars.color.accent,
 });
 export const hotInner = style({ display: 'flex', padding: 1, borderRadius: '50%', backgroundColor: vars.color.surface });
 export const official = style({ color: vars.color.official, fontSize: 13, flexShrink: 0 });

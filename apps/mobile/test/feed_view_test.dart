@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:ieum/app/theme.dart';
+import 'package:ieum/app/wordmark.dart';
 import 'package:ieum/data/models.dart';
 import 'package:ieum/data/post_repository.dart';
 import 'package:ieum/data/transport.dart';
@@ -72,7 +73,7 @@ Future<void> pumpFeed(WidgetTester tester, FeedController controller, {void Func
 void main() {
   testWidgets('헤더: 로고는 왼쪽, 스위치와 글쓰기는 오른쪽에 겹치지 않게 있다', (tester) async {
     await pumpFeed(tester, FeedController(EmptyRepository()));
-    final logo = tester.getRect(find.text('IEUM'));
+    final logo = tester.getRect(find.byType(IeumWordmark));
     final toggle = tester.getRect(find.byType(Switch));
     final write = tester.getRect(find.text('글쓰기'));
     final width = tester.getSize(find.byType(FeedView)).width;

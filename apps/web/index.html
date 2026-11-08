@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko" data-theme="light">
+<html lang="ko" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#111214" />
     <script>
       // 첫 화면부터 고른 테마로 그립니다. mode-store.ts와 같은 규칙이고, 값이 바뀌면 함께 고칩니다.
       (function () {
@@ -14,10 +14,10 @@
           mode = null;
         }
         if (mode !== 'light' && mode !== 'dark') {
-          mode = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          mode = 'dark';
         }
         document.documentElement.dataset.theme = mode;
-        document.querySelector('meta[name="theme-color"]').content = mode === 'dark' ? '#1b1e25' : '#ffffff';
+        document.querySelector('meta[name="theme-color"]').content = mode === 'dark' ? '#111214' : '#ffffff';
       })();
     </script>
     <meta name="description" content="나와 너를 잇는 공간, 이음" />

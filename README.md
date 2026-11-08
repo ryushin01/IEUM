@@ -1,7 +1,7 @@
 # IEUM (이음)
 
 [![CI](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml/badge.svg)](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml)
-![version](https://img.shields.io/badge/version-1.4.1-0b6be0)
+![version](https://img.shields.io/badge/version-1.5.0-4545ff)
 
 **나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. 피드, DM, 하단 메뉴는 Flutter 위젯으로, 나머지 화면은 웹뷰(React)로 만들고 브릿지로 연결한 하이브리드 앱입니다.
 
@@ -13,11 +13,11 @@
 
 Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴가 Flutter 위젯이고 나머지가 웹뷰입니다. 사용자와 게시글은 모두 가상 데이터이고, 사진은 직접 그린 일러스트입니다. iOS 시뮬레이터에서도 같은 흐름을 통합 테스트로 확인했습니다.
 
-<img src="docs/images/demo.gif" alt="앱 시연: 로그인, 피드, 댓글 쓰기, 게시글 상세와 작성, 메시지 보내기와 자동 답장, 메시지 목록, 다크 모드 전환" width="280">
+<img src="docs/images/demo.gif" alt="앱 시연: 로그인, 피드, 댓글 쓰기, 게시글 상세와 작성, 메시지 보내기와 자동 답장, 메시지 목록, 라이트 모드 전환" width="280">
 
 | 로그인 | 피드 |
 |---|---|
-| <img src="docs/images/login.jpg" alt="IEUM 로고, 데모 둘러보기 버튼, 로그인 양식, 소셜 로그인 버튼" width="280"> | <img src="docs/images/feed.jpg" alt="글쓰기 버튼이 있는 흰 헤더, 공식 계정 마크와 인기 글 링이 있는 게시글, 좋아요와 댓글 보기 버튼, 하단 메뉴" width="280"> |
+| <img src="docs/images/login.jpg" alt="IEUM 로고, 데모 둘러보기 버튼, 로그인 양식, 소셜 로그인 버튼" width="280"> | <img src="docs/images/feed.jpg" alt="파란 글쓰기 버튼이 있는 어두운 헤더, 공식 계정 마크와 인기 글 링이 있는 게시글, 좋아요와 댓글 보기 버튼, 하단 메뉴" width="280"> |
 
 | 게시글 상세 | 게시글 작성 |
 |---|---|
@@ -27,9 +27,9 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴�
 |---|---|
 | <img src="docs/images/dm-room.jpg" alt="주고받은 메시지 말풍선, 읽음 표시, 입력창이 있는 대화방" width="280"> | <img src="docs/images/profile.jpg" alt="프로필 사진, 소개, 관심사, 메시지 보내기 버튼, 게시글 격자" width="280"> |
 
-| 신고 처리 (운영자) | 다크 모드 |
+| 신고 처리 (운영자) | 라이트 모드 |
 |---|---|
-| <img src="docs/images/admin-reports.jpg" alt="24시간 초과 표시가 있는 신고 목록과 콘텐츠 삭제, 사용자 정지, 문제 없음 버튼" width="280"> | <img src="docs/images/feed-dark.jpg" alt="어두운 배경의 피드 화면과 켜진 다크 모드 토글" width="280"> |
+| <img src="docs/images/admin-reports.jpg" alt="24시간 초과 표시가 있는 신고 목록과 콘텐츠 삭제, 사용자 정지, 문제 없음 버튼" width="280"> | <img src="docs/images/feed-light.jpg" alt="밝은 배경의 피드 화면과 꺼진 다크 모드 토글" width="280"> |
 
 ## 주요 기능
 

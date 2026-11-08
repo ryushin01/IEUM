@@ -2,12 +2,13 @@ import { globalStyle, style } from '@vanilla-extract/css';
 import { vars } from '@/shared/theme/theme.css';
 
 export const form = style({ flex: 1, minWidth: 0 });
-/** 입력칸과 게시 버튼을 하나의 알약으로 묶습니다. */
+/** 입력칸과 게시 버튼을 밑줄 하나로 묶습니다. */
 export const row = style({
-  display: 'flex', alignItems: 'center', minHeight: 48, padding: '0 6px 0 8px',
-  border: `1px solid ${vars.color.control}`, borderRadius: 999, backgroundColor: vars.color.surface,
-  selectors: { '&:focus-within': { outline: `2px solid ${vars.color.focus}`, outlineOffset: -1 } },
+  display: 'flex', alignItems: 'center', minHeight: 44,
+  borderBottom: `1px solid ${vars.color.control}`,
+  selectors: { '&:focus-within': { boxShadow: `inset 0 -2px 0 ${vars.color.focus}` } },
 });
+globalStyle(`${row} input.ant-input`, { paddingInline: 0 });
 globalStyle(`${row} input.ant-input:focus-visible`, { outline: 'none' });
 export const submit = style({
   selectors: {

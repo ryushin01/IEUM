@@ -9,4 +9,4 @@ export const top = style({ display: 'flex', justifyContent: 'space-between', gap
 export const name = style({ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 });
 export const time = style({ flexShrink: 0, fontSize: 12, color: vars.color.muted });
 export const preview = style({ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, color: vars.color.muted });
-export const unread = style({ flexShrink: 0, minWidth: 24, padding: '0 6px', borderRadius: 12, backgroundColor: vars.color.primary, color: vars.color.onPrimary, textAlign: 'center', fontSize: 12, fontWeight: 700 });
+export const unread = style({ flexShrink: 0, minWidth: 24, padding: '0 6px', borderRadius: 12, backgroundColor: vars.color.accent, color: vars.color.onAccent, textAlign: 'center', fontSize: 12, fontWeight: 700 });

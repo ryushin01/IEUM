@@ -4,6 +4,6 @@ import { vars } from '@/shared/theme/theme.css';
 export const form = style({ marginBottom: vars.layout.band, padding: 16, backgroundColor: vars.color.surface });
 export const images = style({ display: 'grid', gap: 12, marginBottom: 12 });
 export const imageRow = style({ display: 'grid', gridTemplateColumns: '72px 1fr 44px', gap: 8, alignItems: 'center' });
-export const thumb = style({ width: 72, height: 72, objectFit: 'cover', borderRadius: 12, border: `1px solid ${vars.color.border}` });
+export const thumb = style({ width: 72, height: 72, objectFit: 'cover', borderRadius: 8, border: `1px solid ${vars.color.border}` });
 export const pickRow = style({ display: 'flex', gap: 8, marginBottom: 16 });
 export const hint = style({ margin: '0 0 8px', fontSize: 13, color: vars.color.muted });

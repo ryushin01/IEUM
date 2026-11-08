@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app/theme.dart';
+import '../app/wordmark.dart';
 
 /// Flutter 화면 공통 헤더입니다. 웹뷰 헤더와 같은 모습입니다.
 class AppHeader extends StatelessWidget {
@@ -51,22 +52,7 @@ class AppHeader extends StatelessWidget {
                         header: screenTitle != null,
                         label: screenTitle == null ? 'IEUM' : 'IEUM, $screenTitle',
                         excludeSemantics: true,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text('IEUM', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -.2, color: colors.onHeader, height: 1)),
-                            const SizedBox(width: 4),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 3),
-                              child: Container(
-                                width: 7,
-                                height: 7,
-                                decoration: BoxDecoration(color: colors.primary, shape: BoxShape.circle),
-                              ),
-                            ),
-                          ],
-                        ),
+                        child: IeumWordmark(height: 15, color: colors.onHeader, dotColor: colors.accent),
                       ),
                     ),
                   ),
@@ -79,11 +65,11 @@ class AppHeader extends StatelessWidget {
                   child: Switch(
                     value: dark,
                     onChanged: (_) => onToggleTheme(),
-                    activeThumbColor: Colors.white,
-                    activeTrackColor: IeumColors.dark.primary,
-                    inactiveThumbColor: Colors.white,
-                    inactiveTrackColor: IeumColors.light.ink,
-                    trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+                    activeThumbColor: colors.text,
+                    activeTrackColor: colors.accentSoft,
+                    inactiveThumbColor: colors.text,
+                    inactiveTrackColor: colors.accentSoft,
+                    trackOutlineColor: WidgetStatePropertyAll(colors.control),
                   ),
                 ),
                 if (write != null) ...[
@@ -99,7 +85,7 @@ class AppHeader extends StatelessWidget {
   }
 }
 
-/// 진한 알약 모양의 글쓰기 버튼입니다.
+/// 화면에서 유일한 파랑 면인 글쓰기 버튼입니다.
 class _WriteButton extends StatelessWidget {
   const _WriteButton({required this.onTap});
 
@@ -122,8 +108,8 @@ class _WriteButton extends StatelessWidget {
           child: Center(
             widthFactor: 1,
             child: Material(
-              color: colors.ink,
-              shape: const StadiumBorder(),
+              color: colors.accent,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               clipBehavior: Clip.antiAlias,
               child: InkWell(
                 onTap: onTap,
@@ -134,9 +120,9 @@ class _WriteButton extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.edit_outlined, size: 16, color: colors.onInk),
+                        Icon(Icons.edit_outlined, size: 16, color: colors.onAccent),
                         const SizedBox(width: 4),
-                        Text('글쓰기', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.onInk)),
+                        Text('글쓰기', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.onAccent)),
                       ],
                     ),
                   ),

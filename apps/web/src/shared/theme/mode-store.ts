@@ -10,9 +10,9 @@ function initial(): ThemeMode {
     const stored = localStorage.getItem(KEY);
     if (stored === 'light' || stored === 'dark') return stored;
   } catch {
-    // 저장소를 쓸 수 없으면 시스템 설정을 따릅니다.
+    // 저장소를 쓸 수 없으면 기본 테마로 시작합니다.
   }
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'dark';
 }
 
 let mode: ThemeMode = initial();

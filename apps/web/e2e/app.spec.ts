@@ -55,7 +55,7 @@ test.describe('비로그인', () => {
 test.describe('로그인 후', () => {
   test.beforeEach(async ({ page }) => login(page));
 
-  test('피드: 좋아요, 접근성, 넘침, 다크 모드', async ({ page }) => {
+  test('피드: 좋아요, 접근성, 넘침, 라이트 모드', async ({ page }) => {
     await expect(page.getByRole('article').first()).toBeVisible();
     await checkA11y(page);
     await checkNoOverflow(page);
@@ -66,8 +66,8 @@ test.describe('로그인 후', () => {
     await expect(like).toHaveAttribute('aria-pressed', before === 'true' ? 'false' : 'true');
 
     await page.getByRole('switch', { name: '다크 모드' }).click();
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-    await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#1b1e25');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#ffffff');
     // 링크 색 전환 애니메이션 도중의 색을 재지 않도록 기다립니다.
     await page.waitForTimeout(500);
     await checkA11y(page);

@@ -37,7 +37,7 @@ class UserAvatar extends StatelessWidget {
     // 인기 게시글 작성자의 프로필 링입니다.
     return ExcludeSemantics(
       child: DecoratedBox(
-        decoration: BoxDecoration(shape: BoxShape.circle, color: IeumColors.of(context).primary),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: IeumColors.of(context).accent),
         child: Padding(
           padding: const EdgeInsets.all(2),
           child: DecoratedBox(
@@ -83,7 +83,9 @@ class _ImageCarouselState extends State<ImageCarousel> {
     final count = widget.images.length;
     return AspectRatio(
       aspectRatio: 1,
-      child: Stack(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Stack(
         fit: StackFit.expand,
         children: [
           PageView.builder(
@@ -110,6 +112,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
               Positioned(right: 8, top: 0, bottom: 0, child: _ArrowButton(icon: Icons.chevron_right, label: '다음 사진', onPressed: () => _go(_index + 1))),
           ],
         ],
+        ),
       ),
     );
   }
@@ -201,9 +204,9 @@ class _PostCardState extends State<PostCard> {
       container: true,
       label: '${post.author.nickname} 님의 게시글',
       child: Container(
-        margin: const EdgeInsets.only(bottom: IeumColors.band),
-        color: colors.surface,
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+        // 카드 없이 한 면에 두고 머리카락 굵기의 선으로만 나눕니다.
+        decoration: BoxDecoration(color: colors.surface, border: Border(bottom: BorderSide(color: colors.border))),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -274,7 +277,6 @@ class _PostCardState extends State<PostCard> {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text('좋아요 ${post.likeCount}개 · 댓글 ${post.commentCount}개', style: TextStyle(fontSize: 13, color: colors.muted)),
             ),
-            Divider(height: 1, thickness: 1, color: colors.border),
             Row(
               children: [
                 Expanded(
@@ -319,11 +321,9 @@ class _PostCardState extends State<PostCard> {
                     const SizedBox(width: 8),
                   ],
                   Expanded(
-                    // 입력칸과 게시 버튼을 하나의 알약으로 묶습니다.
+                    // 입력칸과 게시 버튼을 밑줄 하나로 묶습니다.
                     child: DecoratedBox(
-                      decoration: ShapeDecoration(
-                        shape: StadiumBorder(side: BorderSide(color: colors.control)),
-                      ),
+                      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: colors.control))),
                       child: Row(
                         children: [
                           Expanded(
@@ -341,7 +341,7 @@ class _PostCardState extends State<PostCard> {
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
-                                contentPadding: EdgeInsets.fromLTRB(18, 13, 4, 13),
+                                contentPadding: EdgeInsets.fromLTRB(0, 13, 4, 13),
                               ),
                             ),
                           ),
@@ -352,7 +352,7 @@ class _PostCardState extends State<PostCard> {
                               disabledForegroundColor: colors.muted,
                               minimumSize: const Size(56, 44),
                               padding: const EdgeInsets.symmetric(horizontal: 12),
-                              shape: const StadiumBorder(),
+                              shape: const RoundedRectangleBorder(),
                               textStyle: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 14),
                             ),
                             child: const Text('게시'),
