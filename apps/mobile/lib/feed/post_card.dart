@@ -161,6 +161,9 @@ class PostCard extends StatefulWidget {
 /// 글자가 시작하기 전에 막이 충분히 어두워지는 높이입니다. 흰 사진 위에서도 글자 대비 4.5:1을 넘깁니다.
 const double _fade = 64;
 
+/// 글 묶음이 잘리지 않고 사진 위에 들어가는 높이입니다. 글자 크기에 따라 늘어납니다.
+const double _overlayHeight = 260;
+
 class _PostCardState extends State<PostCard> {
   final _comment = TextEditingController();
   var _sending = false;
@@ -210,18 +213,30 @@ class _PostCardState extends State<PostCard> {
               // 사진 색과 상관없이 읽히도록 사진 위 요소는 테마와 상관없이 다크 색을 씁니다.
               child: Theme(
                 data: ieumTheme(Brightness.dark),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Semantics(
-                      sortKey: const OrdinalSortKey(1),
-                      child: post.images.isNotEmpty
-                          ? ImageCarousel(images: post.images, authorNickname: post.author.nickname)
-                          : ColoredBox(color: IeumColors.dark.surface),
-                    ),
-                    Positioned(left: 0, right: 0, bottom: 0, child: Semantics(sortKey: const OrdinalSortKey(0), child: _overlay(post))),
-                    Positioned(right: 0, bottom: 8, child: Semantics(sortKey: const OrdinalSortKey(2), child: _rail(post))),
-                  ],
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // 키보드나 큰 글자로 사진 영역이 낮아지면 잘리지 않게 글과 동작 줄을 스크롤합니다.
+                    final compact = constraints.maxHeight < MediaQuery.textScalerOf(context).scale(_overlayHeight);
+                    Widget fit(Widget child, {bool fromBottom = false}) => compact
+                        ? ConstrainedBox(
+                            constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                            child: SingleChildScrollView(reverse: fromBottom, child: child),
+                          )
+                        : child;
+                    return Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Semantics(
+                          sortKey: const OrdinalSortKey(1),
+                          child: post.images.isNotEmpty
+                              ? ImageCarousel(images: post.images, authorNickname: post.author.nickname)
+                              : ColoredBox(color: IeumColors.dark.surface),
+                        ),
+                        Positioned(left: 0, right: 0, bottom: 0, child: Semantics(sortKey: const OrdinalSortKey(0), child: fit(_overlay(post), fromBottom: true))),
+                        Positioned(right: 0, bottom: 8, child: Semantics(sortKey: const OrdinalSortKey(2), child: fit(_rail(post)))),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
