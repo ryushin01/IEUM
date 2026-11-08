@@ -3,7 +3,7 @@ import { Alert, Button } from 'antd';
 import { useNavigate } from 'react-router';
 import { ME_KEY, type Me } from '@/entities/session';
 import { request, setSession } from '@/shared/api';
-import { IS_DEMO } from '@/shared/config/env';
+import { IS_DEMO } from '@/shared/config';
 import * as s from './auth.css';
 
 const ACCOUNTS = { member: 'demo@ieum.app', admin: 'admin@ieum.app' };

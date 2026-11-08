@@ -3,7 +3,7 @@ import { Alert } from 'antd';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import { request } from '@/shared/api';
-import { IS_DEMO } from '@/shared/config/env';
+import { IS_DEMO } from '@/shared/config';
 import { startSocialLogin, type SocialProvider } from './social';
 import * as s from './SocialLoginButtons.css';
 

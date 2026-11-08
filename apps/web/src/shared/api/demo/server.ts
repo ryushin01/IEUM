@@ -1,4 +1,4 @@
-import { BASE_URL } from '@/shared/config/env';
+import { BASE_URL } from '@/shared/config';
 import { createSeed, DEMO_PASSWORD, mergeSeed, SEED_VERSION, type DemoMessage, type DemoPost, type DemoState, type DemoUser } from './seed';
 
 /**

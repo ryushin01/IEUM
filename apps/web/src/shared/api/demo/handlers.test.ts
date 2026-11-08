@@ -1,6 +1,6 @@
 import { setupServer } from 'msw/node';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { API_URL } from '@/shared/config/env';
+import { API_URL } from '@/shared/config';
 import { handlers } from './handlers';
 import { resetDemo } from './server';
 

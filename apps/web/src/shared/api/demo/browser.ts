@@ -1,4 +1,4 @@
-import { BASE_URL } from '@/shared/config/env';
+import { BASE_URL } from '@/shared/config';
 
 let ready: Promise<boolean> | undefined;
 

@@ -4,7 +4,7 @@ import { useNavigate, type NavigateFunction } from 'react-router';
 import { ME_KEY, type Me } from '@/entities/session';
 import { ApiError, request, setSession } from '@/shared/api';
 import { BridgeError, callNative, isNativeApp } from '@/shared/bridge';
-import { IS_DEMO } from '@/shared/config/env';
+import { IS_DEMO } from '@/shared/config';
 
 export type SocialProvider = 'kakao' | 'naver' | 'google' | 'apple';
 

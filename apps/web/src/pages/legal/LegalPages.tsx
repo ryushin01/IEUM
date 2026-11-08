@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router';
-import { SUPPORT_EMAIL } from '@/shared/config/env';
+import { SUPPORT_EMAIL } from '@/shared/config';
 import { usePageTitle } from '@/shared/lib';
 import * as s from './Legal.css';
 
