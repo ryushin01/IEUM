@@ -18,3 +18,8 @@ it('다음 버튼으로 넘기고 끝에서 비활성화한다', async () => {
   expect(screen.getByText('2 / 2')).toBeInTheDocument();
   expect(screen.getByRole('button', { name: '다음 사진', hidden: true })).toBeDisabled();
 });
+
+it('흐린 배경은 장식이라 사진마다 이미지 하나만 낭독한다', () => {
+  render(<ImageCarousel images={images} />);
+  expect(screen.getAllByRole('img').map((image) => image.getAttribute('alt'))).toEqual(['첫째', '둘째']);
+});

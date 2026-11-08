@@ -26,8 +26,15 @@ export const track = style({
 });
 export const carouselFill = style({ height: '100%', borderRadius: 0 });
 export const trackFill = style({ height: '100%', aspectRatio: 'auto' });
-export const slide = style({ flex: '0 0 100%', scrollSnapAlign: 'start', scrollSnapStop: 'always' });
-export const slideImage = style({ width: '100%', height: '100%', objectFit: 'cover' });
+export const slide = style({ position: 'relative', flex: '0 0 100%', overflow: 'hidden', scrollSnapAlign: 'start', scrollSnapStop: 'always' });
+export const slideBackdrop = style({
+  position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+  // 가장자리의 흐린 경계가 보이지 않게 조금 키웁니다.
+  filter: 'blur(24px) brightness(0.7)', transform: 'scale(1.15)',
+});
+export const slideImage = style({ position: 'relative', width: '100%', height: '100%', objectFit: 'contain' });
+/** 전체화면에서는 아래쪽 어두운 막과 덜 겹치게 사진을 위로 붙입니다. */
+export const slideImageTop = style({ objectPosition: 'center top' });
 export const carouselButton = style({
   position: 'absolute', top: '50%', transform: 'translateY(-50%)', width: 44, height: 44, padding: 0,
   display: 'flex', alignItems: 'center', justifyContent: 'center', border: 0, borderRadius: '50%',

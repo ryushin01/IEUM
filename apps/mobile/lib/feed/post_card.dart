@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
@@ -89,7 +91,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
           controller: _controller,
           itemCount: count,
           onPageChanged: (i) => setState(() => _index = i),
-          itemBuilder: (context, i) => PostImageView(url: widget.images[i].url, label: _alt(i)),
+          itemBuilder: (context, i) => _Slide(url: widget.images[i].url, label: _alt(i)),
         ),
         if (count > 1) ...[
           Positioned(
@@ -108,6 +110,37 @@ class _ImageCarouselState extends State<ImageCarousel> {
           if (_index < count - 1)
             Positioned(right: 8, top: 0, bottom: 0, child: _ArrowButton(icon: Icons.chevron_right, label: '다음 사진', onPressed: () => _go(_index + 1))),
         ],
+      ],
+    );
+  }
+}
+
+/// 사진을 자르지 않고, 남는 자리를 같은 사진을 흐리게 깔아 채웁니다.
+class _Slide extends StatelessWidget {
+  const _Slide({required this.url, required this.label});
+
+  final String url;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // 장식이라 낭독하지 않습니다.
+        ExcludeSemantics(
+          child: ClipRect(
+            child: ColorFiltered(
+              colorFilter: const ColorFilter.mode(Color(0x4D000000), BlendMode.srcATop),
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 24, sigmaY: 24, tileMode: TileMode.clamp),
+                child: PostImageView(url: url, label: ''),
+              ),
+            ),
+          ),
+        ),
+        // 아래쪽 어두운 막과 덜 겹치게 사진을 위로 붙입니다.
+        PostImageView(url: url, label: label, fit: BoxFit.contain, alignment: Alignment.topCenter),
       ],
     );
   }
