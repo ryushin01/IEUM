@@ -154,11 +154,11 @@ class ConversationTile extends StatelessWidget {
                     Container(
                       constraints: const BoxConstraints(minWidth: 24),
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(color: colors.primary, borderRadius: BorderRadius.circular(12)),
+                      decoration: BoxDecoration(color: colors.accent, borderRadius: BorderRadius.circular(12)),
                       child: Text(
                         '${c.unreadCount}',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: colors.onPrimary, fontWeight: FontWeight.w600, fontSize: 12),
+                        style: TextStyle(color: colors.onAccent, fontWeight: FontWeight.w600, fontSize: 12),
                       ),
                     ),
                   ],

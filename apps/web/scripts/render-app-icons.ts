@@ -1,43 +1,40 @@
-/** 앱 아이콘과 스플래시 원본을 IEUM 타이포그래피로 만듭니다. 실행: pnpm --filter @ieum/web icons */
-import { readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import { dirname, join } from 'node:path';
+/** 앱 아이콘과 스플래시 원본을 IEUM 로고로 만듭니다. 실행: pnpm --filter @ieum/web icons */
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
-const require = createRequire(import.meta.url);
-const fontDir = join(dirname(require.resolve('pretendard/package.json')), 'dist/web/static/woff2');
-const font = readFileSync(join(fontDir, 'Pretendard-ExtraBold.woff2')).toString('base64');
 const out = fileURLToPath(new URL('../../mobile/assets/icon/', import.meta.url));
 
-const BLUE = '#0b6be0';
+/** src/shared/ui/Logo.tsx와 같은 도형입니다. */
+const LETTERS = 'M0 0h18v100H0zM34 0h96v16H52v26h71v16H52v26h78v16H34zM146 0h18v60c0 16 13 25 33 25s33-9 33-25V0h18v60c0 26-20 40-51 40s-51-14-51-40zM264 0h25l35 76 35-76h25v100h-18V31l-33 69h-18l-33-69v69h-18z';
+const INK = '#111214';
 const WHITE = '#ffffff';
+const ACCENT = '#4545ff';
 
-function html(size: number, background: string, color: string, textSize: number, stroke: number) {
-  return `<!doctype html><style>
-    @font-face { font-family: 'Pretendard'; font-weight: 800; src: url(data:font/woff2;base64,${font}); }
-    html, body { margin: 0; width: ${size}px; height: ${size}px; background: ${background}; }
-    body { display: flex; align-items: center; justify-content: center; }
-    span { font: 800 ${textSize}px/1 'Pretendard'; letter-spacing: -0.01em; color: ${color}; -webkit-text-stroke: ${stroke}px ${color}; }
-  </style><span>IEUM</span>`;
+function html(size: number, background: string, logoWidth: number) {
+  const scale = logoWidth / 425;
+  const x = (size - logoWidth) / 2;
+  const y = (size - 100 * scale) / 2;
+  return `<!doctype html><style>html, body { margin: 0; background: ${background}; }</style>
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+      <g transform="translate(${x} ${y}) scale(${scale})">
+        <path d="${LETTERS}" fill="${WHITE}" /><circle cx="412" cy="87" r="13" fill="${ACCENT}" />
+      </g>
+    </svg>`;
 }
 
-const targets: [string, number, string, string, number, number][] = [
-  // 아이콘: 파란 배경에 글자만 둡니다.
-  ['icon.png', 1024, BLUE, WHITE, 280, 0],
-  // 적응형 아이콘: 가운데 66%가 안전 영역이라 글자를 줄입니다.
-  ['foreground.png', 1024, 'transparent', WHITE, 190, 0],
-  ['splash.png', 768, 'transparent', WHITE, 170, 0],
-  ['splash_dark.png', 768, 'transparent', WHITE, 170, 0],
-  ['splash_android12.png', 1152, 'transparent', WHITE, 170, 0],
-  ['splash_android12_dark.png', 1152, 'transparent', WHITE, 170, 0],
+const targets: [string, number, string, number][] = [
+  ['icon.png', 1024, INK, 700],
+  // 적응형 아이콘: 가운데 66%가 안전 영역이라 로고를 줄입니다.
+  ['foreground.png', 1024, 'transparent', 520],
+  ['splash.png', 768, 'transparent', 440],
+  ['splash_android12.png', 1152, 'transparent', 520],
 ];
 
 const browser = await chromium.launch();
-for (const [name, size, background, color, textSize, stroke] of targets) {
+for (const [name, size, background, logoWidth] of targets) {
   const page = await browser.newPage({ viewport: { width: size, height: size } });
-  await page.setContent(html(size, background, color, textSize, stroke));
-  await page.evaluate(() => document.fonts.ready);
+  await page.setContent(html(size, background, logoWidth));
   await page.screenshot({ path: join(out, name), omitBackground: background === 'transparent' });
   await page.close();
 }

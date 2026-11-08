@@ -227,12 +227,13 @@ void main() {
       // 다크 모드 (Flutter 스위치 → 웹 → 앱 전체)
       await tapMenu(tester, Icons.home_outlined);
       await waitFor(tester, find.byType(PostCard), '홈');
-      expect(page.shell.brightness.value, isNot(Brightness.dark));
-      await tester.tap(find.byType(Switch));
-      await page.waitUntil('document.documentElement.dataset.theme === "dark"', '웹 다크 모드');
-      await pumpFor(tester, const Duration(seconds: 1));
       expect(page.shell.brightness.value, Brightness.dark);
       await shot(tester, 'feed-dark');
+      await tester.tap(find.byType(Switch));
+      await page.waitUntil('document.documentElement.dataset.theme === "light"', '웹 라이트 모드');
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(page.shell.brightness.value, Brightness.light);
+      await shot(tester, 'feed-light');
       await tester.tap(find.byType(Switch));
       await pumpFor(tester, const Duration(seconds: 1));
 

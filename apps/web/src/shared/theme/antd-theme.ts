@@ -6,8 +6,8 @@ const FONT = `'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFo
 
 /** theme.css.ts의 토큰과 같은 값입니다. */
 const COLORS = {
-  light: { primaryHover: '#0a5ec6', primaryActive: '#0952ad', errorHover: '#b81c23', errorActive: '#9c171d', primary: '#0b6be0', onPrimary: '#ffffff', text: '#2b2d38', muted: '#646a75', error: '#d3222a', surface: '#ffffff', bg: '#f5f6f8', control: '#31313b' },
-  dark: { primaryHover: '#7db5ff', primaryActive: '#4a90ee', errorHover: '#ffa3a7', errorActive: '#f47378', primary: '#5ea3ff', onPrimary: '#10131a', text: '#eef0f3', muted: '#a9afba', error: '#ff8a8f', surface: '#1b1e25', bg: '#111318', control: '#a9afba' },
+  light: { primaryHover: '#2c2e33', primaryActive: '#3f4147', errorHover: '#b81c23', errorActive: '#9c171d', primary: '#111214', onPrimary: '#ffffff', text: '#111214', muted: '#62656e', error: '#d3222a', surface: '#ffffff', elevated: '#ffffff', bg: '#ffffff', control: '#8a8d96' },
+  dark: { primaryHover: '#d9dadd', primaryActive: '#bfc1c6', errorHover: '#ff8a7f', errorActive: '#f0574a', primary: '#ffffff', onPrimary: '#111214', text: '#f4f5f7', muted: '#9a9da6', error: '#ff6b5e', surface: '#111214', elevated: '#24262c', bg: '#111214', control: '#6f727b' },
 };
 
 /** 브라우저 주소창 색입니다. 헤더(theme.css.ts의 header)와 같은 면 색을 씁니다. */
@@ -31,7 +31,7 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
       colorLink: c.text,
       colorError: c.error,
       colorBgContainer: c.surface,
-      colorBgElevated: c.surface,
+      colorBgElevated: c.elevated,
       colorBgLayout: c.bg,
       colorBorder: c.control,
       // 보조 글자도 명도 대비 4.5:1을 넘깁니다.
@@ -41,16 +41,20 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
       colorTextPlaceholder: c.muted,
       fontFamily: FONT,
       fontSize: 14,
-      borderRadius: 10,
+      borderRadius: 8,
       controlHeight: 44,
       motionDurationMid: '0.1s',
     },
     components: {
       Button: {
+        // 다크 알고리즘이 흰색을 회색으로 바꾸므로 버튼의 면 색을 직접 고정합니다.
+        colorPrimary: c.primary,
+        colorPrimaryHover: c.primaryHover,
+        colorPrimaryActive: c.primaryActive,
         fontWeight: 600,
         primaryShadow: 'none',
         dangerShadow: 'none',
-        dangerColor: mode === 'light' ? '#ffffff' : '#10131a',
+        dangerColor: mode === 'light' ? '#ffffff' : '#111214',
         primaryColor: c.onPrimary,
         defaultHoverColor: c.primary,
         defaultHoverBorderColor: c.primary,
@@ -58,6 +62,7 @@ export function antdTheme(mode: ThemeMode): ThemeConfig {
         defaultActiveBorderColor: c.primary,
       },
       Input: { activeBorderColor: c.text, hoverBorderColor: c.text, activeShadow: 'none' },
+      Form: { verticalLabelPadding: '0' },
       Checkbox: { colorWhite: c.onPrimary },
       Radio: { dotSize: 8, colorWhite: c.onPrimary },
     },

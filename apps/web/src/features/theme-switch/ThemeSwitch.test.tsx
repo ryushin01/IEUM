@@ -24,7 +24,7 @@ describe('ThemeSwitch', () => {
     meta.name = 'theme-color';
     document.head.append(meta);
     setThemeMode('dark');
-    expect(meta).toHaveAttribute('content', '#1b1e25');
+    expect(meta).toHaveAttribute('content', '#111214');
     setThemeMode('light');
     expect(meta).toHaveAttribute('content', '#ffffff');
     meta.remove();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// 카닥 앱을 참고한 디자인 토큰입니다. 웹의 apps/web/src/shared/theme/theme.css.ts와 같은 값을 유지합니다.
+/// 닷슬래시대시 앱을 참고한 단색 디자인 토큰입니다. 웹의 apps/web/src/shared/theme/theme.css.ts와 같은 값을 유지합니다.
 class IeumColors {
   const IeumColors({
     required this.bg,
@@ -11,8 +11,9 @@ class IeumColors {
     required this.control,
     required this.primary,
     required this.onPrimary,
-    required this.ink,
-    required this.onInk,
+    required this.accent,
+    required this.onAccent,
+    required this.accentSoft,
     required this.header,
     required this.onHeader,
     required this.like,
@@ -24,48 +25,47 @@ class IeumColors {
   });
 
   static const light = IeumColors(
-    bg: Color(0xFFF5F6F8),
+    bg: Color(0xFFFFFFFF),
     surface: Color(0xFFFFFFFF),
-    text: Color(0xFF2B2D38),
-    muted: Color(0xFF646A75),
-    border: Color(0xFFECEEF1),
-    control: Color(0xFF8A8F98),
-    primary: Color(0xFF0B6BE0),
+    text: Color(0xFF111214),
+    muted: Color(0xFF62656E),
+    border: Color(0xFFE6E7EA),
+    control: Color(0xFF8A8D96),
+    primary: Color(0xFF111214),
     onPrimary: Color(0xFFFFFFFF),
-    ink: Color(0xFF31313B),
-    onInk: Color(0xFFFFFFFF),
+    accent: Color(0xFF1A1AFF),
+    onAccent: Color(0xFFFFFFFF),
+    accentSoft: Color(0xFFF0F1F3),
     header: Color(0xFFFFFFFF),
-    onHeader: Color(0xFF2B2D38),
-    like: Color(0xFF0B6BE0),
-    official: Color(0xFF0B6BE0),
+    onHeader: Color(0xFF111214),
+    like: Color(0xFF1A1AFF),
+    official: Color(0xFF1A1AFF),
     error: Color(0xFFD3222A),
-    avatarBg: Color(0xFFE3E6EA),
-    onAvatar: Color(0xFF2B2D38),
-    bubbleOther: Color(0xFFF0F1F4),
+    avatarBg: Color(0xFFEBECEF),
+    onAvatar: Color(0xFF111214),
+    bubbleOther: Color(0xFFF0F1F3),
   );
   static const dark = IeumColors(
-    bg: Color(0xFF111318),
-    surface: Color(0xFF1B1E25),
-    text: Color(0xFFEEF0F3),
-    muted: Color(0xFFA9AFBA),
-    border: Color(0xFF2C303A),
-    control: Color(0xFF7F8693),
-    primary: Color(0xFF5EA3FF),
-    onPrimary: Color(0xFF10131A),
-    ink: Color(0xFFEEF0F3),
-    onInk: Color(0xFF1B1E25),
-    header: Color(0xFF1B1E25),
-    onHeader: Color(0xFFEEF0F3),
-    like: Color(0xFF5EA3FF),
-    official: Color(0xFF5EA3FF),
-    error: Color(0xFFFF8A8F),
-    avatarBg: Color(0xFF3A3F4A),
-    onAvatar: Color(0xFFEEF0F3),
-    bubbleOther: Color(0xFF2A2E37),
+    bg: Color(0xFF111214),
+    surface: Color(0xFF111214),
+    text: Color(0xFFF4F5F7),
+    muted: Color(0xFF9A9DA6),
+    border: Color(0xFF2A2C32),
+    control: Color(0xFF6F727B),
+    primary: Color(0xFFFFFFFF),
+    onPrimary: Color(0xFF111214),
+    accent: Color(0xFF4545FF),
+    onAccent: Color(0xFFFFFFFF),
+    accentSoft: Color(0xFF24262C),
+    header: Color(0xFF111214),
+    onHeader: Color(0xFFF4F5F7),
+    like: Color(0xFF9D9DFF),
+    official: Color(0xFF9D9DFF),
+    error: Color(0xFFFF6B5E),
+    avatarBg: Color(0xFF2A2C32),
+    onAvatar: Color(0xFFF4F5F7),
+    bubbleOther: Color(0xFF24262C),
   );
-
-  /// 회색 구획 띠의 두께입니다.
-  static const band = 8.0;
 
   final Color bg;
   final Color surface;
@@ -75,8 +75,9 @@ class IeumColors {
   final Color control;
   final Color primary;
   final Color onPrimary;
-  final Color ink;
-  final Color onInk;
+  final Color accent;
+  final Color onAccent;
+  final Color accentSoft;
   final Color header;
   final Color onHeader;
   final Color like;
@@ -91,8 +92,7 @@ class IeumColors {
 
 ThemeData ieumTheme(Brightness brightness) {
   final colors = brightness == Brightness.dark ? IeumColors.dark : IeumColors.light;
-  OutlineInputBorder border(Color color) =>
-      OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: color));
+  UnderlineInputBorder border(Color color, {double width = 1}) => UnderlineInputBorder(borderSide: BorderSide(color: color, width: width));
   return ThemeData(
     useMaterial3: true,
     brightness: brightness,
@@ -121,18 +121,17 @@ ThemeData ieumTheme(Brightness brightness) {
         foregroundColor: colors.onPrimary,
         minimumSize: const Size(56, 44),
         textStyle: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: -.14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       isDense: true,
-      filled: true,
-      fillColor: colors.surface,
+      filled: false,
       hintStyle: TextStyle(color: colors.muted),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12),
       border: border(colors.control),
       enabledBorder: border(colors.control),
-      focusedBorder: border(colors.text),
+      focusedBorder: border(colors.text, width: 2),
     ),
   );
 }

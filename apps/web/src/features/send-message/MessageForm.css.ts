@@ -3,5 +3,4 @@ import { vars } from '@/shared/theme/theme.css';
 
 export const form = style({ display: 'grid', gap: 8, padding: '10px 16px', borderTop: `1px solid ${vars.color.border}`, backgroundColor: vars.color.surface });
 export const row = style({ display: 'flex', gap: 8 });
-globalStyle(`${row} .ant-input`, { paddingInline: 18, borderColor: vars.color.control, borderRadius: 999 });
-globalStyle(`${row} .ant-btn`, { flexShrink: 0, width: 48, borderRadius: '50%' });
+globalStyle(`${row} .ant-btn`, { flexShrink: 0, width: 44 });

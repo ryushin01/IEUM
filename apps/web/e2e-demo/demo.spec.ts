@@ -80,7 +80,7 @@ test('앱 코드를 불러오기 전에도 고른 테마를 적용한다', async
   const context = await browser.newContext({ baseURL, serviceWorkers: 'block' });
   const page = await context.newPage();
   await page.goto('login');
-  await page.evaluate(() => localStorage.setItem('ieum.theme', 'dark'));
+  await page.evaluate(() => localStorage.setItem('ieum.theme', 'light'));
   let blocked = 0;
   await page.route('**/assets/*.js', (route) => {
     blocked += 1;
@@ -90,8 +90,8 @@ test('앱 코드를 불러오기 전에도 고른 테마를 적용한다', async
   expect(blocked).toBeGreaterThan(0);
   // 앱이 실행되지 않았으므로 HTML의 스크립트만으로 적용된 것입니다.
   await expect(page.locator('#root')).toBeEmpty();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#1b1e25');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#ffffff');
   await context.close();
 });
 

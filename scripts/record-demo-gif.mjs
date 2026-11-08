@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * README의 시연 GIF를 만듭니다. 통합 테스트를 실행하는 동안 Android 화면을 캡처합니다.
+ * README의 시연 GIF와 화면 사진을 만듭니다. 통합 테스트를 실행하는 동안 Android 화면을 캡처합니다.
  * 준비: Android 에뮬레이터 실행. 여러 대면 ANDROID_SERIAL로 고릅니다. 데모 웹 서버는 이 스크립트가 띄웁니다.
  * 실행: pnpm demo:gif
  */
@@ -23,7 +23,11 @@ const FRAME_DELAY_MS = 350;
 const CAPTURE_INTERVAL_MS = 200;
 const MAX_FRAMES = 150;
 const START_AT = 'login';
-const STOP_AT = 'feed-dark';
+const STOP_AT = 'feed-light';
+/** README 화면 표에 넣는 사진입니다. 통합 테스트의 SHOT 이름과 같습니다. */
+const STILLS = new Set(['login', 'feed', 'post-detail', 'post-write', 'dm-room', 'profile', 'feed-light', 'admin-reports']);
+const STILL_WIDTH = 540;
+const STILL_DELAY_MS = 1500;
 const WEB_URL = 'http://localhost:5173/';
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -65,6 +69,13 @@ function screencap(serial) {
     child.on('error', reject);
     child.on('close', () => resolve(Buffer.concat(chunks)));
   });
+}
+
+/** 통합 테스트가 화면을 멈춰 둔 사이에 찍습니다. */
+async function saveStill(serial, name) {
+  await sleep(STILL_DELAY_MS);
+  const png = await screencap(serial);
+  await sharp(png).resize({ width: STILL_WIDTH }).jpeg({ quality: 82 }).toFile(join(root, 'docs/images', `${name}.jpg`));
 }
 
 async function captureLoop(serial, frames, state) {
@@ -115,6 +126,7 @@ function stopWeb(web) {
 
 async function runTest(serial, frames) {
   const state = { capturing: false };
+  const stills = [];
   let capture = Promise.resolve();
   const test = spawn('flutter', ['test', 'integration_test', '-d', serial, '--dart-define=DEMO_MODE=true', '--dart-define=MODE=demo'], { cwd: join(root, 'apps/mobile') });
   const closed = new Promise((resolve, reject) => {
@@ -125,17 +137,20 @@ async function runTest(serial, frames) {
   try {
     for await (const line of createInterface({ input: test.stdout })) {
       console.log(line);
+      const still = line.match(/SHOT:([a-z-]+)/)?.[1];
+      if (still && STILLS.has(still)) stills.push(saveStill(serial, still));
       if (line.includes(`SHOT:${START_AT}`) && !state.capturing && frames.length === 0) {
         state.capturing = true;
         capture = captureLoop(serial, frames, state);
       }
       if (line.includes(`SHOT:${STOP_AT}`) && state.capturing) {
-        // 다크 모드 화면이 잠시 보이게 합니다.
+        // 라이트 모드 화면이 잠시 보이게 합니다.
         await sleep(1500);
         state.capturing = false;
         await capture;
       }
     }
+    await Promise.all(stills);
     return await closed;
   } finally {
     state.capturing = false;

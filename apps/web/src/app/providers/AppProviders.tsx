@@ -23,7 +23,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const mode = useThemeMode();
   return (
     <StyleProvider layer>
-      <ConfigProvider theme={antdTheme(mode)} locale={koKR} wave={NO_WAVE}>
+      <ConfigProvider variant="underlined" theme={antdTheme(mode)} locale={koKR} wave={NO_WAVE}>
         <AntApp>
           <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
         </AntApp>

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -37,7 +36,8 @@ class ShellController extends GetxController with WidgetsBindingObserver {
 
   final AppConfig config;
   final status = ShellStatus.loading.obs;
-  final brightness = PlatformDispatcher.instance.platformBrightness.obs;
+  // 웹이 준비되어 저장된 테마를 알려 주기 전까지는 기본 테마인 다크로 그립니다.
+  final brightness = Brightness.dark.obs;
 
   /// 웹뷰가 알려 준 현재 경로입니다. 어떤 화면을 위에 올릴지 정합니다.
   final path = '/'.obs;

@@ -179,32 +179,20 @@ class _ChatViewState extends State<ChatView> {
                             minLines: 1,
                             maxLines: 4,
                             onChanged: (_) => setState(() {}),
-                            decoration: InputDecoration(
-                              hintText: '메시지를 입력하세요',
-                              counterText: '',
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24),
-                                borderSide: BorderSide(color: colors.control),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24),
-                                borderSide: BorderSide(color: colors.text),
-                              ),
-                            ),
+                            decoration: const InputDecoration(hintText: '메시지를 입력하세요', counterText: ''),
                           ),
                         ),
                         const SizedBox(width: 8),
                         IconButton.filled(
                           tooltip: '보내기',
                           onPressed: _input.text.trim().isEmpty || controller.sending.value ? null : _send,
-                          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                           style: IconButton.styleFrom(
                             backgroundColor: colors.primary,
                             foregroundColor: colors.onPrimary,
-                            disabledBackgroundColor: colors.bg,
+                            disabledBackgroundColor: colors.accentSoft,
                             disabledForegroundColor: colors.muted,
-                            shape: const CircleBorder(),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           icon: const Icon(Icons.send),
                         ),
@@ -232,7 +220,7 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = IeumColors.of(context);
     final read = mine && message.readAt != null;
-    const radius = Radius.circular(16);
+    const radius = Radius.circular(12);
     return Semantics(
       liveRegion: announce && !mine,
       label: '${mine ? '내가 보낸 메시지' : '받은 메시지'}: ${message.body}, ${timeAgo(message.createdAt)}${read ? ', 읽음' : ''}',
@@ -244,12 +232,12 @@ class MessageBubble extends StatelessWidget {
             constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * .78),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: mine ? colors.primary : colors.bubbleOther,
-                borderRadius: BorderRadius.only(topLeft: radius, topRight: radius, bottomLeft: mine ? radius : const Radius.circular(4), bottomRight: mine ? const Radius.circular(4) : radius),
+                color: mine ? colors.accent : colors.bubbleOther,
+                borderRadius: BorderRadius.only(topLeft: radius, topRight: radius, bottomLeft: mine ? radius : const Radius.circular(2), bottomRight: mine ? const Radius.circular(2) : radius),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                child: Text(message.body, style: TextStyle(color: mine ? colors.onPrimary : colors.text, fontSize: 14)),
+                child: Text(message.body, style: TextStyle(color: mine ? colors.onAccent : colors.text, fontSize: 14)),
               ),
             ),
           ),
