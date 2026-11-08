@@ -106,6 +106,9 @@ void main() {
     final views = tester.widgetList<PostImageView>(find.byType(PostImageView)).toList();
     expect(views.map((view) => view.fit), [BoxFit.cover, BoxFit.contain]);
     expect(views.last.alignment, Alignment.topCenter);
+    // 앞면과 흐린 배경이 디코딩한 사진 하나를 함께 씁니다.
+    final providers = tester.widgetList<Image>(find.byType(Image)).map((widget) => widget.image).toList();
+    expect((providers.first as MemoryImage).bytes, same((providers.last as MemoryImage).bytes));
     expect(find.bySemanticsLabel('바다 사진'), findsOneWidget);
     handle.dispose();
   });
