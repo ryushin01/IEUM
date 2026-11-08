@@ -1,5 +1,5 @@
 import { callNative, isNativeApp, type Tokens } from '@/shared/bridge';
-import { API_URL } from '@/shared/config/env';
+import { API_URL } from '@/shared/config';
 import { tokenStore } from './token-store';
 
 export class ApiError extends Error {

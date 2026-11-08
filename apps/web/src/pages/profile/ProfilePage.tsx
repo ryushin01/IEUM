@@ -9,7 +9,7 @@ import { useUser, type PublicUser } from '@/entities/user';
 import { ReportDialog, useBlockUser, type ReportTarget } from '@/features/moderation';
 import { request } from '@/shared/api';
 import { useLoadMoreOnScroll, usePageTitle } from '@/shared/lib';
-import { interestLabel } from '@/shared/config/interests';
+import { interestLabel } from '@/shared/config';
 import { EmptyView, ErrorView, LoadingView, OfficialMark, UserAvatar } from '@/shared/ui';
 import * as s from './Profile.css';
 

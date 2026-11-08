@@ -1,6 +1,6 @@
 import { clearSession } from '@/shared/api';
 import { callNative, isNativeApp } from '@/shared/bridge';
-import { BASE_URL } from '@/shared/config/env';
+import { BASE_URL } from '@/shared/config';
 import { setThemeMode } from '@/shared/theme';
 import { queryClient } from './providers/AppProviders';
 import { router } from './router';

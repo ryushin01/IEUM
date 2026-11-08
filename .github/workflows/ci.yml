@@ -25,6 +25,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm --filter @ieum/web lint:fsd
       - run: pnpm typecheck
       - run: pnpm test
       # apt 다운로드가 가끔 10분 넘게 멈춥니다. 러너에 있는 라이브러리를 쓰고, 브라우저만 받아 캐시합니다.

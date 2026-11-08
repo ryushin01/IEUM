@@ -1,5 +1,5 @@
 import { BridgeError, callNative, isNativeApp } from '@/shared/bridge';
-import { API_URL, IS_DEMO } from '@/shared/config/env';
+import { API_URL, IS_DEMO } from '@/shared/config';
 import { ApiError, getAccessToken, refreshSession, request } from './client';
 
 export type ImageSource = 'gallery' | 'camera';

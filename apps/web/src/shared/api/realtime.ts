@@ -1,4 +1,4 @@
-import { WS_URL } from '@/shared/config/env';
+import { WS_URL } from '@/shared/config';
 import { getAccessToken, refreshSession } from './client';
 
 export interface RealtimeHandlers {

@@ -5,7 +5,7 @@ import { DeleteAccountDialog } from '@/features/account-delete';
 import { useLogout } from '@/features/auth';
 import { useMe } from '@/entities/session';
 import { callNative, isNativeApp } from '@/shared/bridge';
-import { BASE_URL, IS_DEMO, SUPPORT_EMAIL } from '@/shared/config/env';
+import { BASE_URL, IS_DEMO, SUPPORT_EMAIL } from '@/shared/config';
 import { usePageTitle } from '@/shared/lib';
 import * as s from './Settings.css';
 

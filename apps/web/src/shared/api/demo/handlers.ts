@@ -1,5 +1,5 @@
 import { http } from 'msw';
-import { API_URL } from '@/shared/config/env';
+import { API_URL } from '@/shared/config';
 import { demoFetch } from './server';
 
 /** 실제 요청을 목업 API(server.ts)가 읽는 모양으로 바꿉니다. 파일 업로드는 FormData 그대로 넘깁니다. */

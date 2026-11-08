@@ -1,4 +1,4 @@
-import { INTERESTS, MAX_INTERESTS } from '@/shared/config/interests';
+import { INTERESTS, MAX_INTERESTS } from '@/shared/config';
 import * as s from './ui.css';
 
 interface Props {
