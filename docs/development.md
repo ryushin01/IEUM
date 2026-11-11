@@ -41,7 +41,7 @@ antd를 `@layer` 안에 넣어(`StyleProvider layer`), layer 밖의 vanilla-extr
 
 | 항목 | 기준 |
 |---|---|
-| 글꼴·문구 | Asta Sans (웹은 `@fontsource-variable/asta-sans`의 글자 묶음별 조각, 제목 영문·숫자는 Lato. 앱은 `assets/fonts`의 400·500·600·700). 아이콘과 스플래시의 글자는 Pretendard 그대로. 본문 14px, 터치 기기의 웹 입력칸은 iOS 확대를 막으려고 16px, "나와 너를 잇는 공간" |
+| 글꼴·문구 | Asta Sans (웹은 `@fontsource-variable/asta-sans`의 글자 묶음별 조각, 제목도 같은 글꼴. 앱은 `assets/fonts`의 400·500·600·700). 아이콘과 스플래시의 글자는 Pretendard 그대로. 본문 14px, 터치 기기의 웹 입력칸은 iOS 확대를 막으려고 16px, "나와 너를 잇는 공간" |
 | 레이아웃 | 헤더(왼쪽 로고, 오른쪽 테마 스위치와 파랑 글쓰기 버튼), 1px 구분선, 윗선으로 구분한 평평한 하단 메뉴, 768px 이상은 왼쪽 100px 레일 |
 | 프로필 링 | 강조 색. 인기 글 작성자에만 표시 |
 | 제한 | 이미지 5장, 댓글 100자, 관심사 20종 중 3개, 비밀번호 영문·숫자·특수문자 8자 이상 |

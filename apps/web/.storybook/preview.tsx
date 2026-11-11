@@ -1,10 +1,8 @@
 import type { Preview } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { App, ConfigProvider } from 'antd';
-// 본문은 Asta Sans(한글·영문), 제목의 영문·숫자는 Lato
+// 제목과 본문 모두 Asta Sans(한글·영문) 한 벌
 import '@fontsource-variable/asta-sans/index.css';
-import '@fontsource/lato/400.css';
-import '@fontsource/lato/700.css';
 import { MemoryRouter } from 'react-router';
 import '@/shared/theme/theme.css';
 import { antdTheme } from '@/shared/theme';
