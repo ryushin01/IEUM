@@ -4,6 +4,7 @@
 
 - 글꼴을 Pretendard에서 Asta Sans로 교체 (웹, 앱). 웹의 제목 영문·숫자는 Lato. 앱은 가변 글꼴에서 400·500·600·700 굵기를 만들어 넣음
 - 앱 아이콘과 스플래시의 글자는 그대로
+- 웹 대체 글꼴: Segoe UI·Helvetica Neue와 운영체제 한글 고딕(Noto Sans CJK KR 포함)으로 이음
 
 ## 1.6.1 (미출시)
 
