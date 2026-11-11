@@ -381,9 +381,9 @@ test.describe('Service Worker를 쓸 수 없는 환경', () => {
 
 test.describe('글꼴과 입력칸 크기', () => {
   // 기본 프로젝트가 터치 기기(Pixel 7)입니다.
-  test('Pretendard를 불러오고 터치 기기 입력칸은 iOS 확대를 막도록 16px이다', async ({ page }) => {
+  test('Asta Sans를 불러오고 터치 기기 입력칸은 iOS 확대를 막도록 16px이다', async ({ page }) => {
     await page.goto('login');
-    await expect.poll(() => page.evaluate(() => document.fonts.check('14px "Pretendard Variable"', '가'))).toBe(true);
+    await expect.poll(() => page.evaluate(() => document.fonts.check('14px "Asta Sans Variable"', '가'))).toBe(true);
     await expect(page.locator('body')).toHaveCSS('font-size', '14px');
     await expect(page.getByLabel('이메일')).toHaveCSS('font-size', '16px');
   });

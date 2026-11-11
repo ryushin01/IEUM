@@ -456,7 +456,7 @@ class _PostCardState extends State<PostCard> {
               minimumSize: const Size(56, 44),
               padding: const EdgeInsets.symmetric(horizontal: 12),
               shape: const RoundedRectangleBorder(),
-              textStyle: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 14),
+              textStyle: const TextStyle(fontFamily: 'AstaSans', fontWeight: FontWeight.w600, fontSize: 14),
             ),
             child: const Text('게시'),
           ),
