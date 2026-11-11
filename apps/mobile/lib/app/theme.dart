@@ -96,7 +96,7 @@ ThemeData ieumTheme(Brightness brightness) {
   return ThemeData(
     useMaterial3: true,
     brightness: brightness,
-    fontFamily: 'Pretendard',
+    fontFamily: 'AstaSans',
     textTheme: const TextTheme(
       titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: -.2),
       titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: -.15),
@@ -120,7 +120,7 @@ ThemeData ieumTheme(Brightness brightness) {
         backgroundColor: colors.primary,
         foregroundColor: colors.onPrimary,
         minimumSize: const Size(56, 44),
-        textStyle: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: -.14),
+        textStyle: const TextStyle(fontFamily: 'AstaSans', fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: -.14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),

@@ -2,7 +2,7 @@ import { theme, type ThemeConfig } from 'antd';
 
 export type ThemeMode = 'light' | 'dark';
 
-const FONT = `'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`;
+const FONT = `'Asta Sans Variable', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif`;
 
 /** theme.css.ts의 토큰과 같은 값입니다. */
 const COLORS = {
