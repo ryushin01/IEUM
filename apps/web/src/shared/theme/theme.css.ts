@@ -124,10 +124,6 @@ globalStyle("html", {
   },
 });
 globalStyle("h1, h2, h3, p, ul, ol, figure", { margin: 0, padding: 0 });
-// 제목의 영문·숫자는 Lato로 가볍게, 한글은 본문과 같은 Asta Sans로 둡니다.
-globalStyle("h1, h2, h3", {
-  fontFamily: `Lato, 'Asta Sans Variable', 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans CJK KR', sans-serif`,
-});
 globalStyle("ul, ol", { listStyle: "none" });
 globalStyle("button, input, textarea, select", { letterSpacing: "inherit" });
 globalStyle("img", { display: "block", maxWidth: "100%" });
