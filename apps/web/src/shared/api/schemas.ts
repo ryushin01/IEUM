@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from 'zod/mini';
 import type { Tokens } from '@/shared/bridge';
 
 /** 서버·앱·저장소에서 받은 토큰. 비어 있거나 모양이 다르면 세션이 없는 것으로 봅니다. */
 const TokensSchema = z.object({
-  accessToken: z.string().min(1),
-  refreshToken: z.string().min(1),
+  accessToken: z.string().check(z.minLength(1)),
+  refreshToken: z.string().check(z.minLength(1)),
 });
 
 export function parseTokens(value: unknown): Tokens | null {
