@@ -5,6 +5,8 @@
 - 글꼴을 Pretendard에서 Asta Sans로 교체 (웹, 앱). 웹 제목도 Asta Sans 한 벌로 써서 한 줄 안에서 영문과 한글의 높이·굵기가 어긋나지 않게 함(Lato 뺌). 앱은 가변 글꼴에서 400·500·600·700 굵기를 만들어 넣음
 - 앱 아이콘과 스플래시의 글자는 그대로
 - 웹 대체 글꼴: Segoe UI·Helvetica Neue와 운영체제 한글 고딕(Noto Sans CJK KR 포함)으로 이음
+- 웹 모니터링: `VITE_SENTRY_DSN`이 있으면 처리하지 못한 오류와 나쁜 Web Vitals를 Sentry로 보냄. 오류 내용만 보내고, Sentry(약 31 kB gzip)와 web-vitals는 첫 화면 뒤에 따로 받음
+- 웹 성능 예산: CI에서 데모 빌드로 size-limit(첫 화면 JS 320 kB, CSS 26 kB)과 Lighthouse CI(로그인 화면, 데스크톱 성능 90·접근성 100·권장 사항 95·SEO 90점)를 검사
 
 ## 1.6.1 (미출시)
 
