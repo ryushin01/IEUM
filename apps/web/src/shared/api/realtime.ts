@@ -1,4 +1,5 @@
 import { WS_URL } from '@/shared/config';
+import { parseRealtimeEvent } from './schemas';
 import { getAccessToken, refreshSession } from './client';
 
 export interface RealtimeHandlers {
@@ -43,7 +44,9 @@ export function connectRealtime(handlers: RealtimeHandlers): () => void {
     socket = new WebSocket(WS_URL);
     socket.onopen = () => socket?.send(JSON.stringify({ type: 'auth', token }));
     socket.onmessage = (e) => {
-      const event = JSON.parse(e.data as string) as { type: string };
+      // 깨진 메시지 하나로 처리기가 멈추지 않게, 읽지 못하는 메시지는 건너뜁니다.
+      const event = parseRealtimeEvent(e.data);
+      if (!event) return;
       if (event.type === 'ready') {
         attempts = 0;
         if (connectedBefore) handlers.onReconnect();

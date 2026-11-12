@@ -7,9 +7,10 @@ import { invalidatePosts, type Post } from '@/entities/post';
 import { imageErrorMessage, pickAndUploadImages, request, type ImageSource } from '@/shared/api';
 import { isNativeApp } from '@/shared/bridge';
 import { srOnly } from '@/shared/ui';
+import { LIMITS } from '@/shared/config';
 import * as s from './PostForm.css';
 
-const MAX_IMAGES = 5;
+const MAX_IMAGES = LIMITS.postImages;
 
 export function PostForm() {
   const navigate = useNavigate();

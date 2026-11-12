@@ -3,11 +3,12 @@ import { badRequest, forbidden, notFound } from '../errors.ts';
 import { releaseMedia } from '../media.ts';
 import { assertAllowedText } from '../moderation.ts';
 import type { AppContext } from '../context.ts';
+import { LIMITS } from '../limits.ts';
 import { assertUploadedUrl } from '../uploads.ts';
 import { decodeCursor, encodeCursor, POST_SELECT, toComment, toPost, type CommentRow, type PostRow } from '../serializers.ts';
 
-const PAGE_SIZE = 10;
-const MAX_IMAGES = 5;
+const PAGE_SIZE = LIMITS.postPage;
+const MAX_IMAGES = LIMITS.postImages;
 /** 차단 관계와 정지된 작성자의 글을 숨깁니다. */
 const NOT_BLOCKED = (alias: string, me: string) => `NOT EXISTS (
   SELECT 1 FROM blocks b WHERE (b.blocker_id = ${me} AND b.blocked_id = ${alias})

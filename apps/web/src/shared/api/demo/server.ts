@@ -1,4 +1,4 @@
-import { BASE_URL } from '@/shared/config';
+import { BASE_URL, LIMITS } from '@/shared/config';
 import { createSeed, DEMO_PASSWORD, mergeSeed, SEED_VERSION, type DemoMessage, type DemoPost, type DemoState, type DemoUser } from './seed';
 
 /**
@@ -6,8 +6,8 @@ import { createSeed, DEMO_PASSWORD, mergeSeed, SEED_VERSION, type DemoMessage, t
  * 웹은 MSW(handlers.ts)를 거쳐, 앱은 브리지(demoRequest)로 이 함수를 호출합니다. 화면 코드는 실제 모드와 같습니다.
  */
 const STORAGE_KEY = 'ieum.demo.state';
-const PAGE_SIZE = 10;
-const MESSAGE_PAGE = 30;
+const PAGE_SIZE = LIMITS.postPage;
+const MESSAGE_PAGE = LIMITS.messagePage;
 const HOT_LIKES = 3;
 const PASSWORD = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,72}$/;
 const NICKNAME = /^[\p{L}\p{N}_.]{2,20}$/u;
