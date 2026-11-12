@@ -28,6 +28,10 @@ Next.js에서 vanilla-extract의 Turbopack 지원은 아직 실험 단계이고,
 
 antd를 `@layer` 안에 넣어(`StyleProvider layer`), layer 밖의 vanilla-extract 스타일이 항상 우선합니다. `*.css.ts`는 빌드 시 실행되므로 `@/shared/theme`이 아니라 `@/shared/theme/theme.css`를 가져옵니다.
 
+### 저장값과 메시지 검증
+
+웹은 저장된 토큰, 토큰 재발급 응답, 앱이 넘긴 토큰, 실시간(WebSocket) 메시지를 `src/shared/api/schemas.ts`의 zod/mini 스키마로 확인합니다. 깨진 토큰은 지우고, 읽지 못하는 메시지는 건너뜁니다. 첫 화면 JS 예산 때문에 `zod` 대신 `zod/mini`를 씁니다. 게시글 사진 수·글 한 쪽·메시지 한 쪽 같은 한도는 웹 `src/shared/config/limits.ts`와 API `src/limits.ts`에 두고, API 테스트가 두 값이 같은지 확인합니다.
+
 ## 디자인 기준
 
 [닷슬래시대시 앱](https://wwit.design/2023/09/30/dotslashdash/)의 화면을 참고했습니다. 거의 검은 면 하나에 흰 글자를 두고, 머리카락 굵기의 선과 밑줄형 입력칸으로 나누며, 파랑은 한 화면의 강조에만 씁니다. 다크가 기본 테마이고 라이트로 바꿀 수 있습니다. 참고 앱의 로고, 사진, 문구, 타원 사진과 원형 글자는 쓰지 않습니다. 대비가 모자란 비활성 글자와 파랑은 기준에 맞춰 조정했습니다. 토큰은 웹의 `apps/web/src/shared/theme/theme.css.ts`, `antd-theme.ts`와 앱의 `apps/mobile/lib/app/theme.dart`에 있으며, 바꿀 때는 모두 같은 값으로 맞춥니다.
@@ -134,3 +138,6 @@ README의 시연 GIF는 Android 에뮬레이터를 켠 뒤 `pnpm demo:gif`로 �
 - 쓰는 함수만 `sentry.ts`에서 다시 내보내 약 31 kB(gzip)로 받습니다.
 - 앱(Flutter) 쪽 오류는 모으지 않습니다. 웹뷰 안의 웹 화면 오류만 해당합니다.
 
+## 의존성 갱신 (Dependabot)
+
+`.github/dependabot.yml`이 매달 세 가지를 확인합니다. npm 패키지(웹·API)는 부 버전·패치를 한 PR로 묶고 열린 PR은 5개까지, Flutter 패키지(`apps/mobile`, pub)와 GitHub Actions는 3개까지 엽니다. 주 버전은 따로 PR이 열리므로 CI가 통과할 때만 병합합니다.
