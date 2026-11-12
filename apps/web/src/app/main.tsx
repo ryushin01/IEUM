@@ -6,10 +6,12 @@ import { RouterProvider } from 'react-router';
 import { onSessionExpired, restoreSession } from '@/shared/api';
 import { initThemeMode } from '@/shared/theme';
 import '@/shared/theme/theme.css';
+import { initMonitoring } from './monitoring';
 import { AppProviders, queryClient } from './providers/AppProviders';
 import { installNativeBridge } from './native-bridge';
 import { router } from './router';
 
+initMonitoring();
 initThemeMode();
 
 onSessionExpired(() => {

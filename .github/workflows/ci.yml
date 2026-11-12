@@ -41,6 +41,10 @@ jobs:
       - run: pnpm --filter @ieum/web test:storybook
       - run: pnpm test:e2e
       - run: pnpm --filter @ieum/web test:e2e:demo
+      # 웹 번들 크기와 Lighthouse 점수(데모 빌드, MSW가 API를 대신함)
+      - run: pnpm --filter @ieum/web build:demo
+      - run: pnpm --filter @ieum/web size
+      - run: pnpm --filter @ieum/web lhci
       # 실패하면 화면과 기록을 내려받아 확인합니다.
       - uses: actions/upload-artifact@v7
         if: failure()

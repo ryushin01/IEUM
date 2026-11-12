@@ -116,3 +116,21 @@ README의 시연 GIF는 Android 에뮬레이터를 켠 뒤 `pnpm demo:gif`로 �
 - API: 메모리 PGlite와 실제 WebSocket으로 검사합니다.
 - E2E: 프로덕션 빌드와 실제 API로 흐름, axe, 가로 넘침을 검사합니다. 브릿지는 가짜 채널을 씁니다. 
 - 앱: 브릿지 라우터, 이동 정책, 오프라인 화면을 검사합니다. 실제 웹뷰와 플러그인은 `integration_test`를 시뮬레이터나 기기에서 실행해 확인합니다. CI에서는 실행하지 않습니다. Android 에뮬레이터와 iOS 시뮬레이터에서 확인한 내용은 [출시 체크리스트](release.md#기기-점검-출시-빌드)에 있습니다.
+
+## 품질 예산
+
+- **번들 크기:** `pnpm --filter @ieum/web size`가 데모 빌드의 첫 화면 JS 320 kB, CSS 26 kB(gzip)를 넘으면 실패합니다. 기준은 `apps/web/.size-limit.json`에 있습니다. MSW 등 데모 전용 코드는 따로 받는 조각이라 세지 않습니다.
+- **Lighthouse:** `pnpm --filter @ieum/web lhci`가 데모 빌드의 첫 화면(로그인)을 데스크톱 기준 3번씩 재서 성능 90·접근성 100·권장 사항 95·SEO 90점, LCP 2.5초·TBT 200ms·CLS 0.1 이하인지 확인합니다. 기준은 `apps/web/lighthouserc.json`에 있습니다.
+
+## 모니터링
+
+웹은 `src/app/main.tsx`가 화면을 그리기 전에 `app/monitoring`을 켜고, Sentry와 web-vitals는 나중에 따로 받습니다.
+
+| 환경 변수 | 내용 |
+| --- | --- |
+| `VITE_SENTRY_DSN` | 있으면 처리하지 못한 오류와 나쁜(poor) Web Vitals를 Sentry로 보냅니다. 없으면 Sentry를 번들에 넣지 않고, 개발 모드에서 Web Vitals를 콘솔에만 찍습니다 |
+
+- Sentry에는 오류 내용만 보내고 사용자 정보·쿠키·헤더·쿼리 문자열, 방문 기록(세션), 이동·클릭 기록(브레드크럼), 콘솔 기록은 모으지 않습니다. Sentry를 받기 전에 난 오류는 최대 20개까지 모아 두었다가 처리되지 않은 오류로 보냅니다.
+- 쓰는 함수만 `sentry.ts`에서 다시 내보내 약 31 kB(gzip)로 받습니다.
+- 앱(Flutter) 쪽 오류는 모으지 않습니다. 웹뷰 안의 웹 화면 오류만 해당합니다.
+

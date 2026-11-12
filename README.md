@@ -50,7 +50,8 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴�
 | 앱 | Flutter(피드·DM·하단 메뉴 위젯), webview_flutter, GetX(`get`), dio, flutter_secure_storage, image_picker, url_launcher, flutter_web_auth_2 |
 | 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router |
 | API | Node.js, Fastify 5, ws, PostgreSQL(`pg`), PGlite(로컬·테스트), jose, sharp, nodemailer, S3 호환 저장소 |
-| 품질 | ESLint(FSD 계층 규칙), Steiger, Vitest, Storybook 10(axe), Playwright(E2E, axe), MSW(데모 API), flutter test |
+| 품질 | ESLint(FSD 계층 규칙), Steiger, Vitest, Storybook 10(axe), Playwright(E2E, axe), MSW(데모 API), size-limit, Lighthouse CI, flutter test |
+| 모니터링 | Sentry(웹, DSN이 있을 때만), web-vitals |
 
 ## 시작하기
 
@@ -75,6 +76,7 @@ flutter run                # 개발 서버를 웹뷰로 엽니다. Android는 ad
 | `pnpm --filter @ieum/web test:storybook` | 모든 스토리 렌더링과 접근성 검사 |
 | `pnpm test:e2e` | 프로덕션 빌드와 실제 API의 화면 검사 |
 | `pnpm --filter @ieum/web test:e2e:demo` | 데모 빌드 검사 |
+| `pnpm --filter @ieum/web size` / `lhci` | 웹 번들 크기 / Lighthouse 기준 검사 (먼저 `build:demo` 필요) |
 | `pnpm demo:gif` | Android 에뮬레이터에서 통합 테스트를 실행하며 README 시연 GIF 생성 |
 | `flutter analyze` / `flutter test` | 앱 정적 분석 / 테스트 (`apps/mobile`) |
 | `flutter test integration_test -d <기기> --dart-define=DEMO_MODE=true` | 시뮬레이터·기기에서 Flutter 화면, 웹뷰, 브릿지 검사 (`dev:demo` 실행 필요) |

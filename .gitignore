@@ -32,3 +32,4 @@ apps/mobile/android/key.properties
 *.mobileprovision
 dist-demo/
 apps/mobile/android/.kotlin/
+.lighthouseci
