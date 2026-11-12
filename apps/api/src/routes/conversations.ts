@@ -1,9 +1,10 @@
 import type { FastifyInstance } from 'fastify';
 import { badRequest, forbidden, notFound } from '../errors.ts';
 import type { AppContext } from '../context.ts';
+import { LIMITS } from '../limits.ts';
 import { decodeCursor, encodeCursor, toMessage, toPublicUser, type MessageRow, type UserRow } from '../serializers.ts';
 
-const PAGE_SIZE = 30;
+const PAGE_SIZE = LIMITS.messagePage;
 
 export function conversationRoutes(app: FastifyInstance, ctx: AppContext) {
   const { db, hub } = ctx;

@@ -1,5 +1,6 @@
 import { callNative, isNativeApp, type Tokens } from '@/shared/bridge';
 import { API_URL } from '@/shared/config';
+import { parseTokens } from './schemas';
 import { tokenStore } from './token-store';
 
 export class ApiError extends Error {
@@ -61,12 +62,13 @@ async function refreshThroughApp(): Promise<boolean> {
   const next = await callNative('auth.refresh', { staleAccessToken: tokens?.accessToken ?? null }).catch(() => {
     throw new ApiError(0, 'network', NETWORK_MESSAGE);
   });
-  if (!next) {
+  const refreshed = parseTokens(next);
+  if (!refreshed) {
     tokens = null;
     onExpired();
     return false;
   }
-  tokens = next;
+  tokens = refreshed;
   return true;
 }
 
@@ -88,7 +90,9 @@ export function refreshSession(): Promise<boolean> {
       onExpired();
       return false;
     }
-    await setSession((await res.json()) as Tokens);
+    const next = parseTokens(await res.json().catch(() => null));
+    if (!next) throw new ApiError(res.status, 'invalid_response', '일시적인 오류가 발생했습니다.');
+    await setSession(next);
     return true;
   })().finally(() => {
     refreshing = null;
