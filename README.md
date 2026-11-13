@@ -1,7 +1,7 @@
 # IEUM (이음)
 
 [![CI](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml/badge.svg)](https://github.com/ryushin01/IEUM/actions/workflows/ci.yml)
-![version](https://img.shields.io/badge/version-1.6.2-4545ff)
+![version](https://img.shields.io/badge/version-1.6.3-4545ff)
 
 **나와 너를 잇는 공간.** 사진을 공유하고 메시지를 주고받는 iOS·Android SNS 앱입니다. 피드, DM, 하단 메뉴는 Flutter 위젯으로, 나머지 화면은 웹뷰(React)로 만들고 브릿지로 연결한 하이브리드 앱입니다.
 
@@ -48,7 +48,7 @@ Android 에뮬레이터에서 실행한 앱입니다. 피드, DM, 하단 메뉴�
 | 구분 | 사용 기술 |
 |---|---|
 | 앱 | Flutter(피드·DM·하단 메뉴 위젯), webview_flutter, GetX(`get`), dio, flutter_secure_storage, image_picker, url_launcher, flutter_web_auth_2 |
-| 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router |
+| 웹뷰 | React 19, Vite 8, antd 6, vanilla-extract, TanStack Query, React Router, zod/mini(토큰·실시간 메시지 검증) |
 | API | Node.js, Fastify 5, ws, PostgreSQL(`pg`), PGlite(로컬·테스트), jose, sharp, nodemailer, S3 호환 저장소 |
 | 품질 | ESLint(FSD 계층 규칙), Steiger, Vitest, Storybook 10(axe), Playwright(E2E, axe), MSW(데모 API), size-limit, Lighthouse CI, flutter test |
 | 모니터링 | Sentry(웹, DSN이 있을 때만), web-vitals |
