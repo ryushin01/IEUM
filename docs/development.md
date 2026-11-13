@@ -128,7 +128,7 @@ README의 시연 GIF는 Android 에뮬레이터를 켠 뒤 `pnpm demo:gif`로 �
 
 ## 모니터링
 
-웹은 `src/app/main.tsx`가 화면을 그리기 전에 `app/monitoring`을 켜고, Sentry와 web-vitals는 나중에 따로 받습니다. Sentry는 페이지를 다 받은 뒤(load) 브라우저가 한가할 때 받고, load가 10초 안에 오지 않으면 그때 받습니다.
+웹은 `src/app/main.tsx`가 화면을 그리기 전에 `app/monitoring`을 켜고, Sentry와 web-vitals는 나중에 따로 받습니다. Sentry는 페이지를 다 받은 뒤(load) 브라우저가 한가할 때 받고, load가 10초 안에 오지 않으면 그때 바로 받습니다.
 
 | 환경 변수 | 내용 |
 | --- | --- |
