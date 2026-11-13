@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { invalidatePosts } from '@/entities/post';
 import { setMe, type Me } from '@/entities/session';
+import { userKey } from '@/entities/user';
 import { imageErrorMessage, pickAndUploadImages, request } from '@/shared/api';
 import { InterestChips, UserAvatar } from '@/shared/ui';
 import * as s from './ProfileForm.css';
@@ -22,7 +23,7 @@ export function ProfileForm({ me }: { me: Me }) {
       request<Me>('/me', { method: 'PATCH', body: data }),
     onSuccess: async (updated) => {
       setMe(client, updated);
-      await Promise.all([invalidatePosts(client), client.invalidateQueries({ queryKey: ['user', me.id] })]);
+      await Promise.all([invalidatePosts(client), client.invalidateQueries({ queryKey: userKey(me.id) })]);
       navigate('/me', { replace: true });
     },
   });

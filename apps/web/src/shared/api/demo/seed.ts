@@ -22,10 +22,10 @@ export interface DemoPost {
   createdAt: string;
   updatedAt: string;
 }
-export interface DemoComment { id: string; postId: string; authorId: string; body: string; createdAt: string }
-export interface DemoConversation { id: string; members: [string, string] }
+interface DemoComment { id: string; postId: string; authorId: string; body: string; createdAt: string }
+interface DemoConversation { id: string; members: [string, string] }
 export interface DemoMessage { id: string; conversationId: string; senderId: string; body: string; readAt: string | null; createdAt: string }
-export interface DemoReport { id: string; reporterId: string; targetType: string; targetId: string; reason: string; createdAt: string; open: boolean }
+interface DemoReport { id: string; reporterId: string; targetType: string; targetId: string; reason: string; createdAt: string; open: boolean }
 
 export interface DemoState {
   /** 저장 당시의 샘플 데이터 버전입니다. 1은 값이 없던 처음 버전입니다. */
@@ -45,7 +45,6 @@ const art = (name: string) => `${BASE_URL}demo/${name}.svg`;
 const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000).toISOString();
 
 export const DEMO_PASSWORD = 'ieum-demo-1234';
-export const DEMO_ACCOUNTS = { member: 'demo@ieum.app', admin: 'admin@ieum.app' };
 
 const user = (id: string, nickname: string, bio: string, interests: string[], extra: Partial<DemoUser> = {}): DemoUser => ({
   id, email: `${id}@ieum.app`, passwordHash: null, nickname, bio, avatarUrl: null, interests,

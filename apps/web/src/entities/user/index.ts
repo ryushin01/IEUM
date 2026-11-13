@@ -16,7 +16,7 @@ export interface UserProfile extends PublicUser {
 }
 
 export const userKey = (id: string) => ['user', id] as const;
-export const BLOCKS_KEY = ['blocks'] as const;
+const BLOCKS_KEY = ['blocks'] as const;
 
 export const useUser = (id: string) =>
   useQuery({ queryKey: userKey(id), queryFn: () => request<UserProfile>(`/users/${id}`) });
