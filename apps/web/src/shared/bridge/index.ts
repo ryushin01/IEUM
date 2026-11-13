@@ -1,1 +1,1 @@
-export { BridgeError, callNative, isNativeApp, type BridgeMethods, type Tokens } from './bridge';
+export { BridgeError, callNative, isNativeApp, type Tokens } from './bridge';

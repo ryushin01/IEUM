@@ -9,7 +9,7 @@ function required(name: string, devFallback: string): string {
   return devFallback;
 }
 
-export interface AppleKey {
+interface AppleKey {
   teamId: string;
   keyId: string;
   /** Sign in with Apple용 .p8 키 내용(PEM) */

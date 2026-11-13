@@ -3,8 +3,6 @@ packages:
   - apps/web
 allowBuilds:
   esbuild: true
-minimumReleaseAgeExclude:
-  - '@fastify/static@10.1.10'
 # Dependabot 알림 대응: 상위 도구가 올리기 전까지 패치 버전을 씁니다.
 overrides:
   'glob@>=9 <14.0.2': '>=14.0.2'

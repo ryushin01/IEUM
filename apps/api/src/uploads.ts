@@ -22,7 +22,7 @@ export function normalizeImage(input: Buffer): Promise<Buffer> {
 }
 
 /** 클라이언트가 보낸 형식을 믿지 않고 파일 앞부분으로 판별합니다. SVG는 받지 않습니다. */
-export function detectImageType(b: Buffer): 'jpg' | 'png' | 'webp' | null {
+function detectImageType(b: Buffer): 'jpg' | 'png' | 'webp' | null {
   if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'jpg';
   if (b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'png';
   if (b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WEBP') return 'webp';

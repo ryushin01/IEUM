@@ -5,6 +5,9 @@
 - 버그(웹): 소켓 메시지를 바로 `JSON.parse`해, 깨진 메시지 하나에 처리기가 예외로 멈추던 문제. 읽지 못하는 메시지는 건너뜀
 - 버그(웹): 저장된 토큰·재발급 응답·앱이 준 토큰의 모양을 확인하지 않아, 값이 깨져 있으면 `Bearer undefined`로 요청하던 문제. zod/mini로 검증하고(첫 화면 JS +4.4 kB) 깨진 저장값은 지움
 - 공통화: 게시글 사진 수(5)·글 한 쪽(10)·메시지 한 쪽(30)을 웹은 `shared/config/limits.ts`, API는 `src/limits.ts` 한곳에 두고, API 테스트가 두 값이 같은지 확인
+- 웹 모니터링: Sentry를 페이지를 다 받은 뒤(load) 한가할 때 받음(load가 10초 안에 오지 않으면 그때). Error가 아닌 일반 객체로 거부된 Promise의 필드 값(`extra.__serialized__`)도 보내기 전에 지움
+- 공통화(웹): 프로필 수정 뒤 사용자 정보를 새로 받을 때 `['user', id]` 대신 `entities/user`의 `userKey`를 씀
+- 정리: 쓰지 않는 데모 계정 상수(`DEMO_ACCOUNTS`, 계정 주소는 사용자 id에서 만듦), 공개 API의 쓰지 않는 내보내기(웹 `shared/api`·`shared/theme`·`shared/bridge`·`entities/conversation`, API 내부 전용 값), 기간이 지난 `minimumReleaseAgeExclude` 예외
 
 ## 1.6.2 (미출시)
 

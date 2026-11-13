@@ -1,11 +1,11 @@
 import { badRequest } from './errors.ts';
 
 /** 웹의 shared/config/interests.ts와 같은 목록입니다. */
-export const INTERESTS = [
+const INTERESTS = [
   'game', 'movie', 'restaurant', 'music', 'mbti', 'celebrity', 'date', 'job', 'alcohol', 'car',
   'fashion', 'interior', 'festival', 'device', 'baby', 'beauty', 'tip', 'cooking', 'camping', 'trip',
 ];
-export const MAX_INTERESTS = 3;
+const MAX_INTERESTS = 3;
 const HOT_LIKE_THRESHOLD = Number(process.env.HOT_LIKE_THRESHOLD ?? 10);
 
 export function parseInterests(value: unknown): string[] {
