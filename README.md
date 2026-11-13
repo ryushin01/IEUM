@@ -103,6 +103,14 @@ docs/        문서와 화면 이미지
 | [시퀀스 다이어그램](docs/sequence-diagrams.md) | 웹뷰 토큰 재발급, 사진 올리기, DM 실시간 수신 |
 | [버전 기록](CHANGELOG.md) | 버전별 변경 내용 |
 
+## 출처
+
+| 자료 | 저작자 | 사용 허락 | 원본 |
+|---|---|---|---|
+| Asta Sans 글꼴 (웹은 Fontsource, 앱은 TTF) | The Asta Sans Project Authors(42dot) | SIL OFL 1.1 | [42dot/Asta-Sans](https://github.com/42dot/Asta-Sans) |
+
+게시글 사진은 직접 그린 일러스트이고, 사용자와 게시글은 가상 데이터입니다.
+
 ## 기여자
 
 | 기여자 | 맡은 부분 |
