@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,13 @@ import 'shell/shell_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // 앱 아이콘·스플래시의 무한대(Fluent Emoji, MIT) 고지를 앱의 라이선스 목록에 넣습니다.
+  LicenseRegistry.addLicense(() async* {
+    yield LicenseEntryWithLineBreaks(
+      ['Fluent Emoji (app icon and splash)'],
+      await rootBundle.loadString('assets/licenses/fluentui-emoji.txt'),
+    );
+  });
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   final config = AppConfig.fromEnvironment();
   runApp(IeumApp(config: config));
