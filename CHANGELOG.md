@@ -1,5 +1,10 @@
 # 버전 기록
 
+## 1.6.4 (미출시)
+
+- 웹 파비콘과 앱 아이콘·스플래시를 무한대 아이콘으로: Microsoft의 Fluent Emoji Flat “Infinity”(MIT). 원본 SVG를 `apps/web/scripts/brand/infinity.svg`에 두고, `pnpm --filter @ieum/web icons`가 'IEUM' 워드마크 대신 이 그림으로 앱 아이콘·적응형 전경(양 끝까지 안전 영역 안)·스플래시 원본을 만듦. `dart run flutter_launcher_icons`, `dart run flutter_native_splash:create`로 안드로이드·iOS에 반영. 웹 파비콘은 어두운 둥근 타일 위의 무한대
+- README 출처 표에 아이콘을 더하고 라이선스 사본을 `apps/web/public/brand/LICENSE-fluentui-emoji.txt`에 둠. 로그인 화면의 'IEUM.' 워드마크와 앱 머리의 글자는 그대로
+
 ## 1.6.3 (미출시)
 
 - 웹 모니터링: load가 10초 안에 오지 않으면 한가할 때를 다시 기다리지 않고 그때 바로 Sentry를 받음(전에는 기한 뒤에도 한가할 때를 최대 3초 더 기다려 13초까지 늦어질 수 있었음). 끝내 부르지 않는 `requestIdleCallback`으로 확인하는 테스트로 바꿈. load가 10초 전에 오면 기한을 거두고 한가할 때를 기다림(+테스트)
