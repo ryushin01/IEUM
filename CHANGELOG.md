@@ -3,7 +3,7 @@
 ## 1.6.4 (미출시)
 
 - 웹 파비콘과 앱 아이콘·스플래시를 무한대 아이콘으로: Microsoft의 Fluent Emoji Flat “Infinity”(MIT). 원본 SVG를 `apps/web/scripts/brand/infinity.svg`에 두고, `pnpm --filter @ieum/web icons`가 'IEUM' 워드마크 대신 이 그림으로 앱 아이콘·적응형 전경(양 끝까지 안전 영역 안)·스플래시 원본을 만듦. `dart run flutter_launcher_icons`, `dart run flutter_native_splash:create`로 안드로이드·iOS에 반영. 웹 파비콘은 어두운 둥근 타일 위의 무한대
-- README 출처 표에 아이콘을 더하고 라이선스 사본을 `apps/web/public/brand/LICENSE-fluentui-emoji.txt`에 둠. 로그인 화면의 'IEUM.' 워드마크와 앱 머리의 글자는 그대로
+- README 출처 표에 아이콘을 더하고 라이선스 사본을 `apps/web/public/brand/LICENSE-fluentui-emoji.txt`에 둠. 앱은 같은 고지를 `assets/licenses/fluentui-emoji.txt`로 묶고 Flutter `LicenseRegistry`에 등록함. 로그인 화면의 'IEUM.' 워드마크와 앱 머리의 글자는 그대로
 
 ## 1.6.3 (미출시)
 

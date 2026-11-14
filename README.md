@@ -108,7 +108,7 @@ docs/        문서와 화면 이미지
 | 자료 | 저작자 | 사용 허락 | 원본 |
 |---|---|---|---|
 | Asta Sans 글꼴 (웹은 Fontsource, 앱은 TTF) | The Asta Sans Project Authors(42dot) | SIL OFL 1.1 | [42dot/Asta-Sans](https://github.com/42dot/Asta-Sans) |
-| 무한대 아이콘 (웹 파비콘, 앱 아이콘·스플래시) | Microsoft Corporation (Fluent Emoji) | MIT ([사본](apps/web/public/brand/LICENSE-fluentui-emoji.txt)) | [microsoft/fluentui-emoji](https://github.com/microsoft/fluentui-emoji) |
+| 무한대 아이콘 (웹 파비콘, 앱 아이콘·스플래시) | Microsoft Corporation (Fluent Emoji) | MIT ([사본](apps/web/public/brand/LICENSE-fluentui-emoji.txt), 앱은 `assets/licenses/`에 넣고 라이선스 목록에 등록) | [microsoft/fluentui-emoji](https://github.com/microsoft/fluentui-emoji) |
 
 게시글 사진은 직접 그린 일러스트이고, 사용자와 게시글은 가상 데이터입니다.
 
